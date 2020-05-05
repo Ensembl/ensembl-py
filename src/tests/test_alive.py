@@ -15,7 +15,6 @@
    limitations under the License.
 """
 
-from __future__ import print_function
 
 import pytest
 
@@ -29,4 +28,5 @@ def test_alive():
 
        pytest tests/test_tool.py
     """
+    print("test alive")
     assert True
