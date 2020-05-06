@@ -32,6 +32,10 @@ class HiveRESTClient(eHive.BaseRunnable):
     available_method = ('post', 'get', 'put', 'patch')
 
     def param_defaults(self):
+        """
+        Default parameter set
+        :return: dict
+        """
         return {
             'endpoint': 'http://localhost/api/endpoint',
             'payload': {},
@@ -45,6 +49,10 @@ class HiveRESTClient(eHive.BaseRunnable):
         }
 
     def __init__(self, read_fileno, write_fileno, debug):
+        """
+        Retrieve default parameters or Pipeline dedicated ones if any
+        :return a new HiveRESTClient
+        """
         super().__init__(read_fileno, write_fileno, debug)
         self.retry_strategy = Retry(
             total=self.param('retry'),
@@ -52,52 +60,60 @@ class HiveRESTClient(eHive.BaseRunnable):
             method_whitelist=self.param('method_retry')
         )
 
-    @contextlib.contextmanager
-    def session_scope(self):
-        """ Ensure HTTP session is closed after processing code"""
-        session = self.open_session()
-        logger.debug("HTTP Session opened %s", session)
-        try:
-            yield session
-        except requests.HTTPError as e:
-            logger.exception("Error initialising session")
-        finally:
-            logger.debug("Closing session")
-            session.close()
-
-    def run(self):
+    def _open_session(self):
         """
-        Basic call to request parameters specified in pipeline parameters
-        Return response received.
+        Set up an HTTPAdapter to allow API call retries in case of Networks failures or remote API unavailability
+        :return A new requests.Session object
         """
-        with self.session_scope() as http:
-            try:
-                response = http.request(method=self.param('method'),
-                                        url=self.param('endpoint'),
-                                        headers=self.param('headers'),
-                                        files=self.param('files'),
-                                        data=self.param('payload'),
-                                        timeout=self.param('timeout'))
-                self.process_response(response)
-                return response
-            except requests.HTTPError as e:
-                message = "Error performing request {}: {}".format(self.param('endpoint'), e.strerror)
-                logger.error(message)
-                self.warning(message)
-
-    def process_response(self, response):
-        """
-        Added code to process the response received from api call.
-        This is the only required override needed.
-        """
-        self.dataflow({'result': response.json()}, 1)
-
-    def open_session(self):
         adapter = HTTPAdapter(max_retries=self.retry_strategy)
         http = requests.Session()
         http.mount("https://", adapter)
         http.mount("http://", adapter)
         return http
 
-    def close_session(self, session):
+    def _close_session(self, session):
+        """
+        Close all potential remaining connections in current Session
+        :return None
+        """
         session.close()
+
+
+    @contextlib.contextmanager
+    def _session_scope(self):
+        """ Ensure HTTP session is closed after processing code"""
+        session = self._open_session()
+        logger.debug("HTTP Session opened %s", session)
+        try:
+            yield session
+        except requests.HTTPError as e:
+            message = "Error performing request {}: {}".format(self.param('endpoint'), e.strerror)
+            self.warning(message)
+            raise e
+        finally:
+            logger.debug("Closing session")
+            self._close_session(session)
+
+    def run(self):
+        """
+        Basic call to request parameters specified in pipeline parameters
+        Return response received.
+        """
+        with self._session_scope() as http:
+            response = http.request(method=self.param('method'),
+                                    url=self.param('endpoint'),
+                                    headers=self.param('headers'),
+                                    files=self.param('files'),
+                                    data=self.param('payload'),
+                                    timeout=self.param('timeout'))
+            self.process_response(response)
+            return response
+
+    def process_response(self, response):
+        """
+        Added code to process the response received from api call.
+        For easiness, this is supposed to be the only method needing override to process API HTTP response
+        :param response:
+        :return:
+        """
+        self.dataflow({'result': response.json()}, 1)

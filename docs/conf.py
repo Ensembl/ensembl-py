@@ -33,8 +33,6 @@ class Mock(MagicMock):
 MOCK_MODULES = []
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
-import ensembl_template_py
-
 
 # -- General configuration ------------------------------------------------
 

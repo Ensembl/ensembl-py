@@ -14,20 +14,52 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages, find_packages
+
+with open(Path(__file__).parent / 'README.md') as f:
+    readme = f.read()
+with open(Path(__file__).parent / 'LICENSE') as f:
+    license_ct = f.read()
+with open(Path(__file__).parent / 'VERSION') as f:
+    version = f.read()
+
+
+def import_requirements():
+    """Import ``requirements.txt`` file located at the root of the repository."""
+    """Import ``requirements.txt`` file located at the root of the repository."""
+    with open(Path(__file__).parent / 'requirements.txt') as file:
+        return [line.rstrip() for line in file.readlines()]
+
 
 setup(
-    name='ensembl_template_py',
-    packages=find_packages(),
+    name='ensembl-py',
+    package_dir={"": "src/python"},
+    packages=find_namespace_packages(include=['ensembl.hive.*']),
+    description="Ensembl Python Base library",
     include_package_data=True,
-    install_requires=[
-        'pytest', 'pylint', 'Sphinx'
-    ],
+    install_requires=import_requirements(),
+    long_description=readme,
+    author='Ensembl',
+    author_email='dev@ensembl.org',
+    url='https://www.ensembl.org',
+    download_url='https://github.com/Ensembl/ensembl-py',
+    license=license_ct,
     setup_requires=[
         'pytest-runner',
     ],
     tests_require=[
         'pytest',
     ],
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: Apache Software License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3.6",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ]
 )
