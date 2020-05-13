@@ -39,33 +39,25 @@ class HiveRESTClient(eHive.BaseRunnable):
         return {
             'endpoint': 'http://localhost/api/endpoint',
             'payload': {},
-            'headers': None,
-            'files': None,
+            'headers': {},
+            'files': [],
             'method': 'get',
             'timeout': 1,
             'retry': 3,
-            'status_retry': Retry.RETRY_AFTER_STATUS_CODES,
-            'method_retry': Retry.DEFAULT_METHOD_WHITELIST
+            'status_retry': list(Retry.RETRY_AFTER_STATUS_CODES),
+            'method_retry': list(Retry.DEFAULT_METHOD_WHITELIST)
         }
-
-    def __init__(self, read_fileno, write_fileno, debug):
-        """
-        Retrieve default parameters or Pipeline dedicated ones if any
-        :return a new HiveRESTClient
-        """
-        super().__init__(read_fileno, write_fileno, debug)
-        self.retry_strategy = Retry(
-            total=self.param('retry'),
-            status_forcelist=self.param('status_retry'),
-            method_whitelist=self.param('method_retry')
-        )
 
     def _open_session(self):
         """
         Set up an HTTPAdapter to allow API call retries in case of Networks failures or remote API unavailability
         :return A new requests.Session object
         """
-        adapter = HTTPAdapter(max_retries=self.retry_strategy)
+        adapter = HTTPAdapter(max_retries=Retry(
+            total=self.param('retry'),
+            status_forcelist=self.param('status_retry'),
+            method_whitelist=self.param('method_retry')
+        ))
         http = requests.Session()
         http.mount("https://", adapter)
         http.mount("http://", adapter)
@@ -77,7 +69,6 @@ class HiveRESTClient(eHive.BaseRunnable):
         :return None
         """
         session.close()
-
 
     @contextlib.contextmanager
     def _session_scope(self):
@@ -94,26 +85,36 @@ class HiveRESTClient(eHive.BaseRunnable):
             logger.debug("Closing session")
             self._close_session(session)
 
-    def run(self):
+    def fetch_input(self):
         """
         Basic call to request parameters specified in pipeline parameters
         Return response received.
         """
         with self._session_scope() as http:
-            response = http.request(method=self.param('method'),
-                                    url=self.param('endpoint'),
-                                    headers=self.param('headers'),
-                                    files=self.param('files'),
-                                    data=self.param('payload'),
-                                    timeout=self.param('timeout'))
-            self.process_response(response)
-            return response
+            self.response = http.request(method=self.param('method'),
+                                         url=self.param('endpoint'),
+                                         headers=self.param('headers'),
+                                         files=self.param('files'),
+                                         data=self.param('payload'),
+                                         timeout=self.param('timeout'))
 
-    def process_response(self, response):
+
+
+    def run(self):
+        # should do something with results from fetch_input method
+        self.warning("You may do something with retrieved response {}".format(self.response.json()), is_error=False)
+
+
+    def write_output(self):
         """
         Added code to process the response received from api call.
         For easiness, this is supposed to be the only method needing override to process API HTTP response
         :param response:
         :return:
         """
-        self.dataflow({'result': response.json()}, 1)
+        self.dataflow({"rest_response": self.response.json()}, 1)
+
+
+    def process_response(self, response):
+        # Should override this is any post treatment is to do after
+        pass
