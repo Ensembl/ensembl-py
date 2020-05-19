@@ -39,11 +39,12 @@ class HiveRESTClient(eHive.BaseRunnable):
         return {
             'endpoint': 'http://localhost/api/endpoint',
             'payload': {},
-            'headers': {},
+            'headers': {'content-type': 'application/json; charset=utf8'},
             'files': [],
             'method': 'get',
             'timeout': 1,
             'retry': 3,
+            'check_status': True,
             'status_retry': list(Retry.RETRY_AFTER_STATUS_CODES),
             'method_retry': list(Retry.DEFAULT_METHOD_WHITELIST)
         }
@@ -113,8 +114,3 @@ class HiveRESTClient(eHive.BaseRunnable):
         :return:
         """
         self.dataflow({"rest_response": self.response.json()}, 1)
-
-
-    def process_response(self, response):
-        # Should override this is any post treatment is to do after
-        pass
