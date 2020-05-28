@@ -2,3 +2,5 @@ pylint
 pytest
 Sphinx
 ConfigParser
+mock
+-e git+https://github.com/Ensembl/ensembl-hive.git@features/python-packaging#egg=ensembl-hive
