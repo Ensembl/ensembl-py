@@ -37,7 +37,6 @@ class HiveRESTClient(eHive.BaseRunnable):
         :return: dict
         """
         return {
-            'endpoint': 'http://localhost/api/endpoint',
             'payload': {},
             'headers': {'content-type': 'application/json; charset=utf8'},
             'files': [],
