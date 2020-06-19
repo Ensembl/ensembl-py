@@ -100,12 +100,6 @@ class HiveRESTClient(eHive.BaseRunnable):
                                          timeout=self.param('timeout'))
 
 
-
-    def run(self):
-        # should do something with results from fetch_input method
-        self.warning("You may do something with retrieved response {}".format(self.response.json()), is_error=False)
-
-
     def write_output(self):
         """
         Added code to process the response received from api call.
