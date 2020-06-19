@@ -51,6 +51,10 @@ class DBConnection:
         self._engine = create_engine(url)
         self.load_metadata()
 
+    def __repr__(self) -> str:
+        """Returns a string representation of this object."""
+        return f'{self.__class__.__name__}({self.url!r})'
+
     def load_metadata(self) -> None:
         """Loads the metadata information of the database."""
         # Note: Just reflect() is not enough as it would not delete tables that no longer exist
