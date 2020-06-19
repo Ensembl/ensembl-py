@@ -91,8 +91,8 @@ class HiveRESTClient(eHive.BaseRunnable):
         Return response received.
         """
         with self._session_scope() as http:
-            self.response = http.request(method=self.param('method'),
-                                         url=self.param('endpoint'),
+            self.response = http.request(self.param_required('method'),
+                                         self.param_required('endpoint'),
                                          headers=self.param('headers'),
                                          files=self.param('files'),
                                          data=self.param('payload'),
