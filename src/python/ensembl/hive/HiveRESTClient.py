@@ -91,12 +91,13 @@ class HiveRESTClient(eHive.BaseRunnable):
         Return response received.
         """
         with self._session_scope() as http:
-            self.response = http.request(self.param_required('method'),
+            response = http.request(self.param_required('method'),
                                          self.param_required('endpoint'),
                                          headers=self.param('headers'),
                                          files=self.param('files'),
                                          data=self.param('payload'),
                                          timeout=self.param('timeout'))
+            self.param('response', response)
 
 
     def write_output(self):
@@ -106,4 +107,4 @@ class HiveRESTClient(eHive.BaseRunnable):
         :param response:
         :return:
         """
-        self.dataflow({"rest_response": self.response.json()}, 1)
+        self.dataflow({"rest_response": self.param('response').json()}, 1)
