@@ -59,27 +59,27 @@ class DBConnection:
 
     @property
     def url(self) -> str:
-        """Returns the database URL."""
+        """Database URL."""
         return str(self._engine.url)
 
     @property
     def db_name(self) -> str:
-        """Returns the database name."""
+        """Database name."""
         return self._engine.url.database
 
     @property
     def host(self) -> str:
-        """Returns the database host."""
+        """Database host."""
         return self._engine.url.host
 
     @property
     def dialect(self) -> str:
-        """Returns the SQLAlchemy database dialect of the database host."""
+        """SQLAlchemy database dialect of the database host."""
         return self._engine.name
 
     @property
     def tables(self) -> Dict[str, sqlalchemy.schema.Table]:
-        """Returns a dictionary of :class:`~sqlalchemy.schema.Table` objects keyed to their name."""
+        """Dictionary of :class:`~sqlalchemy.schema.Table` objects keyed to their name."""
         return self._metadata.tables
 
     def get_primary_key_columns(self, table: str) -> List[str]:
@@ -102,7 +102,7 @@ class DBConnection:
 
     @property
     def schema_type(self) -> str:
-        """Returns the schema type of the database, located in the ``meta`` table."""
+        """Schema type of the database, located in the ``meta`` table."""
         result = self.execute(
             select([self.tables['meta'].columns.meta_value]).where(text('meta_key = "schema_type"'))
         )
@@ -110,7 +110,7 @@ class DBConnection:
 
     @property
     def schema_version(self) -> int:
-        """Returns the schema version of the database, located in the ``meta`` table."""
+        """Schema version of the database, located in the ``meta`` table."""
         result = self.execute(
             select([self.tables['meta'].columns.meta_value]).where(text('meta_key = "schema_version"'))
         )

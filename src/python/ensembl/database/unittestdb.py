@@ -88,7 +88,7 @@ class UnitTestDB:
         self.dbc.load_metadata()
 
     def __repr__(self) -> str:
-        """Returns a string representation of the object."""
+        """Returns a string representation of this object."""
         return f"{self.__class__.__name__}({self.dbc.url!r})"
 
     def drop(self) -> None:
@@ -113,7 +113,7 @@ class UnitTestDB:
 
         """
         if self.dbc.dialect == 'sqlite':
-            # SQLite does not have an equivalent to "LOAD DATA": use its '.import' command
+            # SQLite does not have an equivalent to "LOAD DATA": use its '.import' command instead
             try:
                 subprocess.run(
                     ['sqlite3', self.dbc.db_name, ".mode tabs", f".import {filepath} {table}"],
