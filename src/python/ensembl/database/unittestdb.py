@@ -1,17 +1,14 @@
-# Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
-# Copyright [2016-2020] EMBL-European Bioinformatics Institute
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# .. See the NOTICE file distributed with this work for additional information
+#    regarding copyright ownership.
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#        http://www.apache.org/licenses/LICENSE-2.0
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
 """Unit testing database handler.
 
 This module provides the main class to create and drop unit testing databases, populating them from
@@ -37,7 +34,6 @@ import sqlalchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import make_url
 
-from ..filesys import PathLike
 from .dbconnection import DBConnection, Query, URL
 
 
@@ -62,7 +58,7 @@ class UnitTestDB:
 
     """
 
-    def __init__(self, url: URL, dump_dir: PathLike, name: str = None) -> None:
+    def __init__(self, url: URL, dump_dir: Union[str, os.PathLike], name: str = None) -> None:
         db_url = make_url(url)
         dump_dir_path = Path(dump_dir)
         if db_url.get_dialect().name == 'sqlite':
@@ -103,7 +99,8 @@ class UnitTestDB:
             self._server.execute(text(f"DROP DATABASE {self.dbc.db_name};"))
         self.dbc.dispose()
 
-    def _load_data(self, conn: sqlalchemy.engine.Connection, table: str, filepath: PathLike) -> None:
+    def _load_data(self, conn: sqlalchemy.engine.Connection, table: str, filepath: Union[str, os.PathLike]
+                  ) -> None:
         """Loads the table data from the given file.
 
         Args:
@@ -132,7 +129,8 @@ class UnitTestDB:
             conn.execute(text(f"LOAD DATA LOCAL INFILE '{filepath}' INTO TABLE {table}"))
 
     @staticmethod
-    def _parse_sql_file(filepath: Union[bytes, PathLike]) -> Iterator[sqlalchemy.sql.expression.TextClause]:
+    def _parse_sql_file(filepath: Union[str, bytes, os.PathLike]
+                       ) -> Iterator[sqlalchemy.sql.expression.TextClause]:
         """Yields each SQL query found parsing the given SQL file.
 
         Args:
