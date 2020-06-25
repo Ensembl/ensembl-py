@@ -49,10 +49,9 @@ class TestUnitTestDB:
         "src, name, expectation",
         [
             (Path('mock_dir'), None, raises(FileNotFoundError)),
-            (Path('citest'), None, raises(FileNotFoundError)),
-            param(Path('citest', 'reference'), None, does_not_raise(),
-                  marks=pytest.mark.dependency(name='init_ref', scope='class')),
-            param(Path('citest', 'reference'), 'renamed', does_not_raise(),
+            param(Path('mock_db'), None, does_not_raise(),
+                  marks=pytest.mark.dependency(name='init', scope='class')),
+            param(Path('mock_db'), 'renamed_db', does_not_raise(),
                   marks=pytest.mark.dependency(name='init_renamed', scope='class')),
         ],
     )
@@ -64,7 +63,7 @@ class TestUnitTestDB:
         Args:
             request: Access to the requesting test context.
             src: Directory path where the test database schema and content files are located. If a relative
-                path is provided, the root folder will be ``src/python/tests/databases``.
+                path is provided, the root folder will be ``src/tests/databases``.
             name: Name to give to the new database.
             expectation: Context manager for the expected exception, i.e. the test will only pass if that
                 exception is raised. Use :class:`~contextlib.ExitStack` if no exception is expected.
@@ -79,14 +78,14 @@ class TestUnitTestDB:
             assert self.dbs[db_key], "UnitTestDB should not be empty"
             assert self.dbs[db_key].dbc, "UnitTestDB's database connection should not be empty"
             # Check that the database has been loaded correctly from the dump files
-            result = self.dbs[db_key].dbc.execute("SELECT * FROM main_table")
-            assert len(result.fetchall()) == 10, "Unexpected number of rows found in 'main_table' table"
+            result = self.dbs[db_key].dbc.execute("SELECT * FROM gibberish")
+            assert len(result.fetchall()) == 6, "Unexpected number of rows found in 'gibberish' table"
 
     @pytest.mark.parametrize(
         "db_key",
         [
-            param('reference', marks=pytest.mark.dependency(depends=['init_ref'], scope='class')),
-            param('renamed', marks=pytest.mark.dependency(depends=['init_renamed'], scope='class')),
+            param('mock_db', marks=pytest.mark.dependency(depends=['init'], scope='class')),
+            param('renamed_db', marks=pytest.mark.dependency(depends=['init_renamed'], scope='class')),
         ],
     )
     def test_drop(self, db_key: str) -> None:
@@ -102,10 +101,10 @@ class TestUnitTestDB:
             assert not Path(self.dbs[db_key].dbc.db_name).exists(), "The database file has not been deleted"
         else:
             with raises(OperationalError, match=r'Unknown database'):
-                self.dbs[db_key].dbc.execute("SELECT * FROM main_table")
+                self.dbs[db_key].dbc.execute("SELECT * FROM gibberish")
 
 
-@pytest.mark.parametrize("database", [{'src': 'master'}], indirect=True)
+@pytest.mark.parametrize("database", [{'src': 'mock_db'}], indirect=True)
 class TestDBConnection:
     """Tests :class:`DBConnection` class.
 
@@ -142,7 +141,7 @@ class TestDBConnection:
     @pytest.mark.dependency(name='test_db_name', depends=['test_init'], scope='class')
     def test_db_name(self) -> None:
         """Tests :meth:`DBConnection.db_name` property."""
-        assert self.dbc.db_name == f"{os.environ['USER']}_master"
+        assert self.dbc.db_name == f"{os.environ['USER']}_mock_db"
 
     @pytest.mark.dependency(depends=['test_init', 'test_db_name'], scope='class')
     def test_url(self) -> None:
@@ -162,34 +161,21 @@ class TestDBConnection:
     @pytest.mark.dependency(depends=['test_init'], scope='class')
     def test_tables(self) -> None:
         """Tests :meth:`DBConnection.tables` property."""
-        tables = {
-            'CAFE_gene_family', 'CAFE_species_gene', 'conservation_score', 'constrained_element', 'dnafrag',
-            'dnafrag_region', 'exon_boundaries', 'external_db', 'family', 'family_member', 'gene_align',
-            'gene_align_member', 'gene_member', 'gene_member_hom_stats', 'gene_member_qc', 'gene_tree_node',
-            'gene_tree_node_attr', 'gene_tree_node_tag', 'gene_tree_object_store', 'gene_tree_root',
-            'gene_tree_root_attr', 'gene_tree_root_tag', 'genome_db', 'genomic_align', 'genomic_align_block',
-            'genomic_align_tree', 'hmm_annot', 'hmm_curated_annot', 'hmm_profile', 'homology', 'member_xref',
-            'homology_member', 'mapping_session', 'meta', 'method_link', 'method_link_species_set',
-            'method_link_species_set_attr', 'method_link_species_set_tag', 'ncbi_taxa_name', 'ncbi_taxa_node',
-            'other_member_sequence', 'peptide_align_feature', 'seq_member_projection', 'stable_id_history',
-            'seq_member_projection_stable_id', 'sequence', 'species_set', 'species_set_header', 'seq_member',
-            'species_set_tag', 'species_tree_node', 'species_tree_node_attr', 'species_tree_node_tag',
-            'species_tree_root', 'synteny_region'
-        }
+        tables = {'gibberish', 'meta'}
         assert set(self.dbc.tables.keys()) == tables
 
     @pytest.mark.dependency(depends=['test_init'], scope='class')
     def test_get_primary_key_columns(self) -> None:
         """Tests :meth:`DBConnection.get_primary_key_columns()` method."""
-        table = 'species_set'
-        assert set(self.dbc.get_primary_key_columns(table)) == {'species_set_id', 'genome_db_id'}, \
+        table = 'gibberish'
+        assert set(self.dbc.get_primary_key_columns(table)) == {'id', 'grp'}, \
             f"Unexpected set of primary key columns found in table '{table}'"
 
     @pytest.mark.dependency(depends=['test_init'], scope='class')
     def test_get_columns(self) -> None:
         """Tests :meth:`DBConnection.get_columns()` method."""
-        table = 'method_link'
-        assert set(self.dbc.get_columns(table)) == {'method_link_id', 'type', 'class', 'display_name'}, \
+        table = 'gibberish'
+        assert set(self.dbc.get_columns(table)) == {'id', 'grp', 'value'}, \
             f"Unexpected set of columns found in table '{table}'"
 
     @pytest.mark.dependency(depends=['test_init'], scope='class')
@@ -207,8 +193,8 @@ class TestDBConnection:
         """Tests :meth:`DBConnection.connect()` method."""
         connection = self.dbc.connect()
         assert connection, "Connection object should not be empty"
-        result = connection.execute("SELECT * FROM species_set_tag")
-        assert len(result.fetchall()) == 2, "Unexpected number of rows found in 'species_set_tag' table"
+        result = connection.execute("SELECT * FROM meta")
+        assert len(result.fetchall()) == 3, "Unexpected number of rows found in 'meta' table"
         connection.close()
 
     @pytest.mark.dependency(depends=['test_init'], scope='class')
@@ -216,8 +202,8 @@ class TestDBConnection:
         """Tests :meth:`DBConnection.begin()` method."""
         with self.dbc.begin() as connection:
             assert connection, "Connection object should not be empty"
-            result = connection.execute("SELECT * FROM species_set_tag")
-            assert len(result.fetchall()) == 2, "Unexpected number of rows found in 'species_set_tag' table"
+            result = connection.execute("SELECT * FROM gibberish")
+            assert len(result.fetchall()) == 6, "Unexpected number of rows found in 'gibberish' table"
 
     @pytest.mark.dependency(depends=['test_init'], scope='class')
     def test_dispose(self) -> None:
@@ -229,7 +215,7 @@ class TestDBConnection:
     @pytest.mark.parametrize(
         "query, nrows, expectation",
         [
-            param("SELECT * FROM method_link_species_set_tag", 4, does_not_raise(),
+            param("SELECT * FROM gibberish", 6, does_not_raise(),
                   marks=pytest.mark.dependency(name='test_exec1', depends=['test_init'], scope='class')),
             param("SELECT * FROM my_table", 0, raises(ProgrammingError, match=r"my_table.* doesn't exist"),
                   marks=pytest.mark.dependency(name='test_exec2', depends=['test_init'], scope='class')),
@@ -251,36 +237,35 @@ class TestDBConnection:
 
     @pytest.mark.dependency(depends=['test_init', 'test_connect', 'test_exec1', 'test_exec2'], scope='class')
     @pytest.mark.parametrize(
-        "mlss_id, tag1, tag2, before, after",
+        "identifier, row1, row2, before, after",
         [
-            (4, {'tag': 'ref', 'value': 'human'}, {'tag': 'non_ref1', 'value': 'chicken'}, 0, 2),
-            (4, {'tag': 'non_ref2', 'value': 'tick'}, {'tag': 'non_ref2', 'value': 'mouse'}, 2, 2),
+            (7, {'grp': 'grp4', 'value': 1}, {'grp': 'grp5', 'value': 1}, 0, 2),
+            (7, {'grp': 'grp6', 'value': 1}, {'grp': 'grp6', 'value': 2}, 2, 2),
         ],
     )
-    def test_session_scope(self, mlss_id: int, tag1: Dict[str, str], tag2: Dict[str, str], before: int,
+    def test_session_scope(self, identifier: int, row1: Dict[str, str], row2: Dict[str, str], before: int,
                            after: int) -> None:
         """Tests :meth:`DBConnection.session_scope()` method.
 
         Args:
-            mlss_id: Method link species set ID to add the tags to.
-            tag1: Method link species set tag 1.
-            tag2: Method link species set tag 2.
-            before: Number of rows in ``method_link_species_set_tag`` for `mlss_id` before adding the tags.
-            after: Number of rows in ``method_link_species_set_tag`` for `mlss_id` after adding the tags.
+            identifier: ID of the rows to add.
+            row1: first row's group and value.
+            row2: second row's group and value.
+            before: Number of rows in ``gibberish`` for `id` before adding the rows.
+            after: Number of rows in ``gibberish`` for `id` after adding the rows.
 
         """
-        query = f"SELECT * FROM method_link_species_set_tag WHERE method_link_species_set_id = {mlss_id}"
+        query = f"SELECT * FROM gibberish WHERE id = {identifier}"
         results = self.dbc.execute(query)
         assert len(results.fetchall()) == before
         # Session requires mapped classes to interact with the database
         Base = automap_base()
         Base.prepare(self.dbc.connect(), reflect=True)
-        MLSSTag = Base.classes.method_link_species_set_tag
+        Gibberish = Base.classes.gibberish
         # Ignore the IntegrityError raised when commiting the new tags as some parametrizations will force it
         try:
             with self.dbc.session_scope() as session:
-                rows = [MLSSTag(method_link_species_set_id=mlss_id, **tag1),
-                        MLSSTag(method_link_species_set_id=mlss_id, **tag2)]
+                rows = [Gibberish(id=identifier, **row1), Gibberish(id=identifier, **row2)]
                 session.add_all(rows)
         except IntegrityError:
             pass
@@ -293,18 +278,17 @@ class TestDBConnection:
         # Session requires mapped classes to interact with the database
         Base = automap_base()
         Base.prepare(self.dbc.connect(), reflect=True)
-        MLSSTag = Base.classes.method_link_species_set_tag
+        Gibberish = Base.classes.gibberish
         # Check that the tags added during the context manager are removed afterwards
-        mlss_id = 5
+        identifier = 8
         with self.dbc.test_session_scope() as session:
-            results = session.query(MLSSTag).filter_by(method_link_species_set_id=mlss_id)
-            assert not results.all(), f"MLSS ID {mlss_id} shoud not have any tags"
-            rows = [MLSSTag(method_link_species_set_id=mlss_id, tag='ref', value='squid'),
-                    MLSSTag(method_link_species_set_id=mlss_id, tag='non_ref', value='mouse')]
+            results = session.query(Gibberish).filter_by(id=identifier)
+            assert not results.all(), f"ID {identifier} shoud not have any entries"
+            rows = [Gibberish(id=identifier, grp='grp7', value=15),
+                    Gibberish(id=identifier, grp='grp8', value=25)]
             session.add_all(rows)
             session.commit()
-            results = session.query(MLSSTag).filter_by(method_link_species_set_id=mlss_id)
-            assert len(results.all()) == 2, f"MLSS ID {mlss_id} should have two tags"
-        results = self.dbc.execute(
-            f"SELECT * FROM method_link_species_set_tag WHERE method_link_species_set_id = {mlss_id}")
-        assert not results.fetchall(), f"No tags should have been added permanently to MLSS ID {mlss_id}"
+            results = session.query(Gibberish).filter_by(id=identifier)
+            assert len(results.all()) == 2, f"ID {identifier} should have two rows"
+        results = self.dbc.execute(f"SELECT * FROM gibberish WHERE id = {identifier}")
+        assert not results.fetchall(), f"No entries should have been permanently added to ID {identifier}"
