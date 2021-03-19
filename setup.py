@@ -18,15 +18,16 @@ from pathlib import Path
 from setuptools import setup, find_namespace_packages
 
 
-with open(Path(__file__).parent / 'README.md') as f:
+with open('README.md') as f:
     readme = f.read()
-with open(Path(__file__).parent / 'VERSION') as f:
+
+with open('VERSION') as f:
     version = f.read()
 
 
 def import_requirements():
     """Import ``requirements.txt`` file located at the root of the repository."""
-    with open(Path(__file__).parent / 'requirements.txt') as file:
+    with open('requirements.txt') as file:
         return [line.rstrip() for line in file.readlines()]
 
 
