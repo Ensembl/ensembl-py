@@ -117,15 +117,15 @@ def db_factory_(request: FixtureRequest) -> Generator:
 
 
 @pytest.fixture(scope='session')
-def database(request: FixtureRequest, db_factory: Callable) -> Generator:
+def db(request: FixtureRequest, db_factory: Callable) -> Generator:
     """Returns a unit test database (:class:`UnitTestDB`) object.
 
     Requires a dictionary with keys `src` (mandatory) and `name` (optional) passed via `request.param`. See
     :meth:`db_factory()` for details about each key's value. This fixture is a wrapper of :meth:`db_factory()`
     intended to be used via indirect parametrization, for example::
 
-        @pytest.mark.parametrize("database", [{'src': 'master'}], indirect=True)
-        def test_method(..., database: UnitTestDB, ...):
+        @pytest.mark.parametrize("db", [{'src': 'master'}], indirect=True)
+        def test_method(..., db: UnitTestDB, ...):
 
     Args:
         request: Access to the requesting test context.

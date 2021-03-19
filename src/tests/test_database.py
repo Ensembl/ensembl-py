@@ -106,7 +106,7 @@ class TestUnitTestDB:
                 self.dbs[db_key].dbc.execute("SELECT * FROM gibberish")
 
 
-@pytest.mark.parametrize("database", [{'src': 'mock_db'}], indirect=True)
+@pytest.mark.parametrize("db", [{'src': 'mock_db'}], indirect=True)
 class TestDBConnection:
     """Tests :class:`DBConnection` class.
 
@@ -122,17 +122,17 @@ class TestDBConnection:
     # autouse=True makes this fixture be executed before any test_* method of this class, and scope='class' to
     # execute it only once per class parametrization
     @pytest.fixture(scope='class', autouse=True)
-    def setup(self, request: FixtureRequest, database: UnitTestDB) -> None:
+    def setup(self, request: FixtureRequest, db: UnitTestDB) -> None:
         """Loads the required fixtures and values as class attributes.
 
         Args:
             request: Access to the requesting test context.
-            database: Unit test database (fixture).
+            db: Unit test database (fixture).
 
         """
         # Use type(self) instead of self as a workaround to @classmethod decorator (unsupported by pytest and
         # required when scope is set to "class" <https://github.com/pytest-dev/pytest/issues/3778>)
-        type(self).dbc = database.dbc
+        type(self).dbc = db.dbc
         type(self).server = request.config.getoption('server')
 
     @pytest.mark.dependency(name='test_init', scope='class')
