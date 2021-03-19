@@ -136,8 +136,8 @@ class DBConnection:
         """Disposes of the connection pool."""
         self._engine.dispose()
 
-    def execute(self, statement: Query, *multiparams, **params) -> sqlalchemy.engine.ResultProxy:
-        """Executes the given SQL query and returns a :class:`~sqlalchemy.engine.ResultProxy`.
+    def execute(self, statement: Query, *multiparams, **params) -> sqlalchemy.engine.Result:
+        """Executes the given SQL query and returns a :class:`~sqlalchemy.engine.Result`.
 
         Args:
             statement: SQL query to execute.
@@ -146,7 +146,7 @@ class DBConnection:
         """
         if isinstance(statement, str):
             statement = text(statement)
-        return self._engine.execute(statement, *multiparams, **params)
+        return self.connect().execute(statement, *multiparams, **params)
 
     @contextlib.contextmanager
     def session_scope(self) -> Session:
