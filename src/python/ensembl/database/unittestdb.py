@@ -99,8 +99,10 @@ class UnitTestDB:
         """Drops the database."""
         if self.dbc.dialect == 'sqlite':
             os.remove(self.dbc.db_name)
-        else:
+        elif self.dbc.dialect == 'oracle':
             self._server.execute(text(f"DROP DATABASE {self.dbc.db_name};"))
+        else:
+            self._server.execute(text(f"DROP DATABASE IF EXISTS {self.dbc.db_name};"))
         self.dbc.dispose()
 
     def _load_data(self, conn: sqlalchemy.engine.Connection, table: str, filepath: Union[str, os.PathLike]
