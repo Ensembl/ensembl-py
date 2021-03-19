@@ -18,7 +18,8 @@ that is, the data can only be accessed via SQL queries (see example below).
 
 Typical usage example::
 
-    dbc = DBConnection('mysql://ensro@mysql-server:4242/mydb')
+    import ensembl.database.DBConnection
+    dbc = ensembl.database.DBConnection('mysql://ensro@mysql-server:4242/mydb')
     # You can access the database data via sql queries, for instance:
     results = dbc.execute('SELECT * FROM my_table;')
     # Or via a connection in a transaction manner:

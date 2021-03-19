@@ -18,7 +18,8 @@ preexisting dumps (if supplied).
 
 Typical usage example::
 
-    db = UnitTestDB('mysql://ensro@mysql-server:4242/', 'path/to/dumps', 'my_db')
+    import ensembl.database.UnitTestDB
+    db = ensembl.database.UnitTestDB('mysql://ensro@mysql-server:4242/', 'path/to/dumps', 'my_db')
     # You can access the database via db.dbc, for instance:
     results = db.dbc.execute('SELECT * FROM my_table;')
     # At the end do not forget to drop the database:
