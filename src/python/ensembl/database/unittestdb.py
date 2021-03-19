@@ -141,22 +141,26 @@ class UnitTestDB:
             filepath: SQL file path.
 
         """
+        comment_block_start = re.compile(r'\/\*\*')
+        comment_block_end = re.compile(r'\*\/$')
+        single_comment = re.compile(r'(--|#|\/\/).*')
+        inline_comment = re.compile(r'\/\*[^\*]*\*\/')
         with open(filepath) as sql_file:
             query = []
             multiline_comment = False
             for line in sql_file:
                 line = line.strip(' \n')
                 # Capture (and discard) multiple-line comments
-                if re.match(r'\/\*\*', line):
+                if comment_block_start.match(line):
                     multiline_comment = True
                     continue
-                if re.search(r'\*\/$', line):
+                if comment_block_end.search(line):
                     multiline_comment = False
                     continue
                 if not multiline_comment:
                     # Remove single- and in-line comments
-                    line = re.sub(r'(--|#|\/\/).*', '', line)
-                    line = re.sub(r'\/\*[^\*]*\*\/', '', line)
+                    line = single_comment.sub('', line)
+                    line = inline_comment.sub('', line)
                     if line:
                         query.append(line)
                         if line.endswith(';'):
