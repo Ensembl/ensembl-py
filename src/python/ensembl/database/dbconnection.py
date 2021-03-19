@@ -109,19 +109,33 @@ class DBConnection:
 
     @property
     def schema_type(self) -> str:
-        """Schema type of the database, located in the ``meta`` table."""
+        """Schema type of the database, located in the ``meta`` table.
+
+        Raises:
+            KeyError: if ``meta`` table is not in the database.
+            sqlalchemy.exc.NoResultFound: if meta key ``schema_type`` is not present.
+            sqlalchemy.exc.MultipleResultsFound: if meta key ``schema_type`` returns multiple rows.
+
+        """
         result = self.execute(
             select([self.tables['meta'].columns.meta_value]).where(text('meta_key = "schema_type"'))
         )
-        return result.first()[0]
+        return result.one()[0]
 
     @property
     def schema_version(self) -> int:
-        """Schema version of the database, located in the ``meta`` table."""
+        """Schema version of the database, located in the ``meta`` table.
+
+        Raises:
+            KeyError: if ``meta`` table is not in the database.
+            sqlalchemy.exc.NoResultFound: if meta key ``schema_version`` is not present.
+            sqlalchemy.exc.MultipleResultsFound: if meta key ``schema_version`` returns multiple rows.
+
+        """
         result = self.execute(
             select([self.tables['meta'].columns.meta_value]).where(text('meta_key = "schema_version"'))
         )
-        return int(result.first()[0])
+        return int(result.one()[0])
 
     def connect(self) -> sqlalchemy.engine.Connection:
         """Returns a new :class:`~sqlalchemy.engine.Connection` object."""
