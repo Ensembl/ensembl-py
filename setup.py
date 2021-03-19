@@ -13,10 +13,11 @@
 # limitations under the License.
 """Build script for setuptools."""
 
-from pathlib import Path
+import sys
 
 from setuptools import setup, find_namespace_packages
 
+assert sys.version_info >= (3, 6), "ensembl-py requires Python 3.6+"
 
 with open('README.md') as f:
     readme = f.read()
@@ -33,8 +34,9 @@ def import_requirements():
 
 setup(
     name='ensembl-py',
-    package_dir={"": "src/python"},
+    version=version,
     packages=find_namespace_packages(where='src/python'),
+    package_dir={"": "src/python"},
     description="Ensembl Python Base library",
     include_package_data=True,
     install_requires=import_requirements(),
@@ -43,13 +45,19 @@ setup(
     author_email='dev@ensembl.org',
     url='https://www.ensembl.org',
     download_url='https://github.com/Ensembl/ensembl-py',
-    license="Apache License, Version 2.0",
+    license="Apache License 2.0",
+    python_requires=">=3.6",
     setup_requires=[
         'pytest-runner',
     ],
     tests_require=[
         'pytest',
     ],
+    entry_points={
+        'pytest11': [
+            'name_of_plugin = ensembl.plugins',
+        ]
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
