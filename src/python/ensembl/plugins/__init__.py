@@ -11,11 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Local directory-specific hook implementations.
-
-Since this file is located at the root of all ensembl-py tests, every test in every subfolder will have access
-to the plugins, hooks and fixtures defined here.
-
-"""
-
-pytest_plugins = ("ensembl.plugins.pytest_unittest",)
+"""Plugins module"""

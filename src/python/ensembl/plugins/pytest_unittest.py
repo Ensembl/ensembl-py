@@ -29,7 +29,7 @@ from _pytest.python_api import RaisesContext
 from _pytest.tmpdir import TempPathFactory
 import sqlalchemy
 
-from .database import UnitTestDB
+from ensembl.database import UnitTestDB
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -67,7 +67,7 @@ def pytest_configure(config: Config) -> None:
         server_url.password = os.environ[server_url.password[1:]]
         config.option.server = str(server_url)
     # Add global variables
-    pytest.dbs_dir = Path(__file__).parents[2] / 'tests' / 'databases'
+    pytest.dbs_dir = Path(__file__).parents[3] / 'tests' / 'databases'
 
 
 def pytest_make_parametrize_id(val: Any) -> str:
