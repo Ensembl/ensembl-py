@@ -39,7 +39,7 @@ setup(
     packages=find_namespace_packages(include=['ensembl.hive.*']),
     description="Ensembl Python Base library",
     include_package_data=True,
-    install_requires=import_requirements(),
+    #install_requires=import_requirements(),
     long_description=readme,
     author='Ensembl',
     author_email='dev@ensembl.org',
