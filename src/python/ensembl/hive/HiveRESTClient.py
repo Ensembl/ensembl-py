@@ -37,7 +37,6 @@ class HiveRESTClient(eHive.BaseRunnable):
         :return: dict
         """
         return {
-            'endpoint': 'http://localhost/api/endpoint',
             'payload': {},
             'headers': {'content-type': 'application/json; charset=utf8'},
             'files': [],
@@ -92,18 +91,13 @@ class HiveRESTClient(eHive.BaseRunnable):
         Return response received.
         """
         with self._session_scope() as http:
-            self.response = http.request(method=self.param('method'),
-                                         url=self.param('endpoint'),
+            response = http.request(self.param_required('method'),
+                                         self.param_required('endpoint'),
                                          headers=self.param('headers'),
                                          files=self.param('files'),
                                          data=self.param('payload'),
                                          timeout=self.param('timeout'))
-
-
-
-    def run(self):
-        # should do something with results from fetch_input method
-        self.warning("You may do something with retrieved response {}".format(self.response.json()), is_error=False)
+            self.param('response', response)
 
 
     def write_output(self):
@@ -113,4 +107,4 @@ class HiveRESTClient(eHive.BaseRunnable):
         :param response:
         :return:
         """
-        self.dataflow({"rest_response": self.response.json()}, 1)
+        self.dataflow({"rest_response": self.param('response').json()}, 1)
