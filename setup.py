@@ -1,42 +1,42 @@
-"""
-.. See the NOTICE file distributed with this work for additional information
-   regarding copyright ownership.
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""Build script for setuptools."""
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+import sys
 
-       http://www.apache.org/licenses/LICENSE-2.0
+from setuptools import setup, find_namespace_packages
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
-from pathlib import Path
+assert sys.version_info >= (3, 6), "ensembl-py requires Python 3.6+"
 
-from setuptools import setup, find_namespace_packages, find_packages
-
-with open(Path(__file__).parent / 'README.md') as f:
+with open('README.md') as f:
     readme = f.read()
-with open(Path(__file__).parent / 'LICENSE') as f:
-    license_ct = f.read()
-with open(Path(__file__).parent / 'VERSION') as f:
+
+with open('VERSION') as f:
     version = f.read()
 
 
 def import_requirements():
     """Import ``requirements.txt`` file located at the root of the repository."""
-    """Import ``requirements.txt`` file located at the root of the repository."""
-    with open(Path(__file__).parent / 'requirements.txt') as file:
+    with open('requirements.txt') as file:
         return [line.rstrip() for line in file.readlines()]
 
 
 setup(
     name='ensembl-py',
+    version=version,
+    packages=find_namespace_packages(where='src/python'),
     package_dir={"": "src/python"},
-    packages=find_namespace_packages(include=['ensembl.hive.*']),
     description="Ensembl Python Base library",
     include_package_data=True,
     #install_requires=import_requirements(),
@@ -45,13 +45,19 @@ setup(
     author_email='dev@ensembl.org',
     url='https://www.ensembl.org',
     download_url='https://github.com/Ensembl/ensembl-py',
-    license=license_ct,
+    license="Apache License 2.0",
+    python_requires=">=3.6",
     setup_requires=[
         'pytest-runner',
     ],
     tests_require=[
         'pytest',
     ],
+    entry_points={
+        'pytest11': [
+            'name_of_plugin = ensembl.plugins',
+        ]
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
