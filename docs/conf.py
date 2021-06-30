@@ -65,9 +65,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Ensembl - Template'
-copyright = '2019, Ensembl'
-author = 'Mark McDowall'
+project = 'Ensembl - Python Base Library'
+copyright = '2021, EMBL-European Bioinformatics Institute'
+author = 'Ensembl'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -103,7 +103,7 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 #html_theme = 'alabaster'
-html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -147,7 +147,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ensembl_template.tex', 'Ensembl - Template Documentation',
+    (master_doc, 'ensembl_py.tex', 'Ensembl Python Base Library Documentation',
      'Ensembl', 'manual'),
 ]
 
@@ -157,7 +157,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ensembl-template', 'Ensembl - Template Documentation',
+    (master_doc, 'ensembl-py', 'Ensembl Python Base Library Documentation',
      [author], 1)
 ]
 
@@ -168,8 +168,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Ensembl-Template', 'Ensembl - Template Documentation',
-     author, 'Ensembl-Template', 'One line description of project.',
+    (master_doc, 'Ensembl-Py', 'Ensembl Python Base Library Documentation',
+     author, 'Ensembl-Py', 'Ensembl Python Base Library.',
      'Miscellaneous'),
 ]
 

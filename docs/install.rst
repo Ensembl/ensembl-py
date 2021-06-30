@@ -37,11 +37,11 @@ Directly from GitHub:
 .. code-block:: none
    :linenos:
 
-   git clone https://github.com/Ensembl/ensembl_template_py
+   git clone https://github.com/Ensembl/ensembl-py
 
 Using pip:
 
 .. code-block:: none
    :linenos:
 
-   pip install git+https://github.com/Ensembl/ensembl_template_py
+   pip install git+https://github.com/Ensembl/ensembl-py
