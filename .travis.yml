@@ -9,7 +9,7 @@ env:
 
 install:
   - if [[ "$TESTENV" != "docs" ]]; then pip install -r requirements-test.txt; fi
-  - pip install .
+  - pip install -e .
 
 script:
   - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest src/tests --server sqlite:///./; fi
