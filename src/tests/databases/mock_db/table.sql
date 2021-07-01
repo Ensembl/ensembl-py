@@ -1,17 +1,15 @@
 CREATE TABLE `gibberish` (
-    `id`      INT NOT NULL,
-    `grp`     VARCHAR(20) DEFAULT NULL,
-    `value`   INT DEFAULT NULL,
-    PRIMARY KEY (`id`, `grp`),
-    KEY (`id`)
+    `id`    INT NOT NULL,
+    `grp`   VARCHAR(20) DEFAULT NULL,
+    `value` INT DEFAULT NULL,
+    PRIMARY KEY (`id`, `grp`)
 );
-
+CREATE INDEX `id_idx` ON `gibberish` (`id`);
 CREATE TABLE `meta` (
-    `meta_id` int(11) NOT NULL AUTO_INCREMENT,
-    `species_id` int(10) unsigned DEFAULT '1',
-    `meta_key` varchar(40) NOT NULL,
-    `meta_value` text NOT NULL,
-    PRIMARY KEY (`meta_id`),
-    UNIQUE KEY `species_key_value_idx` (`species_id`, `meta_key`, `meta_value`(255)),
-    KEY `species_value_idx` (`species_id`, `meta_value`(255))
+    `meta_id`    INTEGER(11) PRIMARY KEY /*!40101 AUTO_INCREMENT */,
+    `species_id` INTEGER(10) /*!40101 UNSIGNED */ DEFAULT '1',
+    `meta_key`   VARCHAR(40) NOT NULL,
+    `meta_value` VARCHAR(255) NOT NULL
 );
+CREATE UNIQUE INDEX `species_key_value_idx` ON `meta` (`species_id`, `meta_key`, `meta_value`);
+CREATE INDEX `species_value_idx` ON `meta` (`species_id`, `meta_value`);

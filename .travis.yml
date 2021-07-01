@@ -1,0 +1,16 @@
+language: python
+os: linux
+
+python:
+  - "3.8"
+
+env:
+  - TESTENV=test
+
+install:
+  - if [[ "$TESTENV" != "docs" ]]; then pip install -r requirements-test.txt; fi
+  - pip install -e .
+
+script:
+  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest src/tests --server sqlite:///./; fi
+  - if [[ "$TESTENV" == "test" ]]; then coverage report -m; fi

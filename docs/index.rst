@@ -27,6 +27,7 @@ Documentation for Template
 
    install
    license
+   modules
 
 
 

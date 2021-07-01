@@ -17,18 +17,18 @@ import sys
 
 from setuptools import setup, find_namespace_packages
 
-assert sys.version_info >= (3, 6), "ensembl-py requires Python 3.6+"
 
 with open('README.md') as f:
     readme = f.read()
+
 
 with open('VERSION') as f:
     version = f.read()
 
 
-def import_requirements():
-    """Import ``requirements.txt`` file located at the root of the repository."""
-    with open('requirements.txt') as file:
+def import_requirements(requirements_path):
+    """Import file located at the root of the repository."""
+    with open(requirements_path) as file:
         return [line.rstrip() for line in file.readlines()]
 
 
@@ -39,20 +39,15 @@ setup(
     package_dir={"": "src/python"},
     description="Ensembl Python Base library",
     include_package_data=True,
-    #install_requires=import_requirements(),
+    install_requires=import_requirements('requirements.txt'),
+    tests_require=import_requirements('requirements-test.txt'),
     long_description=readme,
     author='Ensembl',
     author_email='dev@ensembl.org',
     url='https://www.ensembl.org',
     download_url='https://github.com/Ensembl/ensembl-py',
     license="Apache License 2.0",
-    python_requires=">=3.6",
-    setup_requires=[
-        'pytest-runner',
-    ],
-    tests_require=[
-        'pytest',
-    ],
+    python_requires=">=3.7",
     entry_points={
         'pytest11': [
             'name_of_plugin = ensembl.plugins',
@@ -64,7 +59,7 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ]
