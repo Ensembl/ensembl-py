@@ -1,6 +1,6 @@
 CREATE TABLE `gibberish` (
-    `id`    INT NOT NULL,
-    `grp`   VARCHAR(20) DEFAULT NULL,
+    `id`    INTEGER(11) NOT NULL,
+    `grp`   VARCHAR(20) DEFAULT "",
     `value` INT DEFAULT NULL,
     PRIMARY KEY (`id`, `grp`)
 );
