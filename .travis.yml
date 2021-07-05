@@ -8,6 +8,7 @@ env:
   - TESTENV=test
 
 install:
+  - pip install -r requirements.txt
   - if [[ "$TESTENV" != "docs" ]]; then pip install -r requirements-test.txt; fi
   - pip install -e .
 
