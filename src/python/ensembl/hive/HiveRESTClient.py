@@ -49,7 +49,7 @@ class HiveRESTClient(eHive.BaseRunnable):
             'retry': 3,
             'check_status': True,
             'status_retry': list(Retry.RETRY_AFTER_STATUS_CODES),
-            'method_retry': list(Retry.DEFAULT_METHOD_WHITELIST)
+            'method_retry': list(Retry.DEFAULT_ALLOWED_METHODS)
         }
 
     def _open_session(self):
@@ -60,7 +60,7 @@ class HiveRESTClient(eHive.BaseRunnable):
         adapter = HTTPAdapter(max_retries=Retry(
             total=self.param('retry'),
             status_forcelist=self.param('status_retry'),
-            method_whitelist=self.param('method_retry')
+            allowed_methods=self.param('method_retry')
         ))
         http = requests.Session()
         http.mount("https://", adapter)
