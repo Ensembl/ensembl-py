@@ -168,8 +168,8 @@ class DBConnection:
         """Provides a transactional scope around a series of operations with rollback in case of failure.
 
         Note:
-            MySQL storage engine MyISAM does not support rollback transactions, so all the modifications
-            performed to the database will persist.
+            SQLite and MySQL storage engine MyISAM do not support rollback transactions, so all the
+            modifications performed to the database will persist.
 
         """
         session = Session(bind=self._engine, autoflush=False)
@@ -189,8 +189,8 @@ class DBConnection:
         """Provides a transactional scope around a series of operations that will be rolled back at the end.
 
         Note:
-            MySQL storage engine MyISAM does not support rollback transactions, so all the modifications
-            performed to the database will persist.
+            SQLite and MySQL storage engine MyISAM do not support rollback transactions, so all the
+            modifications performed to the database will persist.
 
         """
         # Connect to the database
