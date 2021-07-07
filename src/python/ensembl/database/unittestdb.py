@@ -65,12 +65,10 @@ class UnitTestDB:
         db_url = make_url(url)
         dump_dir_path = Path(dump_dir)
         db_name = os.environ['USER'] + '_' + (name if name else dump_dir_path.name)
-        if db_url.get_dialect().name == 'sqlite':
-            # SQLite databases are created automatically if they do not exist
-            db_url = db_url.set(database=db_url.database + '/' + db_name + '.db')
-        else:
-            # Add the database name to the URL
-            db_url = db_url.set(database=db_name)
+        # Add the database name to the URL
+        db_url = db_url.set(database=db_name)
+        # SQLite databases are created automatically if they do not exist
+        if db_url.get_dialect().name != 'sqlite':
             # Connect to the server to create the database
             self._server = create_engine(url)
             self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
