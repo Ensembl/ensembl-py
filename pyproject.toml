@@ -8,3 +8,8 @@ norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_
 
 [tool.coverage.run]
 source = ["src/python"]
+
+[tool.mypy]
+python_version = 3.7
+mypy_path = "src/python"
+ignore_missing_imports = true
