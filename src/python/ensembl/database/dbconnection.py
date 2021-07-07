@@ -28,6 +28,8 @@ Typical usage example::
 
 """
 
+__all__ = ['Query', 'URL', 'DBConnection']
+
 import contextlib
 from typing import Dict, List, TypeVar
 

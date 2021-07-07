@@ -27,6 +27,8 @@ Typical usage example::
 
 """
 
+__all__ = ['UnitTestDB', 'UnitTestDBError', 'DataLoadingError']
+
 from pathlib import Path
 import os
 import re
