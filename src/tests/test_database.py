@@ -31,8 +31,9 @@ import pytest
 from pytest import param, raises
 from _pytest.fixtures import FixtureRequest
 from sqlalchemy.engine.url import make_url
-from sqlalchemy.exc import IntegrityError, OperationalError, ProgrammingError
+from sqlalchemy.exc import IntegrityError, OperationalError, SQLAlchemyError
 from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.pool import NullPool
 
 from ensembl.database import DBConnection, UnitTestDB
 
@@ -211,15 +212,18 @@ class TestDBConnection:
     def test_dispose(self) -> None:
         """Tests :meth:`DBConnection.dispose()` method."""
         self.dbc.dispose()
-        num_conn = self.dbc._engine.pool.checkedin()  # pylint: disable=protected-access
-        assert num_conn == 0, "A new pool should have 0 checked-in connections"
+        # SQLAlchemy uses a "pool-less" connection system for SQLite
+        if self.dbc.dialect != "sqlite":
+            num_conn = self.dbc._engine.pool.checkedin()  # pylint: disable=protected-access
+            assert num_conn == 0, "A new pool should have 0 checked-in connections"
 
     @pytest.mark.parametrize(
         "query, nrows, expectation",
         [
             param("SELECT * FROM gibberish", 6, does_not_raise(),
                   marks=pytest.mark.dependency(name='test_exec1', depends=['test_init'], scope='class')),
-            param("SELECT * FROM my_table", 0, raises(ProgrammingError, match=r"my_table.* doesn't exist"),
+            param("SELECT * FROM my_table", 0,
+                  raises(SQLAlchemyError, match=r"(my_table.* doesn't exist|no such table: my_table)"),
                   marks=pytest.mark.dependency(name='test_exec2', depends=['test_init'], scope='class')),
         ],
     )
@@ -293,4 +297,10 @@ class TestDBConnection:
             results = session.query(Gibberish).filter_by(id=identifier)
             assert len(results.all()) == 2, f"ID {identifier} should have two rows"
         results = self.dbc.execute(f"SELECT * FROM gibberish WHERE id = {identifier}")
-        assert not results.fetchall(), f"No entries should have been permanently added to ID {identifier}"
+        if (self.dbc.dialect == "sqlite" or (
+                self.dbc.dialect == "mysql"
+                and self.dbc.tables['gibberish'].dialect_options['mysql']['engine'] == "MyISAM")):
+            assert len(results.all()) == 2, \
+                f"SQLite/MyISAM: 2 rows have been permanently added to ID {identifier}"
+        else:
+            assert not results.fetchall(), f"No entries should have been permanently added to ID {identifier}"

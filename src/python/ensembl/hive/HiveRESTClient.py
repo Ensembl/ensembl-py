@@ -1,16 +1,20 @@
-"""
-.. See the NOTICE file distributed with this work for additional information
-   regarding copyright ownership.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-       http://www.apache.org/licenses/LICENSE-2.0
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""REST API to interact with eHive pipelines."""
+
+__all__ = ['logger', 'HiveRESTClient']
+
 import contextlib
 import logging
 
@@ -45,7 +49,7 @@ class HiveRESTClient(eHive.BaseRunnable):
             'retry': 3,
             'check_status': True,
             'status_retry': list(Retry.RETRY_AFTER_STATUS_CODES),
-            'method_retry': list(Retry.DEFAULT_METHOD_WHITELIST)
+            'method_retry': list(Retry.DEFAULT_ALLOWED_METHODS)
         }
 
     def _open_session(self):
@@ -56,7 +60,7 @@ class HiveRESTClient(eHive.BaseRunnable):
         adapter = HTTPAdapter(max_retries=Retry(
             total=self.param('retry'),
             status_forcelist=self.param('status_retry'),
-            method_whitelist=self.param('method_retry')
+            allowed_methods=self.param('method_retry')
         ))
         http = requests.Session()
         http.mount("https://", adapter)

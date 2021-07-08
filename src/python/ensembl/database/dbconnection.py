@@ -28,6 +28,8 @@ Typical usage example::
 
 """
 
+__all__ = ['Query', 'URL', 'DBConnection']
+
 import contextlib
 from typing import Dict, List, TypeVar
 
@@ -168,8 +170,8 @@ class DBConnection:
         """Provides a transactional scope around a series of operations with rollback in case of failure.
 
         Note:
-            MySQL storage engine MyISAM does not support rollback transactions, so all the modifications
-            performed to the database will persist.
+            SQLite and MySQL storage engine MyISAM do not support rollback transactions, so all the
+            modifications performed to the database will persist.
 
         """
         session = Session(bind=self._engine, autoflush=False)
@@ -189,8 +191,8 @@ class DBConnection:
         """Provides a transactional scope around a series of operations that will be rolled back at the end.
 
         Note:
-            MySQL storage engine MyISAM does not support rollback transactions, so all the modifications
-            performed to the database will persist.
+            SQLite and MySQL storage engine MyISAM do not support rollback transactions, so all the
+            modifications performed to the database will persist.
 
         """
         # Connect to the database
@@ -199,16 +201,13 @@ class DBConnection:
         transaction = connection.begin()
         # Bind an individual Session to the connection
         session = Session(bind=connection)
-        # Start the session in a SAVEPOINT
-        session.begin_nested()
+        # If the database supports SAVEPOINT, starting a savepoint will allow to also use rollback
+        connection.begin_nested()
         # Define a new transaction event
         @event.listens_for(session, "after_transaction_end")
-        def restart_savepoint(session, transaction):  # pylint: disable=unused-variable
-            """Reopen a SAVEPOINT whenever the previous one ends."""
-            if transaction.nested and not transaction._parent.nested:  # pylint: disable=protected-access
-                # Ensure that state is expired the same way session.commit() at the top level normally does
-                session.expire_all()
-                session.begin_nested()
+        def end_savepoint(session, transaction):  # pylint: disable=unused-variable
+            if not connection.in_nested_transaction():
+                connection.begin_nested()
         try:
             yield session
         finally:
