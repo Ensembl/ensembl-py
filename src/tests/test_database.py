@@ -22,7 +22,7 @@ Typical usage example::
 
 """
 
-from contextlib import ExitStack as does_not_raise
+from contextlib import nullcontext as does_not_raise
 import os
 from pathlib import Path
 from typing import ContextManager, Dict
@@ -69,7 +69,7 @@ class TestUnitTestDB:
                 path is provided, the root folder will be ``src/tests/databases``.
             name: Name to give to the new database.
             expectation: Context manager for the expected exception, i.e. the test will only pass if that
-                exception is raised. Use :class:`~contextlib.ExitStack` if no exception is expected.
+                exception is raised. Use :class:`~contextlib.nullcontext` if no exception is expected.
 
         """
         with expectation:
@@ -234,7 +234,7 @@ class TestDBConnection:
             query: SQL query.
             nrows: Number of rows expected to be returned from the query.
             expectation: Context manager for the expected exception, i.e. the test will only pass if that
-                exception is raised. Use :class:`~contextlib.ExitStack` if no exception is expected.
+                exception is raised. Use :class:`~contextlib.nullcontext` if no exception is expected.
 
         """
         with expectation:

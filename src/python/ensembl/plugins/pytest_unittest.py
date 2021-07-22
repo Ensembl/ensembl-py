@@ -15,7 +15,7 @@
 # Disable all the redefined-outer-name violations due to how pytest fixtures work
 # pylint: disable=redefined-outer-name
 
-from contextlib import ExitStack
+from contextlib import nullcontext
 import os
 from pathlib import Path
 import shutil
@@ -80,7 +80,7 @@ def pytest_make_parametrize_id(val: Any) -> str:
         val: The parametrized value.
 
     """
-    if isinstance(val, ExitStack):
+    if isinstance(val, nullcontext):
         return 'No error'
     if isinstance(val, RaisesContext):
         return val.expected_exception.__name__
