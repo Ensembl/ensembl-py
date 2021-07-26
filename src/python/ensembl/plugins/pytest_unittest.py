@@ -15,7 +15,7 @@
 # Disable all the redefined-outer-name violations due to how pytest fixtures work
 # pylint: disable=redefined-outer-name
 
-from contextlib import ExitStack
+from contextlib import nullcontext
 import os
 from pathlib import Path
 import shutil
@@ -64,7 +64,7 @@ def pytest_configure(config: Config) -> None:
     server_url = sqlalchemy.engine.url.make_url(config.getoption('server'))
     # If password starts with "$", treat it as an environment variable that needs to be resolved
     if server_url.password and server_url.password.startswith('$'):
-        server_url.password = os.environ[server_url.password[1:]]
+        server_url.set(password=os.environ[server_url.password[1:]])
         config.option.server = str(server_url)
     # Add global variables
     pytest.dbs_dir = Path(__file__).parents[3] / 'tests' / 'databases'
@@ -80,7 +80,7 @@ def pytest_make_parametrize_id(val: Any) -> str:
         val: The parametrized value.
 
     """
-    if isinstance(val, ExitStack):
+    if isinstance(val, nullcontext):
         return 'No error'
     if isinstance(val, RaisesContext):
         return val.expected_exception.__name__
