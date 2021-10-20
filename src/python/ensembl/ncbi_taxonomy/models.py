@@ -39,12 +39,14 @@ class NCBITaxaNode(Base):
     __tablename__ = "ncbi_taxa_node"
 
     taxon_id = Column(INTEGER(10), primary_key=True)
-    parent_id = Column(INTEGER(10), nullable=False, index=True)
+    parent_id = Column(INTEGER(10), ForeignKey('ncbi_taxa_node.taxon_id'), nullable=False, index=True)
     rank = Column(CHAR(32), nullable=False, index=True)
     genbank_hidden_flag = Column(TINYINT(1), nullable=False, default=0)
     left_index = Column(INTEGER(10), nullable=False, default=0, index=True)
     right_index = Column(INTEGER(10), nullable=False, default=0, index=True)
     root_id = Column(INTEGER(10), nullable=False, default=1)
+
+    parent = relationship("NCBITaxaNode", remote_side=[taxon_id])
     children = relationship("NCBITaxaName")
 
 
