@@ -15,7 +15,6 @@
 from sqlalchemy import (
     Column,
     ForeignKey,
-    Index,
     join,
     Table,
 )
