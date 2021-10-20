@@ -32,7 +32,6 @@ from sqlalchemy.orm import (
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
-metadata = Base.metadata
 
 
 class NCBITaxaNode(Base):
@@ -58,13 +57,13 @@ class NCBITaxaName(Base):
     name_class = Column(VARCHAR(50), nullable=False, index=True)
 
 
-ncbi_taxa_name_table = NCBITaxaName.__table__
-ncbi_taxa_node_table = NCBITaxaNode.__table__
-
-name_node_join = join(ncbi_taxa_name_table, ncbi_taxa_node_table)
-
-
 class NCBITaxonomy(Base):
+
+    ncbi_taxa_name_table = NCBITaxaName.__table__
+    ncbi_taxa_node_table = NCBITaxaNode.__table__
+
+    name_node_join = join(ncbi_taxa_name_table, ncbi_taxa_node_table)
+
     __table__ = name_node_join
 
     taxon_id = column_property(ncbi_taxa_name_table.c.taxon_id, ncbi_taxa_node_table.c.taxon_id)
