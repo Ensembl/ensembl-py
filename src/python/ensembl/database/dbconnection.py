@@ -68,18 +68,19 @@ class DBConnection:
 
     @property
     def url(self) -> str:
-        """Database URL."""
         return str(self._engine.url)
 
     @property
     def db_name(self) -> str:
-        """Database name."""
         return self._engine.url.database
 
     @property
     def host(self) -> str:
-        """Database host."""
         return self._engine.url.host
+
+    @property
+    def port(self) -> int:
+        return self._engine.url.port
 
     @property
     def dialect(self) -> str:
