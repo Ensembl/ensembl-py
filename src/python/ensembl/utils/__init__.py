@@ -9,27 +9,3 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-import unittest
-
-import eHive
-import requests_mock
-
-from ensembl.hive.HiveRESTClient import HiveRESTClient
-
-
-class TestHiveRest(unittest.TestCase):
-
-    def test_ApiCall200(self):
-        mockURL = 'http://ensembl.local/api/'
-        mockJSON = {"data": "content"}
-        with requests_mock.Mocker() as m:
-            m.get(mockURL, json=mockJSON)
-            eHive.testRunnable(self,
-                HiveRESTClient,
-                {
-                    'endpoint': mockURL,
-                },
-                [
-                    eHive.DataflowEvent({"rest_response": mockJSON}, branch_name_or_code=1),
-                ],
-            )
