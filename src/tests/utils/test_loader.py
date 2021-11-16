@@ -34,7 +34,7 @@ class TestHiveRest(unittest.TestCase):
         loader = RemoteFileLoader('ini')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production-services/main/.env.dist')
-        self.assertEqual(content.get('top', 'SECRET_KEY'), 'thisisasecretkeynotmeantforproduction')
+        self.assertEqual(content.get('DEFAULT', 'SECRET_KEY'), 'thisisasecretkeynotmeantforproduction')
 
     def test_env_load(self):
         loader = RemoteFileLoader('env')

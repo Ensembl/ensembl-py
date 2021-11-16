@@ -26,34 +26,31 @@ import requests
 import requests.exceptions as exc
 import yaml
 
-# Add exception processing
-# File does not exists.
-# Return as dict ?
-# Add Loading parser ?
 logger = logging.getLogger(__name__)
 
 
 class RemoteFileLoader:
-    format = ('yaml', 'ini', 'env', 'json')
+    available_format = ['yaml', 'ini', 'env', 'json', None]
 
     def __init__(self, parser=None) -> None:
         super().__init__()
-        self.format = parser
+        if parser in self.available_format:
+            self.parser = parser
 
     def __parse(self, content):
-        if self.format == 'yaml':
+        if self.parser == 'yaml':
             return yaml.load(content, yaml.SafeLoader)
-        elif self.format == 'ini':
+        elif self.parser == 'ini':
             config = configparser.ConfigParser()
             try:
                 config.read_string(content)
             except configparser.MissingSectionHeaderError:
-                content = StringIO("[top]\n" + content).read()
+                content = "[DEFAULT]\n" + content
                 config.read_string(content)
             return config
-        elif self.format == 'env':
+        elif self.parser == 'env':
             return dotenv.dotenv_values(stream=StringIO(content))
-        elif self.format == 'json':
+        elif self.parser == 'json':
             return json.loads(content)
         else:
             # only return content, no parsing
