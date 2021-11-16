@@ -10,6 +10,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import unittest
+
 from ensembl.utils.rloader import RemoteFileLoader
 
 
@@ -47,3 +48,9 @@ class TestHiveRest(unittest.TestCase):
         content = loader.r_open('http://httpbin.org/status/404')
         self.assertIsNone(content)
 
+    def test_raw_load(self):
+        loader = RemoteFileLoader()
+        content = loader.r_open(
+            'https://github.com/Ensembl/ensembl-production/blob/release/104/modules/Bio/EnsEMBL/Production/Utils/CopyDatabase.pm')
+        self.assertIsNotNone(content)
+        self.assertIn("Bio::EnsEMBL::Production::Utils::CopyDatabase", content)
