@@ -33,7 +33,7 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
-class RemoteFileLoader(object):
+class RemoteFileLoader:
     format = ('yaml', 'ini', 'env', 'json')
 
     def __init__(self, parser=None) -> None:
