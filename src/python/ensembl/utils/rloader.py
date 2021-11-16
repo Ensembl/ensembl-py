@@ -16,18 +16,15 @@ Allow to seamlessly load / read the content of a remote file as if it was locate
 @author: Marc Chakiachvili
 
 """
+import configparser
+import json
 import logging
 from io import StringIO
-from urllib.parse import urlparse, parse_qs
+
+import dotenv
 import requests
 import requests.exceptions as exc
-import json
-import re
-import os
-import logging
 import yaml
-import configparser
-import dotenv
 
 # Add exception processing
 # File does not exists.
@@ -36,11 +33,7 @@ import dotenv
 logger = logging.getLogger(__name__)
 
 
-
-
-
 class RemoteFileLoader(object):
-
     format = ('yaml', 'ini', 'env', 'json')
 
     def __init__(self, parser=None) -> None:
@@ -78,6 +71,3 @@ class RemoteFileLoader(object):
         except exc.Timeout as ex:
             logger.exception("Request timed out %s: %s", url, ex)
         return None
-
-
-

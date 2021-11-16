@@ -4,3 +4,5 @@ pytest-dependency==0.5.1
 requests>=2.22.0
 sqlalchemy>=1.4.0
 ensembl-hive@git+https://github.com/Ensembl/ensembl-hive.git@master#egg=ensembl-hive
+PyYAML~=6.0
+python-dotenv~=0.19.2
