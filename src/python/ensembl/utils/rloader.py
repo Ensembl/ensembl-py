@@ -35,7 +35,7 @@ class RemoteFileLoader:
 
     def __init__(self, parser=None) -> None:
         super().__init__()
-        if parser in self.available_format:
+        if parser in self.available_formats:
             self.parser = parser
 
     def __parse(self, content):
