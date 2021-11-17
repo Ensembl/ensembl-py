@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class RemoteFileLoader:
-    available_format = ['yaml', 'ini', 'env', 'json']
+    available_formats = {'yaml', 'ini', 'env', 'json'}
     parser = None
 
     def __init__(self, parser=None) -> None:
