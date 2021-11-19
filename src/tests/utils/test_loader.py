@@ -26,7 +26,8 @@ class TestRemoteFileLoader(unittest.TestCase):
 
     def test_yaml_load(self):
         loader = RemoteFileLoader('yaml')
-        content = loader.r_open('https://raw.githubusercontent.com/Ensembl/ensembl-production/main/.travis.yml')
+        content = loader.r_open(
+            'https://raw.githubusercontent.com/Ensembl/ensembl-production/main/.travis.yml')
         self.assertIn('language', content)
         self.assertIn('services', content)
         self.assertIn('perl', content)
