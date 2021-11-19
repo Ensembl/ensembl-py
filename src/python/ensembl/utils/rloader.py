@@ -18,6 +18,7 @@ import configparser
 import json
 import logging
 from io import StringIO
+from typing import Optional, Any
 
 import dotenv
 import requests
@@ -32,7 +33,7 @@ class RemoteFileLoader:
     available_formats = {'yaml', 'ini', 'env', 'json'}
     parser = None
 
-    def __init__(self, parser=None) -> None:
+    def __init__(self, parser: Optional[str] = None) -> None:
         if parser in self.available_formats:
             self.parser = parser
 
