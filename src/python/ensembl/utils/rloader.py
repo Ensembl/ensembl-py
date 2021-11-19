@@ -10,12 +10,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""
-Allow to seamlessly load / read the content of a remote file as if it was located locally.
-
-@author: Marc Chakiachvili
-
-"""
+"""Allow to seamlessly load / read the content of a remote file as if it was located locally."""
 import configparser
 import json
 import logging
