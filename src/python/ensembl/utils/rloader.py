@@ -33,7 +33,7 @@ class RemoteFileLoader:
         if parser in self.available_formats:
             self.parser = parser
 
-    def __parse(self, content):
+    def __parse(self, content: str) -> Any:
         if self.parser == 'yaml':
             return yaml.load(content, yaml.SafeLoader)
         elif self.parser == 'ini':
