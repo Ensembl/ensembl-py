@@ -58,7 +58,7 @@ class TestRemoteFileLoader(unittest.TestCase):
 
     def test_raw_load(self):
         loader = RemoteFileLoader()
-        content = loader.r_open(
-            'https://github.com/Ensembl/ensembl-production/blob/release/104/modules/Bio/EnsEMBL/Production/Utils/CopyDatabase.pm')
+        content = loader.r_open("https://github.com/Ensembl/ensembl-production/blob/release/104/modules/"
+                                "Bio/EnsEMBL/Production/Utils/CopyDatabase.pm")
         self.assertIsNotNone(content)
         self.assertIn("Bio::EnsEMBL::Production::Utils::CopyDatabase", content)
