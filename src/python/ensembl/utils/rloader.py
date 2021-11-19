@@ -21,6 +21,7 @@ import requests
 import requests.exceptions as exc
 import yaml
 
+
 logger = logging.getLogger(__name__)
 
 
