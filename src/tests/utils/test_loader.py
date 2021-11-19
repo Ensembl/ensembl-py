@@ -19,6 +19,8 @@ Typical usage example::
 
 import unittest
 
+import requests.exceptions
+
 from ensembl.utils.rloader import RemoteFileLoader
 
 
@@ -54,8 +56,8 @@ class TestRemoteFileLoader(unittest.TestCase):
 
     def test_not_existing_load(self):
         loader = RemoteFileLoader('env')
-        content = loader.r_open('http://httpbin.org/status/404')
-        self.assertIsNone(content)
+        with self.assertRaises(requests.exceptions.HTTPError):
+            content = loader.r_open('http://httpbin.org/status/404')
 
     def test_raw_load(self):
         loader = RemoteFileLoader()
