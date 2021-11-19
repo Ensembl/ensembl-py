@@ -66,5 +66,5 @@ class RemoteFileLoader:
         except exc.HTTPError as ex:
             logger.exception(f"Error with request to {url}: {ex}")
         except exc.Timeout as ex:
-            logger.exception("Request timed out {url}: {ex}")
+            logger.exception(f"Request timed out {url}: {ex}")
         return None
