@@ -17,51 +17,54 @@ Typical usage example::
 
 """
 
-import unittest
+import pytest
 
 import requests.exceptions
 
 from ensembl.utils.rloader import RemoteFileLoader
 
 
-class TestRemoteFileLoader(unittest.TestCase):
+class TestRemoteFileLoader:
 
     def test_yaml_load(self):
         loader = RemoteFileLoader('yaml')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production/main/.travis.yml')
-        self.assertIn('language', content)
-        self.assertIn('services', content)
-        self.assertIn('perl', content)
+        assert 'language' in content
+        assert 'services' in content
+        assert 'perl' in content
 
     def test_json_load(self):
         loader = RemoteFileLoader('json')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production/main/modules/t/genes_test.json')
-        self.assertIn('homologues', content[0])
-        self.assertIn('seq_region_synonyms', content[0])
+        assert 'homologues' in content[0]
+        assert 'seq_region_synonyms' in content[0]
 
     def test_ini_load(self):
         loader = RemoteFileLoader('ini')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production-services/main/.env.dist')
-        self.assertEqual(content.get('DEFAULT', 'SECRET_KEY'), 'thisisasecretkeynotmeantforproduction')
+        assert content.get('DEFAULT', 'SECRET_KEY') == 'thisisasecretkeynotmeantforproduction'
+
 
     def test_env_load(self):
         loader = RemoteFileLoader('env')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production-services/main/.env.dist')
-        self.assertEqual(content.get('SECRET_KEY'), 'thisisasecretkeynotmeantforproduction')
-        self.assertIn('DATABASE_URL', content)
+        assert content.get('SECRET_KEY') == 'thisisasecretkeynotmeantforproduction'
+        assert 'DATABASE_URL' in content
 
     def test_not_existing_load(self):
         loader = RemoteFileLoader('env')
-        with self.assertRaises(requests.exceptions.HTTPError):
+        with pytest.raises(requests.exceptions.HTTPError) as e:
             content = loader.r_open('http://httpbin.org/status/404')
+            assert e.message == "Loading http://httpbin.org/status/404 received: 404 (Not found)"
+            assert content is None
 
     def test_raw_load(self):
         loader = RemoteFileLoader()
         content = loader.r_open("https://github.com/Ensembl/ensembl-production/blob/release/104/modules/"
                                 "Bio/EnsEMBL/Production/Utils/CopyDatabase.pm")
-        self.assertIsNotNone(content)
-        self.assertIn("Bio::EnsEMBL::Production::Utils::CopyDatabase", content)
+        assert content is not None
+        assert "Bio::EnsEMBL::Production::Utils::CopyDatabase" in content

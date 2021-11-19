@@ -13,5 +13,5 @@ install:
   - pip install -e .
 
 script:
-  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest src/tests --server sqlite:///; fi
+  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest src/tests; fi
   - if [[ "$TESTENV" == "test" ]]; then coverage report -m; fi
