@@ -65,6 +65,7 @@ class RemoteFileLoader:
                 raise exc.HTTPError(f"Non 200 response received: {r.status_code} ({r.reason})")
         except exc.HTTPError as ex:
             logger.exception(f"Error with request to {url}: {ex}")
+            raise ex
         except exc.Timeout as ex:
             logger.exception(f"Request timed out {url}: {ex}")
-        return None
+            raise ex
