@@ -22,7 +22,7 @@ import unittest
 from ensembl.utils.rloader import RemoteFileLoader
 
 
-class TestHiveRest(unittest.TestCase):
+class TestRemoteFileLoader(unittest.TestCase):
 
     def test_yaml_load(self):
         loader = RemoteFileLoader('yaml')
