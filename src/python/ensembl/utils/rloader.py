@@ -30,6 +30,16 @@ logger = logging.getLogger(__name__)
 
 
 class RemoteFileLoader:
+    """Loads remote files, allowing specific format parsing options.
+
+    Args:
+        parser: Parser to use for this object. Default, `None` (no format-specific parsing done).
+
+    Attributes:
+        available_formats (Set[str]): File formats with ad-hoc parsers available.
+        parser (str): Parser selected for this object.
+
+    """
     available_formats = {'yaml', 'ini', 'env', 'json'}
     parser = None
 
