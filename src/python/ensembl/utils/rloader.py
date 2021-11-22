@@ -67,6 +67,16 @@ class RemoteFileLoader:
             return content
 
     def r_open(self, url):
+        """Returns the parsed remote file from the given URL.
+        
+        Args:
+            url: URL of the remote file to fetch.
+
+        Raises:
+            requests.exception.HTTPError: if loading or requesting the given URL returned an error.
+            requests.exception.Timeout: if a timeout was raised whilst requesting the given URL.
+        
+        """
         try:
             r = requests.get(url)
             if r.status_code == 200:
