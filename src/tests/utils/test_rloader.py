@@ -18,7 +18,6 @@ Typical usage example::
 """
 
 import pytest
-
 import requests.exceptions
 
 from ensembl.utils.rloader import RemoteFileLoader
