@@ -66,7 +66,7 @@ class RemoteFileLoader:
             # only return content, no parsing
             return content
 
-    def r_open(self, url):
+    def r_open(self, url: str) -> Any:
         """Returns the parsed remote file from the given URL.
         
         Args:
