@@ -231,7 +231,8 @@ class Taxonomy(object):
             for row in q:
                 taxon = row[0].__dict__
                 results.append(taxon)
-            q = tuple(results)
+            ordered_results = sorted(results, key=lambda x: x["taxon_id"])
+            q = tuple(ordered_results)
             return q
         except NoResultFound:
             raise NoResultFound()
