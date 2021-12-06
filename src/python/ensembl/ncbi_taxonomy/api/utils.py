@@ -13,187 +13,161 @@
 # limitations under the License.
 
 from sqlalchemy import and_
-from sqlalchemy.ext.declarative import declarative_base, DeferredReflection
 from sqlalchemy.orm import as_declarative, Session, aliased
 from sqlalchemy.orm.exc import NoResultFound
 
-from ensembl.ncbi_taxonomy.models import NCBITaxaName, NCBITaxaNode, NCBITaxonomy
+from ensembl.ncbi_taxonomy.models import NCBITaxaNode, NCBITaxonomy
 
 
 @as_declarative()
-class Taxonomy(object):
-    """
-    Returns:
-        :class: `NCBITaxonomy`, `NCBITaxaNode`, `NCBITaxaName` ORM objects,
-        boolean or int values through class functions
+class Taxonomy():
+    """Contains all the taxonomy related functions over NCBITaxonomy ORM.
+
     Attributes:
-        session (db Session())
+        session: db Session()
     """
+
 
     @classmethod
     def fetch_node_by_id(cls, session: Session, taxon_id: int) -> NCBITaxonomy:
-        """
-        Returns:
-            taxonomy node object by taxon_id
+        """Returns taxonomy node object by taxon_id
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist
+            taxon_id: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist
         """
-        try:
-            q = (
-                session.query(NCBITaxonomy)
-                .filter(NCBITaxonomy.taxon_id == taxon_id)
-                .first()
-            )
-            if not q:
-                raise NoResultFound()
-            return q
-        except NoResultFound:
+        q = (
+            session.query(NCBITaxonomy)
+            .filter(NCBITaxonomy.taxon_id == taxon_id)
+            .first()
+        )
+        if not q:
             raise NoResultFound()
+        return q
+
 
     @classmethod
     def fetch_taxon_by_species_name(cls, session: Session, name: str) -> NCBITaxonomy:
-        """
-        Returns:
-            taxon_id integer matching name
+        """Returns taxon_id integer matching name
+
         Args:
-            name: (STR) Scientific ncbi_taxa_name.name in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist or returns multiple results
+            name: Scientific ncbi_taxa_name.name in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist or returns multiple results
         """
         name.replace("_", " ")
-        try:
-            return (
-                session.query(NCBITaxonomy)
-                .filter(NCBITaxonomy.name.like(name))
-                .filter(NCBITaxonomy.name_class == "scientific name")
-                .one()
-            )
-        except NoResultFound:
-            raise NoResultFound()
+        return (
+            session.query(NCBITaxonomy)
+            .filter(NCBITaxonomy.name.like(name))
+            .filter(NCBITaxonomy.name_class == "scientific name")
+            .one()
+        )
+
 
     @classmethod
     def parent(cls, session: Session, taxon_id: int) -> NCBITaxonomy:
-        """
-        Returns:
-            taxonomy node object for parent node
+        """Returns taxonomy node object for parent node
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist
+            taxon_id: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist
         """
         ParentTaxonomy = aliased(NCBITaxonomy, name="parent_ncbi_taxonomy")
-        try:
-            q = (
-                session.query(NCBITaxonomy, ParentTaxonomy)
-                .outerjoin(
-                    (ParentTaxonomy, NCBITaxonomy.parent_id == ParentTaxonomy.taxon_id)
-                )
-                .filter(NCBITaxonomy.taxon_id == taxon_id)
-                .filter(ParentTaxonomy.name_class == "scientific name")
-                .first()
+        q = (
+            session.query(NCBITaxonomy, ParentTaxonomy)
+            .outerjoin(
+                (ParentTaxonomy, NCBITaxonomy.parent_id == ParentTaxonomy.taxon_id)
             )
-            try:
-                return q[1]
-            except TypeError:
-                raise NoResultFound()
-        except NoResultFound:
+            .filter(NCBITaxonomy.taxon_id == taxon_id)
+            .filter(ParentTaxonomy.name_class == "scientific name")
+            .first()
+        )
+        try:
+            return q[1]
+        except TypeError:
             raise NoResultFound()
+
 
     @classmethod
     def children(cls, session: Session, taxon_id: int) -> tuple:
-        """
-        Returns:
-            taxonomy node object for children nodes
+        """Returns taxonomy node object for children nodes
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist or has no children
+            taxon_id: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist or has no children
         """
-        q = ()
-        try:
-            q = (
-                session.query(NCBITaxonomy)
-                .filter(NCBITaxonomy.parent_id == taxon_id)
-                .filter(NCBITaxonomy.name_class == "scientific name")
-                .all()
-            )
-            try:
-                results = list(q)
-                rows = [x.__dict__ for x in results]
-                q = tuple(rows)
-                if not q:
-                    raise NoResultFound()
-                return q
-            except NoResultFound:
-                raise NoResultFound()
-        except NoResultFound:
+        q = (
+            session.query(NCBITaxonomy)
+            .filter(NCBITaxonomy.parent_id == taxon_id)
+            .filter(NCBITaxonomy.name_class == "scientific name")
+            .all()
+        )
+        results = list(q)
+        rows = [x.__dict__ for x in results]
+        q = tuple(rows)
+        if not q:
             raise NoResultFound()
+        return q
+
 
     @classmethod
     def is_root(cls, session: Session, taxon_id: int) -> bool:
-        """
-        Returns:
-            (boolean) true if taxon_id is a root
+        """Returns true if taxon_id is a root and false if not
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            None
+            taxon_id: Unique taxonomy identifier in database
         """
         try:
             if (
                 session.query(NCBITaxaNode)
-                .filter(
-                    NCBITaxaNode.root_id == taxon_id, NCBITaxaNode.taxon_id == taxon_id
-                )
+                .filter(NCBITaxaNode.root_id == taxon_id, NCBITaxaNode.taxon_id == taxon_id)
                 .one()
             ):
                 return True
         except NoResultFound:
             return False
 
+
     @classmethod
     def num_descendants(cls, session: Session, taxon_id: int) -> int:
-        """
-        Returns:
-            number of descendants from taxon_id
+        """Returns number of descendants from taxon_id
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist
+            taxon_id: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist
         """
-        try:
-            session.query(NCBITaxaNode).filter(NCBITaxaNode.taxon_id == taxon_id).one()
-        except NoResultFound:
-            raise NoResultFound()
-        try:
-            right_index = (
-                session.query(NCBITaxaNode.right_index)
-                .filter(NCBITaxaNode.taxon_id == taxon_id)
-                .scalar()
-            )
-        except NoResultFound:
-            raise NoResultFound()
-        try:
-            left_index = (
-                session.query(NCBITaxaNode.left_index)
-                .filter(NCBITaxaNode.taxon_id == taxon_id)
-                .scalar()
-            )
-        except NoResultFound:
-            raise NoResultFound()
+        session.query(NCBITaxaNode).filter(NCBITaxaNode.taxon_id == taxon_id).one()
+        right_index = (
+            session.query(NCBITaxaNode.right_index)
+            .filter(NCBITaxaNode.taxon_id == taxon_id)
+            .scalar()
+        )
+        left_index = (
+            session.query(NCBITaxaNode.left_index)
+            .filter(NCBITaxaNode.taxon_id == taxon_id)
+            .scalar()
+        )
         return (right_index - left_index - 1) / 2
+
 
     @classmethod
     def is_leaf(cls, session: Session, taxon_id: int) -> bool:
-        """
-        Returns:
-            true if taxon_id is a leaf
+        """Returns true if taxon_id is a leaf and false if not
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist
+            taxon_id: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist
         """
         if cls.num_descendants(session, taxon_id) == 0:
             return True
@@ -201,55 +175,52 @@ class Taxonomy(object):
 
     @classmethod
     def fetch_ancestors(cls, session: Session, taxon_id: int) -> tuple:
-        """
-        Returns:
-            ancestor node objects from taxon_id
+        """Returns a tuple of ancestor node objects from taxon_id
+
         Args:
-            taxon_id: (INT) unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_id does not exist or has no ancestors
+            taxon_id: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_id does not exist or has no ancestors
         """
         ParentTaxaNode = aliased(NCBITaxaNode)
-        results = []
-        try:
-            q = (
-                session.query(ParentTaxaNode, NCBITaxaNode)
-                .outerjoin(
-                    NCBITaxaNode,
-                    and_(
-                        NCBITaxaNode.left_index.between(
-                            ParentTaxaNode.left_index, ParentTaxaNode.right_index
-                        ),
-                        ParentTaxaNode.taxon_id != NCBITaxaNode.taxon_id,
+        q = (
+            session.query(ParentTaxaNode, NCBITaxaNode)
+            .outerjoin(
+                NCBITaxaNode,
+                and_(
+                    NCBITaxaNode.left_index.between(
+                        ParentTaxaNode.left_index, ParentTaxaNode.right_index
                     ),
-                )
-                .filter(NCBITaxaNode.taxon_id == taxon_id)
-                .all()
+                    ParentTaxaNode.taxon_id != NCBITaxaNode.taxon_id,
+                ),
             )
-            if not q:
-                raise NoResultFound()
-            for row in q:
-                taxon = row[0].__dict__
-                results.append(taxon)
-            ordered_results = sorted(results, key=lambda x: x["taxon_id"])
-            q = tuple(ordered_results)
-            return q
-        except NoResultFound:
+            .filter(NCBITaxaNode.taxon_id == taxon_id)
+            .all()
+        )
+        if not q:
             raise NoResultFound()
+        results = []
+        for row in q:
+            taxon = row[0].__dict__
+            results.append(taxon)
+        ordered_results = sorted(results, key=lambda x: x["taxon_id"])
+        q = tuple(ordered_results)
+        return q
+
 
     @classmethod
     def all_common_ancestors(
         cls, session: Session, taxon_id_1: int, taxon_id_2: int
     ) -> tuple:
-        """
-        Returns:
-            tuple of common ancestor node objects shared between taxon_id_1
-            and taxon_id_2
+        """Returns a tuple of common ancestor node objects shared between taxa
+
         Args:
-            taxon_id_1: (INT) unique taxonomy identifier in database
-            taxon_id_2: (INT) another unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_ids do not exist or have no common ancestors
+            taxon_id_1: Unique taxonomy identifier in database
+            taxon_id_2: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_ids do not exist or have no common ancestors
         """
         ancestors_1 = cls.fetch_ancestors(session, taxon_id_1)
         ancestors_2 = cls.fetch_ancestors(session, taxon_id_2)
@@ -268,19 +239,19 @@ class Taxonomy(object):
         ]
         return tuple(all_common_ancs)
 
+
     @classmethod
     def last_common_ancestor(
         cls, session: Session, taxon_id_1: int, taxon_id_2: int
     ) -> NCBITaxonomy:
-        """
-        Returns:
-            most recent common ancestor node object shared between
-            taxon_id_1 and taxon_id_2
+        """Returns most recent common ancestor node object shared between taxa
+
         Args:
-            taxon_id_1: (INT) unique taxonomy identifier in database
-            taxon_id_2: (INT) another unique taxonomy identifier in database
-        Exceptions:
-            raises NoResultFound() if taxon_ids do not exist or have no common ancestors
+            taxon_id_1: Unique taxonomy identifier in database
+            taxon_id_2: Unique taxonomy identifier in database
+
+        Raises:
+            NoResultFound() if taxon_ids do not exist or have no common ancestors
         """
         common_ancestors = cls.all_common_ancestors(session, taxon_id_1, taxon_id_2)
         return common_ancestors[0]

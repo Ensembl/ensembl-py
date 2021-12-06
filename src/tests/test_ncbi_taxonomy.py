@@ -32,13 +32,14 @@ from ensembl.ncbi_taxonomy.models import NCBITaxonomy
 
 @pytest.mark.parametrize("db", [{"src": "ncbi_db"}], indirect=True)
 class TestNCBITaxonomyUtils:
-    """Tests :class: Taxonomy in utils.py"""
+    """Tests :class:`~ensembl.ncbi_taxonomy.api.utils.Taxonomy` in utils.py"""
 
     dbc = None  # type: UnitTestDB
 
     @pytest.fixture(scope="class", autouse=True)
     def setup(self, db: UnitTestDB) -> None:
         """Loads the required fixtures and values as class attributes.
+
         Args:
             db: Generator of unit test database (fixture).
         """
@@ -58,10 +59,11 @@ class TestNCBITaxonomyUtils:
 
     @pytest.mark.parametrize("taxon_id, expectation", [(9615, result_dict)])
     def test_fetch_node_by_id(self, taxon_id: int, expectation: NCBITaxonomy) -> None:
-        """Tests :func:`fetch_node_by_id()`.
+        """Tests :func:`fetch_node_by_id()`
+
         Args:
-            taxon_id: An existing taxon_id as in ncbi_taxonomy (int)
-            expectation: :Class: NCBITaxonomy object.
+            taxon_id: An existing taxon_id as in ncbi_taxonomy.
+            expectation: NCBITaxonomy object.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.fetch_node_by_id(session, taxon_id)
@@ -74,9 +76,10 @@ class TestNCBITaxonomyUtils:
         self, taxon_id: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`fetch_node_by_id()` with a non-existant taxon_id.
+
         Args:
-            taxon_id: A taxon_id that is not in ncbi_taxonomy (int)
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id: A taxon_id that is not in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -102,9 +105,10 @@ class TestNCBITaxonomyUtils:
         self, name: int, expectation: NCBITaxonomy
     ) -> None:
         """Tests :func:`fetch_taxon_by_species_name()`.
+
         Args:
-            name: An existing scientific name as in ncbi_taxonomy (str)
-            expectation: :Class: NCBITaxonomy object.
+            name: An existing scientific name as in ncbi_taxonomy.
+            expectation: Class NCBITaxonomy object.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.fetch_taxon_by_species_name(session, name)
@@ -119,9 +123,10 @@ class TestNCBITaxonomyUtils:
         self, name: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`fetch_taxon_by_species_name()` with a non-existant name.
+
         Args:
-            name: A false scientific name not in ncbi_taxonomy (str)
-            expectation: Passes with raised NoResultFound() exception.
+            name: A false scientific name not in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -143,9 +148,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9615, result_dict3)])
     def test_parent(self, taxon_id: int, expectation: NCBITaxonomy) -> None:
         """Tests :func:`parent()`.
+
         Args:
-            taxon_id: An existing taxon_id as in ncbi_taxonomy (int)
-            expectation: :Class: NCBITaxonomy object.
+            taxon_id: An existing taxon_id as in ncbi_taxonomy.
+            expectation: Class NCBITaxonomy object.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.parent(session, taxon_id)
@@ -156,9 +162,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9616, raises(NoResultFound))])
     def test_parent_false_id(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`parent()` with non-existant taxon_id.
+
         Args:
-            taxon_id: A false taxon_id not in ncbi_taxonomy (int)
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id: A false taxon_id not in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -170,9 +177,10 @@ class TestNCBITaxonomyUtils:
         self, taxon_id: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`parent()` with root taxon_id, no parent expected of course.
+
         Args:
-            taxon_id: The root taxon_id not in ncbi_taxonomy (int)
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id: The root taxon_id not in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -207,9 +215,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9989, result_tuple)])
     def test_children(self, taxon_id: int, expectation: tuple) -> None:
         """Tests :func:`children()`.
+
         Args:
-            taxon_id: An existing taxon_id as in ncbi_taxonomy (int)
-            expectation: A tuple of :Class: NCBITaxonomy objects.
+            taxon_id: An existing taxon_id as in ncbi_taxonomy.
+            expectation: A tuple of Class NCBITaxonomy objects.
         """
         with self.dbc.session_scope() as session:
             results = Taxonomy.children(session, taxon_id)
@@ -222,9 +231,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9615, raises(NoResultFound))])
     def test_children_none(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`children()` with extant leaf taxon_id, no children expected of course.
+
         Args:
-            taxon_id: The root taxon_id not in ncbi_taxonomy (int)
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id: The root taxon_id not in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -234,9 +244,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(1, True)])
     def test_is_root(self, taxon_id: int, expectation: bool) -> None:
         """Tests :func:`is_root()`.
+
         Args:
-            taxon_id: Root taxon_id as in ncbi_taxonomy (int)
-            expectation: True (boolean).
+            taxon_id: Root taxon_id as in ncbi_taxonomy.
+            expectation: True.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.is_root(session, taxon_id)
@@ -245,9 +256,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9615, False)])
     def test_is_root_not_root(self, taxon_id: int, expectation: bool) -> None:
         """Tests :func:`is_root()` with extant leaf taxon_id, not a root.
+
         Args:
-            taxon_id: A leaf taxon_id in ncbi_taxonomy (int)
-            expectation: False (boolean).
+            taxon_id: A leaf taxon_id in ncbi_taxonomy.
+            expectation: False.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.is_root(session, taxon_id)
@@ -256,9 +268,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9612, 1)])
     def test_num_descendants(self, taxon_id: int, expectation: int) -> None:
         """Tests :func:`num_descendants()`.
+
         Args:
-            taxon_id: An internal node taxon_id in ncbi_taxonomy (int)
-            expectation: (int) of correct number of descendants.
+            taxon_id: An internal node taxon_id in ncbi_taxonomy.
+            expectation: Correct number of descendants.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.num_descendants(session, taxon_id)
@@ -267,9 +280,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(1, 381)])
     def test_num_descendants_large(self, taxon_id: int, expectation: int) -> None:
         """Tests :func:`num_descendants()`.
+
         Args:
-            taxon_id: The root node taxon_id in ncbi_taxonomy (int)
-            expectation: (int) the total number taxon entries in db - 1.
+            taxon_id: The root node taxon_id in ncbi_taxonomy.
+            expectation: The total number taxon entries in db - 1.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.num_descendants(session, taxon_id)
@@ -278,9 +292,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9615, 0)])
     def test_num_descendants_leaf_taxon(self, taxon_id: int, expectation: int) -> None:
         """Tests :func:`num_descendants()` with leaf taxon_id.
+
         Args:
-            taxon_id: leaf taxon_id not in ncbi_taxonomy (int)
-            expectation: (int) of correct number of descendants - zero.
+            taxon_id: Leaf taxon_id not in ncbi_taxonomy.
+            expectation: Correct number of descendants.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.num_descendants(session, taxon_id)
@@ -291,9 +306,10 @@ class TestNCBITaxonomyUtils:
         self, taxon_id: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`num_descendants()` with leaf taxon_id.
+
         Args:
-            taxon_id: leaf taxon_id not in ncbi_taxonomy (int)
-            expectation: (int) of correct number of descendants - zero.
+            taxon_id: Leaf taxon_id not in ncbi_taxonomy.
+            expectation: Correct number of descendants.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -303,9 +319,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(9615, True)])
     def test_is_leaf(self, taxon_id: int, expectation: bool) -> None:
         """Tests :func:`is_leaf()`.
+
         Args:
-            taxon_id: leaf taxon_id as in ncbi_taxonomy (int)
-            expectation: True (boolean).
+            taxon_id: leaf taxon_id as in ncbi_taxonomy.
+            expectation: True.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.is_leaf(session, taxon_id)
@@ -314,9 +331,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(1, False)])
     def test_is_leaf_not_leaf(self, taxon_id: int, expectation: bool) -> None:
         """Tests :func:`is_leaf()` with root taxon_id - so not a leaf.
+
         Args:
-            taxon_id: The root taxon_id in ncbi_taxonomy (int)
-            expectation: False (boolean).
+            taxon_id: The root taxon_id in ncbi_taxonomy.
+            expectation: False.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.is_leaf(session, taxon_id)
@@ -364,9 +382,10 @@ class TestNCBITaxonomyUtils:
     @pytest.mark.parametrize("taxon_id, expectation", [(33208, result_tuple2)])
     def test_fetch_ancestors(self, taxon_id: int, expectation: tuple) -> None:
         """Tests :func:`fetch_ancestors()`.
+
         Args:
-            taxon_id: An existing taxon_id as in ncbi_taxonomy (int)
-            expectation: A tuple of dictionary objects (tuple(dict)).
+            taxon_id: An existing taxon_id as in ncbi_taxonomy.
+            expectation: A tuple of dictionary from Taxonomy objects.
         """
         with self.dbc.session_scope() as session:
             results = Taxonomy.fetch_ancestors(session, taxon_id)
@@ -381,9 +400,10 @@ class TestNCBITaxonomyUtils:
         self, taxon_id: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`fetch_ancestors()` with root taxon_id.
+
         Args:
-            taxon_id: The root taxon_id as in ncbi_taxonomy (int) - root has no known ancestors
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id: The root taxon_id as in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -395,9 +415,10 @@ class TestNCBITaxonomyUtils:
         self, taxon_id: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`fetch_ancestors()` with non-existant taxon_id.
+
         Args:
-            taxon_id: False taxon_id not in ncbi_taxonomy (int)
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id: False taxon_id not in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -458,10 +479,11 @@ class TestNCBITaxonomyUtils:
         self, taxon_id1: int, taxon_id2: int, expectation: tuple
     ) -> None:
         """Tests :func:`all_common_ancestors()`.
+
         Args:
-            taxon_id1: An existing taxon_id as in ncbi_taxonomy (int)
-            taxon_id2: Another existing taxon_id as in ncbi_taxonomy (int)
-            expectation: A tuple of :Class: NCBITaxonomy objects.
+            taxon_id1: An existing taxon_id as in ncbi_taxonomy.
+            taxon_id2: An existing taxon_id as in ncbi_taxonomy.
+            expectation: A tuple of Class NCBITaxonomy objects.
         """
         with self.dbc.session_scope() as session:
             results = Taxonomy.all_common_ancestors(session, taxon_id1, taxon_id2)
@@ -481,10 +503,11 @@ class TestNCBITaxonomyUtils:
         self, taxon_id1: int, taxon_id2: int, expectation: ContextManager
     ) -> None:
         """Tests :func:`all_common_ancestors()` with leaf taxon_id.
+
         Args:
-            taxon_id1: A root node taxon_id as in ncbi_taxonomy (int)
-            taxon_id2: A different existing node taxon_id as in ncbi_taxonomy (int)
-            expectation: Passes with raised NoResultFound() exception.
+            taxon_id1: A root node taxon_id as in ncbi_taxonomy.
+            taxon_id2: A taxon_id as in ncbi_taxonomy.
+            expectation: NoResultFound() exception.
         """
         with expectation:
             with self.dbc.session_scope() as session:
@@ -510,10 +533,11 @@ class TestNCBITaxonomyUtils:
         self, taxon_id1: int, taxon_id2: int, expectation: tuple
     ) -> None:
         """Tests :func:`all_common_ancestors()`.
+
         Args:
-            taxon_id1: A existing taxon_id as in ncbi_taxonomy (int)
-            taxon_id2: Another existing taxon_id as in ncbi_taxonomy (int)
-            expectation: A :Class: NCBITaxonomy objects.
+            taxon_id1: An existing taxon_id as in ncbi_taxonomy.
+            taxon_id2: An existing taxon_id as in ncbi_taxonomy.
+            expectation: A Class NCBITaxonomy objects.
         """
         with self.dbc.session_scope() as session:
             result = Taxonomy.last_common_ancestor(session, taxon_id1, taxon_id2)
