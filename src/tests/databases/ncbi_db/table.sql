@@ -1,24 +1,23 @@
 CREATE TABLE `ncbi_taxa_name` (
-`taxon_id` INTEGER  NOT NULL,
-`name` TEXT NOT NULL,
-`name_class` TEXT NOT NULL
-);
+  `taxon_id` int(10) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `name_class` varchar(50) NOT NULL,
+  KEY `taxon_id` (`taxon_id`),
+  KEY `name` (`name`),
+  KEY `name_class` (`name_class`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ncbi_taxa_node` (
-`taxon_id` INTEGER  NOT NULL,
-`parent_id` INTEGER  NOT NULL,
-`rank` char(32) NOT NULL DEFAULT '',
-`genbank_hidden_flag` tinyINTEGER NOT NULL DEFAULT '0',
-`left_index` INTEGER NOT NULL DEFAULT '0',
-`right_index` INTEGER NOT NULL DEFAULT '0',
-`root_id` INTEGER NOT NULL DEFAULT '1',
-PRIMARY KEY (`taxon_id`)
-);
-
-CREATE INDEX `ncbi_taxa_name_taxon_id` ON `ncbi_taxa_name` (`taxon_id`);
-CREATE INDEX `ncbi_taxa_name_name` ON `ncbi_taxa_name` (`name`);
-CREATE INDEX `ncbi_taxa_name_name_class` ON `ncbi_taxa_name` (`name_class`);
-CREATE INDEX `ncbi_taxa_node_parent_id` ON `ncbi_taxa_node` (`parent_id`);
-CREATE INDEX `ncbi_taxa_node_rank` ON `ncbi_taxa_node` (`rank`);
-CREATE INDEX `ncbi_taxa_node_left_index` ON `ncbi_taxa_node` (`left_index`);
-CREATE INDEX `ncbi_taxa_node_right_index` ON `ncbi_taxa_node` (`right_index`);
+  `taxon_id` int(10) unsigned NOT NULL,
+  `parent_id` int(10) unsigned NOT NULL,
+  `rank` char(32) NOT NULL DEFAULT '',
+  `genbank_hidden_flag` tinyint(1) NOT NULL DEFAULT '0',
+  `left_index` int(10) NOT NULL DEFAULT '0',
+  `right_index` int(10) NOT NULL DEFAULT '0',
+  `root_id` int(10) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`taxon_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `rank` (`rank`),
+  KEY `left_index` (`left_index`),
+  KEY `right_index` (`right_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
