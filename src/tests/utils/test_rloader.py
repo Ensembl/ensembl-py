@@ -28,10 +28,9 @@ class TestRemoteFileLoader:
     def test_yaml_load(self):
         loader = RemoteFileLoader('yaml')
         content = loader.r_open(
-            'https://raw.githubusercontent.com/Ensembl/ensembl-production/main/.travis.yml')
+            'https://raw.githubusercontent.com/Ensembl/ensembl-py/main/.travis.yml')
         assert 'language' in content
-        assert 'services' in content
-        assert 'perl' in content
+        assert 'python' in content
 
     def test_json_load(self):
         loader = RemoteFileLoader('json')

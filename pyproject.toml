@@ -3,6 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
+addopts = "-v --tb=native --server=sqlite:///"
 testpaths = ["src/tests"]
 norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_info"]
 
@@ -10,6 +11,20 @@ norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_
 source = ["src/python"]
 
 [tool.mypy]
-python_version = 3.7
 mypy_path = "src/python"
 ignore_missing_imports = true
+
+[tool.pylint.messages_control]
+max-line-length = 110
+disable = [
+    "invalid-name",
+    "no-self-use",
+    "relative-import",
+    "similarities",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-statements",
+    "unspecified-encoding",
+    "wildcard-import"
+]
