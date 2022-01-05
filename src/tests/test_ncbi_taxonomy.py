@@ -13,7 +13,7 @@
 # limitations under the License.
 """Unit testing of :mod:`ncbi_taxonomy` module.
 
-Typical usage example:
+Typical usage example::
 
     $ pytest test_ncbi_taxonomy.py
 
