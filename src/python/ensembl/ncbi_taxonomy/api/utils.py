@@ -11,6 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Taxonomy API utils.
+This module constitutes a set of utils through a Taxonomy API main class given
+a Taxonomy ORM compatible database session.
+Typical usage example::
+    from ensembl.database import DBConnection
+    from ensembl.ncbi_taxonomy.api.utils import Taxonomy
+    dbc = DBConnection('mysql://user@mysql-host:port/dbname')
+    with dbc.session_scope() as session:
+        # Get the last common ancestor of dog and mouse
+        dog_node = Taxonomy.fetch_taxon_by_species_name(session, 'canis_lupus_familiaris')
+        mouse_node = Taxonomy.fetch_taxon_by_species_name(session, 'mus_musculus')
+        common_anc = Taxonomy.last_common_ancestor(session, dog_node.taxon_id, mouse_node.taxon_id)
+"""
+__all__ = ['Taxonomy']
 
 from sqlalchemy import and_
 from sqlalchemy.orm import as_declarative, Session, aliased
@@ -21,22 +35,21 @@ from ensembl.ncbi_taxonomy.models import NCBITaxaNode, NCBITaxonomy
 
 @as_declarative()
 class Taxonomy():
-    """Contains all the taxonomy related functions over NCBITaxonomy ORM.
+    """Contains all the taxonomy related functions over NCBITaxonomy ORM
 
     Attributes:
         session: db Session()
     """
 
-
     @classmethod
     def fetch_node_by_id(cls, session: Session, taxon_id: int) -> NCBITaxonomy:
-        """Returns taxonomy node object by taxon_id
+        """Returns taxonomy node object by ``taxon_id``
 
         Args:
             taxon_id: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
         """
         q = (
             session.query(NCBITaxonomy)
@@ -47,16 +60,16 @@ class Taxonomy():
             raise NoResultFound()
         return q
 
-
     @classmethod
     def fetch_taxon_by_species_name(cls, session: Session, name: str) -> NCBITaxonomy:
-        """Returns taxon_id integer matching name
+        """Returns taxonomy object matching ``name``
 
         Args:
             name: Scientific ncbi_taxa_name.name in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist or returns multiple results
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist or
+            returns multiple results
         """
         name.replace("_", " ")
         return (
@@ -66,7 +79,6 @@ class Taxonomy():
             .one()
         )
 
-
     @classmethod
     def parent(cls, session: Session, taxon_id: int) -> NCBITaxonomy:
         """Returns taxonomy node object for parent node
@@ -75,7 +87,7 @@ class Taxonomy():
             taxon_id: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
         """
         ParentTaxonomy = aliased(NCBITaxonomy, name="parent_ncbi_taxonomy")
         q = (
@@ -92,7 +104,6 @@ class Taxonomy():
         except TypeError:
             raise NoResultFound()
 
-
     @classmethod
     def children(cls, session: Session, taxon_id: int) -> tuple:
         """Returns taxonomy node object for children nodes
@@ -101,7 +112,8 @@ class Taxonomy():
             taxon_id: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist or has no children
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
+            or has no children
         """
         q = (
             session.query(NCBITaxonomy)
@@ -116,10 +128,9 @@ class Taxonomy():
             raise NoResultFound()
         return q
 
-
     @classmethod
     def is_root(cls, session: Session, taxon_id: int) -> bool:
-        """Returns true if taxon_id is a root and false if not
+        """Returns True if ``taxon_id`` is a root and False if not
 
         Args:
             taxon_id: Unique taxonomy identifier in database
@@ -134,16 +145,15 @@ class Taxonomy():
         except NoResultFound:
             return False
 
-
     @classmethod
     def num_descendants(cls, session: Session, taxon_id: int) -> int:
-        """Returns number of descendants from taxon_id
+        """Returns number of descendants from ``taxon_id``
 
         Args:
             taxon_id: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
         """
         session.query(NCBITaxaNode).filter(NCBITaxaNode.taxon_id == taxon_id).one()
         right_index = (
@@ -158,16 +168,15 @@ class Taxonomy():
         )
         return (right_index - left_index - 1) / 2
 
-
     @classmethod
     def is_leaf(cls, session: Session, taxon_id: int) -> bool:
-        """Returns true if taxon_id is a leaf and false if not
+        """Returns True if ``taxon_id`` is a leaf and False if not
 
         Args:
             taxon_id: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
         """
         if cls.num_descendants(session, taxon_id) == 0:
             return True
@@ -175,13 +184,14 @@ class Taxonomy():
 
     @classmethod
     def fetch_ancestors(cls, session: Session, taxon_id: int) -> tuple:
-        """Returns a tuple of ancestor node objects from taxon_id
+        """Returns a tuple of ancestor node objects from ``taxon_id``
 
         Args:
             taxon_id: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_id does not exist or has no ancestors
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
+            or has no ancestors
         """
         ParentTaxaNode = aliased(NCBITaxaNode)
         q = (
@@ -208,7 +218,6 @@ class Taxonomy():
         q = tuple(ordered_results)
         return q
 
-
     @classmethod
     def all_common_ancestors(
         cls, session: Session, taxon_id_1: int, taxon_id_2: int
@@ -220,7 +229,8 @@ class Taxonomy():
             taxon_id_2: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_ids do not exist or have no common ancestors
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id_1`` or
+            ``taxon_id_2`` do not exist or have no common ancestors
         """
         ancestors_1 = cls.fetch_ancestors(session, taxon_id_1)
         ancestors_2 = cls.fetch_ancestors(session, taxon_id_2)
@@ -239,7 +249,6 @@ class Taxonomy():
         ]
         return tuple(all_common_ancs)
 
-
     @classmethod
     def last_common_ancestor(
         cls, session: Session, taxon_id_1: int, taxon_id_2: int
@@ -251,7 +260,8 @@ class Taxonomy():
             taxon_id_2: Unique taxonomy identifier in database
 
         Raises:
-            NoResultFound() if taxon_ids do not exist or have no common ancestors
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id_1`` or
+            ``taxon_id_2`` do not exist or have no common ancestors
         """
         common_ancestors = cls.all_common_ancestors(session, taxon_id_1, taxon_id_2)
         return common_ancestors[0]
