@@ -38,6 +38,7 @@ from typing import Iterator, Union
 import sqlalchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import make_url
+from sqlalchemy_utils import database_exists
 
 from .dbconnection import DBConnection, Query, URL
 
@@ -72,17 +73,23 @@ class UnitTestDB:
         # SQLite databases are created automatically if they do not exist
         if db_url.get_dialect().name != 'sqlite':
             # Connect to the server to create the database
-            self._server = create_engine(url)
-            self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
+            if not database_exists(db_url):
+                self._server = create_engine(url)
+                self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
         try:
             # Establish the connection to the database, load the schema and import the data
             self.dbc = DBConnection(db_url)
             with self.dbc.begin() as conn:
                 for query in self._parse_sql_file(dump_dir_path / 'table.sql'):
-                    conn.execute(query)
                     table = self._get_table_name(query)
+                    try:
+                        conn.execute(query)
+                    except sqlalchemy.exc.OperationalError:
+                        conn.execute(f"DROP TABLE IF EXISTS {table}")
+                        conn.execute(query)
                     filepath = dump_dir_path / f"{table}.txt"
                     if table and filepath.exists():
+                        conn.execute(f"TRUNCATE TABLE {table}")
                         self._load_data(conn, table, filepath)
         except:
             # Make sure the database is deleted before raising the exception
