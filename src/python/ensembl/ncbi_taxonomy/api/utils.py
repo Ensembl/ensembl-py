@@ -68,16 +68,17 @@ class Taxonomy():
             name: Scientific ncbi_taxa_name.name in database
 
         Raises:
-            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist or
-            returns multiple results
+            sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
         """
-        name.replace("_", " ")
-        return (
+        q = (
             session.query(NCBITaxonomy)
-            .filter(NCBITaxonomy.name.like(name))
+            .filter(NCBITaxonomy.name == (name.replace("_", " ")))
             .filter(NCBITaxonomy.name_class == "scientific name")
-            .one()
+            .first()
         )
+        if not q:
+            raise NoResultFound()
+        return q
 
     @classmethod
     def parent(cls, session: Session, taxon_id: int) -> NCBITaxonomy:
