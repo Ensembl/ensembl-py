@@ -62,7 +62,7 @@ class Taxonomy():
 
     @classmethod
     def fetch_taxon_by_species_name(cls, session: Session, name: str) -> NCBITaxonomy:
-        """Returns taxonomy object matching ``name``
+        """Returns first taxonomy object matching ``name``
 
         Args:
             name: Scientific ncbi_taxa_name.name in database
