@@ -160,6 +160,8 @@ class CoordSystem(Base):
     version = Column(String(255))
     rank = Column(INTEGER(11), nullable=False)
     attrib = Column(SET("default_version", "sequence_level"))
+    #Many to one relationship
+    seq_regions = relationship("SeqRegion", back_populates="coord_system")
 
 
 class Ditag(Base):
@@ -219,6 +221,7 @@ class ExternalDb(Base):
     secondary_db_name = Column(String(255))
     secondary_db_table = Column(String(255))
     description = Column(Text)
+    seq_region_synonyms = relationship("SeqRegionSynonym", back_populates="external_db")
 
 
 class Gene(Base):
@@ -877,11 +880,10 @@ class SeqRegion(Base):
         index=True,
     )
     length = Column(INTEGER(10), nullable=False)
-
-    coord_system = relationship(
-        "CoordSystem",
-        primaryjoin="SeqRegion.coord_system_id == CoordSystem.coord_system_id",
-    )
+    #Many to one relationship
+    coord_system = relationship("CoordSystem", back_populates="seq_region")
+    seq_region_attribs = relationship("SeqRegionAttrib", back_populates="seq_region")
+    seq_region_synonyms = relationship("SeqRegionSynonym", back_populates="seq_region")
 
 
 class Dna(SeqRegion):
@@ -1960,6 +1962,7 @@ class SeqRegionAttrib(Base):
         server_default=text("'0'"),
     )
     value = Column(Text, primary_key=True, nullable=False, index=True)
+    seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
 
 
 #  t_seq_region_attrib = Table(
@@ -2017,11 +2020,8 @@ class SeqRegionSynonym(Base):
     synonym = Column(String(250), nullable=False)
     external_db_id = Column(INTEGER(10))
 
-    seq_region = relationship(
-        "SeqRegion",
-        primaryjoin="SeqRegionSynonym.seq_region_id == SeqRegion.seq_region_id",
-    )
-
+    seq_region = relationship("SeqRegion",backpopulates="seq_region_synonym")
+    external_db = relationship("ExternalDb",backpopulates="seq_region_synonym")
 
 class SimpleFeature(Base):
     __tablename__ = "simple_feature"
