@@ -2018,10 +2018,10 @@ class SeqRegionSynonym(Base):
         index=True,
     )
     synonym = Column(String(250), nullable=False)
-    external_db_id = Column(INTEGER(10))
+    external_db_id = Column(ForeignKey("external_db.external_db_id"))
 
-    seq_region = relationship("SeqRegion",backpopulates="seq_region_synonym")
-    external_db = relationship("ExternalDb",backpopulates="seq_region_synonym")
+    seq_region = relationship("SeqRegion",back_populates="seq_region_synonym")
+    external_db = relationship("ExternalDb",back_populates="seq_region_synonym")
 
 class SimpleFeature(Base):
     __tablename__ = "simple_feature"
