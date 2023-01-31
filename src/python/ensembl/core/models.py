@@ -161,7 +161,7 @@ class CoordSystem(Base):
     rank = Column(INTEGER(11), nullable=False)
     attrib = Column(SET("default_version", "sequence_level"))
     #Many to one relationship
-    seq_regions = relationship("SeqRegion", back_populates="coord_system")
+    seq_region = relationship("SeqRegion", back_populates="coord_system")
 
 
 class Ditag(Base):
@@ -882,8 +882,8 @@ class SeqRegion(Base):
     length = Column(INTEGER(10), nullable=False)
     #Many to one relationship
     coord_system = relationship("CoordSystem", back_populates="seq_region")
-    seq_region_attribs = relationship("SeqRegionAttrib", back_populates="seq_region")
-    seq_region_synonyms = relationship("SeqRegionSynonym", back_populates="seq_region")
+    seq_region_attrib = relationship("SeqRegionAttrib", back_populates="seq_region")
+    seq_region_synonym = relationship("SeqRegionSynonym", back_populates="seq_region")
 
 
 class Dna(SeqRegion):
