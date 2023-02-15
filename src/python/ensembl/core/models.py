@@ -221,7 +221,7 @@ class ExternalDb(Base):
     secondary_db_name = Column(String(255))
     secondary_db_table = Column(String(255))
     description = Column(Text)
-    seq_region_synonyms = relationship("SeqRegionSynonym", back_populates="external_db")
+    seq_region_synonym = relationship("SeqRegionSynonym", back_populates="external_db")
 
 
 class Gene(Base):
@@ -2018,8 +2018,7 @@ class SeqRegionSynonym(Base):
         index=True,
     )
     synonym = Column(String(250), nullable=False)
-    external_db_id = Column(INTEGER(10))
-
+    external_db_id = Column(ForeignKey("external_db.external_db_id"))
     seq_region = relationship("SeqRegion",back_populates="seq_region_synonym")
     external_db = relationship("ExternalDb",back_populates="seq_region_synonym")
 
