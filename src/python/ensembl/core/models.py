@@ -99,6 +99,8 @@ class AttribType(Base):
     name = Column(String(255), nullable=False, server_default=text("''"))
     description = Column(Text)
 
+    seq_region_attrib = relationship("SeqRegionAttrib", back_populates="attrib_type")
+
 
 class Biotype(Base):
     __tablename__ = "biotype"
@@ -1963,6 +1965,7 @@ class SeqRegionAttrib(Base):
     )
     value = Column(Text, primary_key=True, nullable=False, index=True)
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
+    attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
 
 
 #  t_seq_region_attrib = Table(
@@ -2019,8 +2022,8 @@ class SeqRegionSynonym(Base):
     )
     synonym = Column(String(250), nullable=False)
     external_db_id = Column(ForeignKey("external_db.external_db_id"))
-    seq_region = relationship("SeqRegion",back_populates="seq_region_synonym")
-    external_db = relationship("ExternalDb",back_populates="seq_region_synonym")
+    seq_region = relationship("SeqRegion", back_populates="seq_region_synonym")
+    external_db = relationship("ExternalDb", back_populates="seq_region_synonym")
 
 class SimpleFeature(Base):
     __tablename__ = "simple_feature"
