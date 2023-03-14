@@ -886,6 +886,7 @@ class SeqRegion(Base):
     coord_system = relationship("CoordSystem", back_populates="seq_region")
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="seq_region")
     seq_region_synonym = relationship("SeqRegionSynonym", back_populates="seq_region")
+    karyotype = relationship("Karyotype", back_populates="seq_region")
 
 
 class Dna(SeqRegion):
