@@ -5,5 +5,5 @@ pytest-dependency==0.5.1
 python-dotenv~=0.19.2
 PyYAML~=6.0
 requests>=2.22.0
-sqlalchemy>=1.4.0
+sqlalchemy~=1.4.0
 SQLAlchemy-Utils~=0.37.0
