@@ -76,9 +76,6 @@ repository = "https://github.com/Ensembl/ensembl-py"
 [project.scripts]
 # <cmd_name> = "ensembl.<module>:<function>"
 
-[project.entry-points.pytest11]
-ensembl_unittest = "ensembl.plugins.pytest_unittest"
-
 [tool.setuptools]
 package-dir = {"" = "src/python"}
 

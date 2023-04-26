@@ -252,6 +252,9 @@ class TestDBConnection:
                            after: int) -> None:
         """Tests :meth:`DBConnection.session_scope()` method.
 
+        Bear in mind that the second parameterization of this test will fail if the dialect/table engine
+        does not support rollback transactions.
+
         Args:
             identifier: ID of the rows to add.
             row1: first row's group and value.
@@ -267,7 +270,7 @@ class TestDBConnection:
         Base = automap_base()
         Base.prepare(self.dbc.connect(), reflect=True)
         Gibberish = Base.classes.gibberish
-        # Ignore the IntegrityError raised when commiting the new tags as some parametrizations will force it
+        # Ignore IntegrityError raised when committing the new tags as some parametrizations will force it
         try:
             with self.dbc.session_scope() as session:
                 rows = [Gibberish(id=identifier, **row1), Gibberish(id=identifier, **row2)]
