@@ -53,6 +53,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black",
+    "coverage[toml]",
     "ipython",
     "mock",
     "mypy",
