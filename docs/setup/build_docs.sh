@@ -14,8 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sphinx-apidoc -MEf --implicit-namespaces -o source ../../src/python/ensembl
+cd docs
+sphinx-apidoc -Mf --implicit-namespaces -o source ../src/python/ensembl
 
-SPHINX_MAKEFILE="docs/setup/Makefile"
+SPHINX_MAKEFILE="setup/Makefile"
 
 make -f $SPHINX_MAKEFILE clean && make -f $SPHINX_MAKEFILE html

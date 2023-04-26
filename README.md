@@ -8,3 +8,6 @@ Ensembl Python Base Library
 
 Centralise generic code use across all other project within Ensembl, more particularly DBs access layers, reusable eHive component, etc.
 
+# Documentation
+
+To generate the documentation for this repository just run `./docs/setup/build_docs.sh` from its root.
