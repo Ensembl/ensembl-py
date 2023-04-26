@@ -73,7 +73,7 @@ class TestUnitTestDB:
         """
         with expectation:
             server_url = request.config.getoption('server')
-            src_path = src if src.is_absolute() else pytest.dbs_dir / src
+            src_path = src if src.is_absolute() else pytest.dbs_dir / src  # type: ignore
             db_key = name if name else src.name
             self.dbs[db_key] = UnitTestDB(server_url, src_path, name)
             # Check that the database has been created correctly

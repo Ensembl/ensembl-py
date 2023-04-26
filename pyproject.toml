@@ -61,6 +61,7 @@ dev = [
     "requests-mock >= 1.8.0",
     "Sphinx",
     "sphinx-rtd-theme",
+    "types-PyYAML",
 ]
 doc = [
     "mock",

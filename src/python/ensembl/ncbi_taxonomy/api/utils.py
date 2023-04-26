@@ -31,6 +31,8 @@ Typical usage example::
 
 __all__ = ['Taxonomy']
 
+from typing import Tuple
+
 from sqlalchemy import and_
 from sqlalchemy.orm import as_declarative, Session, aliased
 from sqlalchemy.orm.exc import NoResultFound
@@ -190,7 +192,7 @@ class Taxonomy():
         return False
 
     @classmethod
-    def fetch_ancestors(cls, session: Session, taxon_id: int) -> tuple:
+    def fetch_ancestors(cls, session: Session, taxon_id: int) -> Tuple:
         """Returns a tuple of ancestor node objects from ``taxon_id``
 
         Args:
@@ -239,12 +241,12 @@ class Taxonomy():
             sqlalchemy.orm.exc.NoResultFound: if ``taxon_id_1`` or
             ``taxon_id_2`` do not exist or have no common ancestors
         """
-        ancestors_1 = cls.fetch_ancestors(session, taxon_id_1)
-        ancestors_2 = cls.fetch_ancestors(session, taxon_id_2)
-        if ancestors_1 is None or ancestors_2 is None:
+        taxon_1_ancestors = cls.fetch_ancestors(session, taxon_id_1)
+        taxon_2_ancestors = cls.fetch_ancestors(session, taxon_id_2)
+        if taxon_1_ancestors is None or taxon_2_ancestors is None:
             raise NoResultFound()
-        ancestors_1 = list(ancestors_1)
-        ancestors_2 = list(ancestors_2)
+        ancestors_1 = list(taxon_1_ancestors)
+        ancestors_2 = list(taxon_2_ancestors)
         ancestors_ids_1 = [taxon["taxon_id"] for taxon in ancestors_1]
         ancestors_ids_2 = [taxon["taxon_id"] for taxon in ancestors_2]
         common_ancestors = list(set(ancestors_ids_1).intersection(ancestors_ids_2))

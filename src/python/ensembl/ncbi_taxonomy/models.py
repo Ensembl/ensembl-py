@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """NCBI Taxonomy database ORM."""
+# Ignore some pylint and mypy checks due to the nature of SQLAlchemy ORMs
 # pylint: disable=missing-class-docstring
+# mypy: disable-error-code="misc, valid-type"
 
 from sqlalchemy import (
     Column,

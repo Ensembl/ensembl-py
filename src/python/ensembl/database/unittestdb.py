@@ -33,7 +33,7 @@ from pathlib import Path
 import os
 import re
 import subprocess
-from typing import Iterator, Union
+from typing import Iterator, Optional, Union
 
 import sqlalchemy
 from sqlalchemy import create_engine, text
@@ -64,7 +64,7 @@ class UnitTestDB:
 
     """
 
-    def __init__(self, url: URL, dump_dir: Union[str, os.PathLike], name: str = None) -> None:
+    def __init__(self, url: URL, dump_dir: os.PathLike, name: Optional[str] = None) -> None:
         db_url = make_url(url)
         dump_dir_path = Path(dump_dir)
         db_name = os.environ['USER'] + '_' + (name if name else dump_dir_path.name)
