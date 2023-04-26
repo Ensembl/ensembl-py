@@ -1,11 +1,10 @@
 # ensembl-py
 
-Python Ensembl Main CORE code source repository
+Ensembl Python CORE code source repository
 
+> _Note_: bear in mind that this repository will put apart in the future and the different components moved to their corresponding Python repositories.
 
 # Aim
 
-Centralise generic code use across all other project within Ensembl, more particularly DBS access layers, Reusable Hive 
-Component etc.. 
- 
+Centralise generic code use across all other project within Ensembl, more particularly DBs access layers, reusable eHive component, etc.
 
