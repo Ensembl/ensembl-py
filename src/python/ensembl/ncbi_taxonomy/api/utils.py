@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Taxonomy API utils.
+
 This module constitutes a set of utils through a Taxonomy API main class given
 a Taxonomy ORM compatible database session.
+
 Typical usage example::
+
     from ensembl.database import DBConnection
     from ensembl.ncbi_taxonomy.api.utils import Taxonomy
     dbc = DBConnection('mysql://user@mysql-host:port/dbname')
@@ -23,7 +26,9 @@ Typical usage example::
         dog_node = Taxonomy.fetch_taxon_by_species_name(session, 'canis_lupus_familiaris')
         mouse_node = Taxonomy.fetch_taxon_by_species_name(session, 'mus_musculus')
         common_anc = Taxonomy.last_common_ancestor(session, dog_node.taxon_id, mouse_node.taxon_id)
+
 """
+
 __all__ = ['Taxonomy']
 
 from sqlalchemy import and_
