@@ -1,6 +1,6 @@
 # ensembl-py
 
-Ensembl Python CORE code source repository
+Ensembl Python Base Library
 
 > _Note_: bear in mind that this repository will put apart in the future and the different components moved to their corresponding Python repositories.
 

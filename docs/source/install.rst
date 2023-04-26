@@ -44,4 +44,4 @@ Using pip:
 .. code-block:: none
    :linenos:
 
-   pip install git+https://github.com/Ensembl/ensembl-py
+   pip install git+https://github.com/Ensembl/ensembl-py#egg=ensembl-py
