@@ -9,6 +9,17 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+"""Unit testing of :mod:`hive` module.
+
+The unit testing is divided into one test class per submodule/class found in this module, and one test method
+per public function/class method.
+
+Typical usage example::
+
+    $ pytest hive/test_rest.py
+
+"""
+
 import unittest
 
 import eHive
@@ -18,8 +29,10 @@ from ensembl.hive.HiveRESTClient import HiveRESTClient
 
 
 class TestHiveRest(unittest.TestCase):
+    """Tests :class:`~ensembl.hive.HiveRESTClient.HiveRESTClient`"""
 
     def test_ApiCall200(self):
+        """Tests an `HiveRESTClient` eHive runnable"""
         mockURL = 'http://ensembl.local/api/'
         mockJSON = {"data": "content"}
         with requests_mock.Mocker() as m:

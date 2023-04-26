@@ -68,18 +68,22 @@ class DBConnection:
 
     @property
     def url(self) -> str:
+        """Returns the database's URL."""
         return str(self._engine.url)
 
     @property
     def db_name(self) -> str:
+        """Returns the database's name."""
         return self._engine.url.database
 
     @property
     def host(self) -> str:
+        """Returns the database's host."""
         return self._engine.url.host
 
     @property
     def port(self) -> int:
+        """Returns the database's host port."""
         return self._engine.url.port
 
     @property
@@ -206,7 +210,7 @@ class DBConnection:
         connection.begin_nested()
         # Define a new transaction event
         @event.listens_for(session, "after_transaction_end")
-        def end_savepoint(session, transaction):  # pylint: disable=unused-variable
+        def end_savepoint(session, transaction):  # pylint: disable=unused-argument
             if not connection.in_nested_transaction():
                 connection.begin_nested()
         try:

@@ -50,7 +50,7 @@ class RemoteFileLoader:
     def __parse(self, content: str) -> Any:
         if self.parser == 'yaml':
             return yaml.load(content, yaml.SafeLoader)
-        elif self.parser == 'ini':
+        if self.parser == 'ini':
             config = configparser.ConfigParser()
             try:
                 config.read_string(content)
@@ -58,13 +58,12 @@ class RemoteFileLoader:
                 content = "[DEFAULT]\n" + content
                 config.read_string(content)
             return config
-        elif self.parser == 'env':
+        if self.parser == 'env':
             return dotenv.dotenv_values(stream=StringIO(content))
-        elif self.parser == 'json':
+        if self.parser == 'json':
             return json.loads(content)
-        else:
-            # only return content, no parsing
-            return content
+        # only return content, no parsing
+        return content
 
     def r_open(self, url: str) -> Any:
         """Returns the parsed remote file from the given URL.
@@ -78,11 +77,10 @@ class RemoteFileLoader:
         
         """
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=120)
             if r.status_code == 200:
                 return self.__parse(r.text)
-            else:
-                raise exc.HTTPError(f"Loading {url} received: {r.status_code} ({r.reason})")
+            raise exc.HTTPError(f"Loading {url} received: {r.status_code} ({r.reason})")
         except exc.HTTPError as ex:
             logger.exception(f"Error with request to {url}: {ex}")
             raise ex

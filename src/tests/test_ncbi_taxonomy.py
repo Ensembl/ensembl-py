@@ -18,6 +18,7 @@ Typical usage example::
     $ pytest test_ncbi_taxonomy.py
 
 """
+# pylint: disable=too-many-public-methods
 
 from typing import ContextManager
 
@@ -544,4 +545,3 @@ class TestNCBITaxonomyUtils:
             result = result.__dict__
             result.pop("_sa_instance_state")
             assert result == expectation
-

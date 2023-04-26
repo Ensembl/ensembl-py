@@ -33,7 +33,6 @@ from _pytest.fixtures import FixtureRequest
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.exc import IntegrityError, OperationalError, SQLAlchemyError
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.pool import NullPool
 
 from ensembl.database import DBConnection, UnitTestDB
 

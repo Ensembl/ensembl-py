@@ -11,12 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""NCBI Taxonomy database ORM."""
+# pylint: disable=missing-class-docstring
 
 from sqlalchemy import (
     Column,
     ForeignKey,
     join,
-    Table,
 )
 from sqlalchemy.dialects.mysql import (
     INTEGER,
@@ -66,4 +67,3 @@ class NCBITaxonomy(Base):
     __table__ = name_node_join
 
     taxon_id = column_property(ncbi_taxa_name_table.c.taxon_id, ncbi_taxa_node_table.c.taxon_id)
-

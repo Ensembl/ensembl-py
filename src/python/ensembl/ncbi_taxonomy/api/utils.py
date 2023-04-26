@@ -107,8 +107,8 @@ class Taxonomy():
         )
         try:
             return q[1]
-        except TypeError:
-            raise NoResultFound()
+        except TypeError as exc:
+            raise NoResultFound() from exc
 
     @classmethod
     def children(cls, session: Session, taxon_id: int) -> tuple:
@@ -150,6 +150,7 @@ class Taxonomy():
                 return True
         except NoResultFound:
             return False
+        return False
 
     @classmethod
     def num_descendants(cls, session: Session, taxon_id: int) -> int:
