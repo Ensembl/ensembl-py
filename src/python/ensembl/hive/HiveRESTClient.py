@@ -53,9 +53,11 @@ class HiveRESTClient(eHive.BaseRunnable):
         }
 
     def _open_session(self):
-        """
-        Set up an HTTPAdapter to allow API call retries in case of Networks failures or remote API unavailability
-        :return A new requests.Session object
+        """Set up an ``HTTPAdapter`` to allow API call retries in case of Networks failures or remote API
+        unavailability.
+
+        Returns:
+            A new ``requests.Session`` object
         """
         adapter = HTTPAdapter(max_retries=Retry(
             total=self.param('retry'),
@@ -82,7 +84,7 @@ class HiveRESTClient(eHive.BaseRunnable):
         try:
             yield session
         except requests.HTTPError as e:
-            message = "Error performing request {}: {}".format(self.param('endpoint'), e.strerror)
+            message = f"Error performing request {self.param('endpoint')}: {e.strerror}"
             self.warning(message)
             raise e
         finally:

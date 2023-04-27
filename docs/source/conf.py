@@ -20,9 +20,10 @@
 
 import os
 import sys
+
 from mock import Mock as MagicMock
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../../src/python'))
 
 
 class Mock(MagicMock):
@@ -52,6 +53,13 @@ extensions = [
     'sphinx.ext.viewcode'
 ]
 
+# Defining autodoc functionality
+autodoc_default_options = {
+    'member-order': 'alphabetical',
+    'undoc-members': False,
+    'exclude-members': '__weakref__'
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -59,14 +67,14 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {'.rst': 'restructuredtext'}
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = 'Ensembl - Python Base Library'
-copyright = '2021, EMBL-European Bioinformatics Institute'
+project = 'Ensembl Python Base Library'
+copyright = '2023 EMBL-European Bioinformatics Institute'
 author = 'Ensembl'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -92,6 +100,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+
+# A list of ignored prefixes for module index sorting.
+modindex_common_prefix = ["ensembl."]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False

@@ -74,7 +74,7 @@ def pytest_make_parametrize_id(val: Any) -> str:
     """Returns a readable string representation of `val` that will be used by @pytest.mark.parametrize calls.
 
     `Pytest collection hook
-    <https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_make_parametrize_id>`_.
+    <https://docs.pytest.org/en/latest/reference/reference.html#pytest.hookspec.pytest_make_parametrize_id>`_.
 
     Args:
         val: The parametrized value.
@@ -83,7 +83,7 @@ def pytest_make_parametrize_id(val: Any) -> str:
     if isinstance(val, nullcontext):
         return 'No error'
     if isinstance(val, RaisesContext):
-        return val.expected_exception.__name__
+        return str(val.expected_exception)
     return str(val)
 
 
@@ -106,7 +106,7 @@ def db_factory_(request: FixtureRequest) -> Generator:
             name: Name to give to the new database. See :meth:`UnitTestDB.__init__()` for more information.
 
         """
-        src_path = Path(src) if os.path.isabs(src) else pytest.dbs_dir / src
+        src_path = Path(src) if os.path.isabs(src) else pytest.dbs_dir / src  # type: ignore
         db_key = name if name else src_path.name
         return created.setdefault(db_key, UnitTestDB(server_url, src_path, name))
     yield db_factory

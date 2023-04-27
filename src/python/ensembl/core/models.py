@@ -11,6 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Ensembl Core database ORM."""
+# Ignore some pylint and mypy checks due to the nature of SQLAlchemy ORMs
+# pylint: disable=missing-class-docstring,too-many-lines
+# mypy: disable-error-code="misc, valid-type"
 
 # WIP: This module is not complete nor fully tested and will most likely change its public interface
 # TODO:
@@ -2296,7 +2300,8 @@ class PredictionExon(Base):
 
     prediction_transcript = relationship(
         "PredictionTranscript",
-        primaryjoin="PredictionExon.prediction_transcript_id == PredictionTranscript.prediction_transcript_id",
+        primaryjoin=("PredictionExon.prediction_transcript_id =="
+                     "PredictionTranscript.prediction_transcript_id"),
     )
     seq_region = relationship(
         "SeqRegion",
