@@ -17,5 +17,5 @@ install:
   - pip install -e .[dev]
 
 script:
-  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest --server=mysql://travis@127.0.0.1:3306/ src/tests; fi
+  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest --server=mysql://travis@127.0.0.1:3306/ src/python/tests; fi
   - if [[ "$TESTENV" == "test" ]]; then coverage report -m; fi

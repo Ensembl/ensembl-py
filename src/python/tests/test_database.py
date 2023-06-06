@@ -65,7 +65,7 @@ class TestUnitTestDB:
         Args:
             request: Access to the requesting test context.
             src: Directory path where the test database schema and content files are located. If a relative
-                path is provided, the root folder will be ``src/tests/databases``.
+                path is provided, the root folder will be ``src/python/tests/databases``.
             name: Name to give to the new database.
             expectation: Context manager for the expected exception, i.e. the test will only pass if that
                 exception is raised. Use :class:`~contextlib.nullcontext` if no exception is expected.
