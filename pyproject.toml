@@ -134,7 +134,7 @@ norecursedirs = [
     "tmp*",
     "*.egg_info",
 ]
-testpaths = ["src/tests"]
+testpaths = ["src/python/tests"]
 
 [tool.coverage.run]
 branch = true

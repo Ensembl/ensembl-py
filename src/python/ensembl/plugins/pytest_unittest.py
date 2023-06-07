@@ -67,7 +67,7 @@ def pytest_configure(config: Config) -> None:
         server_url = server_url.set(password=os.environ[server_url.password[1:]])
         config.option.server = str(server_url)
     # Add global variables
-    pytest.dbs_dir = Path(__file__).parents[3] / 'tests' / 'databases'
+    pytest.dbs_dir = Path(__file__).parents[2] / 'tests' / 'databases'
 
 
 def pytest_make_parametrize_id(val: Any) -> str:
