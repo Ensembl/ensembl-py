@@ -44,7 +44,8 @@ def pytest_addoption(parser: Parser) -> None:
     """
     # Add the Ensembl unitary test parameters to pytest parser
     group = parser.getgroup("ensembl unit testing")
-    group.addoption('--server', action='store', metavar='URL', dest='server', required=True,
+    group.addoption('--server', action='store', metavar='URL', dest='server', required=False,
+                    default=os.getenv('DB_HOST', 'mysql://ensembl@localhost:3306'),
                     help="URL to the server where to create the test database(s).")
     group.addoption('--keep-data', action='store_true', dest='keep_data',
                     help="Do not remove test databases/temporary directories. Default: False")
