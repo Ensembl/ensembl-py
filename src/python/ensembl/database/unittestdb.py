@@ -73,9 +73,11 @@ class UnitTestDB:
         # SQLite databases are created automatically if they do not exist
         if db_url.get_dialect().name != 'sqlite':
             # Connect to the server to create the database
-            if not database_exists(db_url):
-                self._server = create_engine(url)
-                self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
+            self._server = create_engine(url)
+            # for innodb schema, unitary drop table doesn't work, if data present
+            # so whatever it is, drop before create
+            self._server.execute(text(f"DROP DATABASE IF EXISTS {db_url.database};"))
+            self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
         try:
             # Establish the connection to the database, load the schema and import the data
             self.dbc = DBConnection(db_url)
