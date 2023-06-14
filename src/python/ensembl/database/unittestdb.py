@@ -91,7 +91,10 @@ class UnitTestDB:
                         conn.execute(query)
                     filepath = dump_dir_path / f"{table}.txt"
                     if table and filepath.exists():
-                        conn.execute(f"TRUNCATE TABLE {table}")
+                        if db_url.get_dialect().name != 'sqlite':
+                            conn.execute(f"TRUNCATE TABLE {table}")
+                        else:
+                            conn.execute(f"DELETE FROM {table}")
                         self._load_data(conn, table, filepath)
         except:
             # Make sure the database is deleted before raising the exception
