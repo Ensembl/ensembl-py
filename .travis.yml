@@ -1,11 +1,12 @@
 language: python
 os: linux
+dist: bionic
 
 services:
   - mysql
 
 python:
-  - "3.7"
+  - "3.8.13"
 
 env:
   - TESTENV=test
@@ -14,10 +15,8 @@ before_install:
   - mysql -u root -h localhost -e 'GRANT ALL PRIVILEGES ON *.* TO "travis"@"%"'
 
 install:
-  - pip install -r requirements.txt
-  - if [[ "$TESTENV" != "docs" ]]; then pip install -r requirements-test.txt; fi
-  - pip install -e .
+  - pip install -e .[dev]
 
 script:
-  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest --server=mysql://travis@127.0.0.1:3306/ src/tests; fi
+  - if [[ "$TESTENV" == "test" ]]; then coverage run -m pytest --server=mysql://travis@127.0.0.1:3306/ src/python/tests; fi
   - if [[ "$TESTENV" == "test" ]]; then coverage report -m; fi

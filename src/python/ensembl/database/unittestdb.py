@@ -33,7 +33,7 @@ from pathlib import Path
 import os
 import re
 import subprocess
-from typing import Iterator, Union
+from typing import Iterator, Optional, Union
 
 import sqlalchemy
 from sqlalchemy import create_engine, text
@@ -64,7 +64,7 @@ class UnitTestDB:
 
     """
 
-    def __init__(self, url: URL, dump_dir: Union[str, os.PathLike], name: str = None) -> None:
+    def __init__(self, url: URL, dump_dir: os.PathLike, name: Optional[str] = None) -> None:
         db_url = make_url(url)
         dump_dir_path = Path(dump_dir)
         db_name = os.environ['USER'] + '_' + (name if name else dump_dir_path.name)
@@ -73,9 +73,11 @@ class UnitTestDB:
         # SQLite databases are created automatically if they do not exist
         if db_url.get_dialect().name != 'sqlite':
             # Connect to the server to create the database
-            if not database_exists(db_url):
-                self._server = create_engine(url)
-                self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
+            self._server = create_engine(url)
+            # for innodb schema, unitary drop table doesn't work, if data present
+            # so whatever it is, drop before create
+            self._server.execute(text(f"DROP DATABASE IF EXISTS {db_url.database};"))
+            self._server.execute(text(f"CREATE DATABASE {db_url.database};"))
         try:
             # Establish the connection to the database, load the schema and import the data
             self.dbc = DBConnection(db_url)
@@ -89,7 +91,10 @@ class UnitTestDB:
                         conn.execute(query)
                     filepath = dump_dir_path / f"{table}.txt"
                     if table and filepath.exists():
-                        conn.execute(f"TRUNCATE TABLE {table}")
+                        if db_url.get_dialect().name != 'sqlite':
+                            conn.execute(f"TRUNCATE TABLE {table}")
+                        else:
+                            conn.execute(f"DELETE FROM {table}")
                         self._load_data(conn, table, filepath)
         except:
             # Make sure the database is deleted before raising the exception

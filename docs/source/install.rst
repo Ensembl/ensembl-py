@@ -22,7 +22,7 @@ Requirements
 Software
 ^^^^^^^^
 
-- Python 3.7+
+- Python 3.8+
 
 Python Modules
 ^^^^^^^^^^^^^^
@@ -44,4 +44,4 @@ Using pip:
 .. code-block:: none
    :linenos:
 
-   pip install git+https://github.com/Ensembl/ensembl-py
+   pip install git+https://github.com/Ensembl/ensembl-py#egg=ensembl-py

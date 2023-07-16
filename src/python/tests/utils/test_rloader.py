@@ -24,8 +24,10 @@ from ensembl.utils.rloader import RemoteFileLoader
 
 
 class TestRemoteFileLoader:
+    """Tests :class:`~ensembl.utils.rloader.RemoteFileLoader`"""
 
     def test_yaml_load(self):
+        """Tests :func:`r_open()` with YAML file"""
         loader = RemoteFileLoader('yaml')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-py/main/.travis.yml')
@@ -33,6 +35,7 @@ class TestRemoteFileLoader:
         assert 'python' in content
 
     def test_json_load(self):
+        """Tests :func:`r_open()` with JSON file"""
         loader = RemoteFileLoader('json')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production/main/modules/t/genes_test.json')
@@ -40,12 +43,14 @@ class TestRemoteFileLoader:
         assert 'seq_region_synonyms' in content[0]
 
     def test_ini_load(self):
+        """Tests :func:`r_open()` with INI file"""
         loader = RemoteFileLoader('ini')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production-services/main/.env.dist')
         assert content.get('DEFAULT', 'SECRET_KEY') == 'thisisasecretkeynotmeantforproduction'
 
     def test_env_load(self):
+        """Tests :func:`r_open()` with ENV file"""
         loader = RemoteFileLoader('env')
         content = loader.r_open(
             'https://raw.githubusercontent.com/Ensembl/ensembl-production-services/main/.env.dist')
@@ -53,6 +58,7 @@ class TestRemoteFileLoader:
         assert 'DATABASE_URL' in content
 
     def test_not_existing_load(self):
+        """Tests :func:`r_open()` when the file does not exist"""
         loader = RemoteFileLoader('env')
         with pytest.raises(requests.exceptions.HTTPError) as e:
             content = loader.r_open('http://httpbin.org/status/404')
@@ -60,6 +66,7 @@ class TestRemoteFileLoader:
             assert content is None
 
     def test_raw_load(self):
+        """Tests :func:`r_open()` with raw file"""
         loader = RemoteFileLoader()
         content = loader.r_open("https://github.com/Ensembl/ensembl-production/blob/release/104/modules/"
                                 "Bio/EnsEMBL/Production/Utils/CopyDatabase.pm")

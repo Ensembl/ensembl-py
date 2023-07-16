@@ -11,6 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Ensembl Core database ORM."""
+# Ignore some pylint and mypy checks due to the nature of SQLAlchemy ORMs
+# pylint: disable=missing-class-docstring,too-many-lines
+# mypy: disable-error-code="misc, valid-type"
 
 # WIP: This module is not complete nor fully tested and will most likely change its public interface
 # TODO:
@@ -102,6 +106,7 @@ class AttribType(Base):
     seq_region_attributes = relationship("SeqRegionAttrib", back_populates="attrib_type")
 
 
+
 class Biotype(Base):
     __tablename__ = "biotype"
     __table_args__ = (Index("name_type_idx", "name", "object_type", unique=True),)
@@ -165,6 +170,7 @@ class CoordSystem(Base):
     # Many to one relationship
     seq_region = relationship("SeqRegion", back_populates="coord_system")
     meta = relationship("Meta", back_populates="coord_system")
+
 
 
 class Ditag(Base):
@@ -834,6 +840,7 @@ class SeqRegion(Base):
     coord_system = relationship("CoordSystem", back_populates="seq_region")
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="seq_region")
     seq_region_synonym = relationship("SeqRegionSynonym", back_populates="seq_region")
+    karyotype = relationship("Karyotype", back_populates="seq_region")
 
 
 class Dna(SeqRegion):
@@ -1761,6 +1768,7 @@ class SeqRegionAttrib(Base):
     attrib_type = relationship("AttribType", back_populates="seq_region_attributes")
 
 
+
 # Not in first normal form, can't be mapped (i.e. it has fully duplicated rows for homo_sapiens_core)
 t_seq_region_mapping = Table(
     "seq_region_mapping",
@@ -1793,7 +1801,7 @@ class SeqRegionSynonym(Base):
     )
     synonym = Column(String(250), nullable=False)
     external_db_id = Column(ForeignKey("external_db.external_db_id"))
-
+    
     seq_region = relationship("SeqRegion", back_populates="seq_region_synonym")
     external_db = relationship("ExternalDb", back_populates="seq_region_synonym")
 
@@ -2020,7 +2028,8 @@ class PredictionExon(Base):
 
     prediction_transcript = relationship(
         "PredictionTranscript",
-        primaryjoin="PredictionExon.prediction_transcript_id == PredictionTranscript.prediction_transcript_id",
+        primaryjoin=("PredictionExon.prediction_transcript_id =="
+                     "PredictionTranscript.prediction_transcript_id"),
     )
     seq_region = relationship(
         "SeqRegion",

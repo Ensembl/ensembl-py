@@ -44,7 +44,8 @@ def pytest_addoption(parser: Parser) -> None:
     """
     # Add the Ensembl unitary test parameters to pytest parser
     group = parser.getgroup("ensembl unit testing")
-    group.addoption('--server', action='store', metavar='URL', dest='server', required=True,
+    group.addoption('--server', action='store', metavar='URL', dest='server', required=False,
+                    default=os.getenv('DB_HOST', 'sqlite:////'),
                     help="URL to the server where to create the test database(s).")
     group.addoption('--keep-data', action='store_true', dest='keep_data',
                     help="Do not remove test databases/temporary directories. Default: False")
@@ -67,14 +68,14 @@ def pytest_configure(config: Config) -> None:
         server_url = server_url.set(password=os.environ[server_url.password[1:]])
         config.option.server = str(server_url)
     # Add global variables
-    pytest.dbs_dir = Path(__file__).parents[3] / 'tests' / 'databases'
+    pytest.dbs_dir = Path(__file__).parents[2] / 'tests' / 'databases'
 
 
 def pytest_make_parametrize_id(val: Any) -> str:
     """Returns a readable string representation of `val` that will be used by @pytest.mark.parametrize calls.
 
     `Pytest collection hook
-    <https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_make_parametrize_id>`_.
+    <https://docs.pytest.org/en/latest/reference/reference.html#pytest.hookspec.pytest_make_parametrize_id>`_.
 
     Args:
         val: The parametrized value.
@@ -83,7 +84,7 @@ def pytest_make_parametrize_id(val: Any) -> str:
     if isinstance(val, nullcontext):
         return 'No error'
     if isinstance(val, RaisesContext):
-        return val.expected_exception.__name__
+        return str(val.expected_exception)
     return str(val)
 
 
@@ -106,7 +107,7 @@ def db_factory_(request: FixtureRequest) -> Generator:
             name: Name to give to the new database. See :meth:`UnitTestDB.__init__()` for more information.
 
         """
-        src_path = Path(src) if os.path.isabs(src) else pytest.dbs_dir / src
+        src_path = Path(src) if os.path.isabs(src) else pytest.dbs_dir / src  # type: ignore
         db_key = name if name else src_path.name
         return created.setdefault(db_key, UnitTestDB(server_url, src_path, name))
     yield db_factory
