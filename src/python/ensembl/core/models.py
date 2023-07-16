@@ -751,9 +751,6 @@ class Meta(Base):
 
     coord_system = relationship("CoordSystem", back_populates="meta")
 
-    species = relationship(
-        "CoordSystem", primaryjoin="Meta.species_id == CoordSystem.species_id"
-    )
 
 
 class MetaCoord(Base):
@@ -1761,7 +1758,7 @@ class SeqRegionAttrib(Base):
     )
     value = Column(Text, primary_key=True, nullable=False, index=True)
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
-    attrib_type = relationship("AttribType", back_populates="seq_region_attribs")
+    attrib_type = relationship("AttribType", back_populates="seq_region_attributes")
 
 
 # Not in first normal form, can't be mapped (i.e. it has fully duplicated rows for homo_sapiens_core)
