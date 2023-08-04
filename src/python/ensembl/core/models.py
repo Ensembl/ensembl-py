@@ -103,7 +103,7 @@ class AttribType(Base):
     name = Column(String(255), nullable=False, server_default=text("''"))
     description = Column(Text)
 
-    seq_region_attributes = relationship("SeqRegionAttrib", back_populates="attrib_type")
+    seq_region_attrib = relationship("SeqRegionAttrib", back_populates="attrib_type")
 
 
 
