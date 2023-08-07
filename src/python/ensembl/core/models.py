@@ -1765,7 +1765,7 @@ class SeqRegionAttrib(Base):
     )
     value = Column(Text, primary_key=True, nullable=False, index=True)
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
-    attrib_type = relationship("AttribType", back_populates="seq_region_attributes")
+    attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
 
 
 
