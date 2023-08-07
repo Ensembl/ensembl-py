@@ -106,6 +106,7 @@ class AttribType(Base):
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="attrib_type")
 
 
+
 class Biotype(Base):
     __tablename__ = "biotype"
     __table_args__ = (Index("name_type_idx", "name", "object_type", unique=True),)
@@ -166,8 +167,10 @@ class CoordSystem(Base):
     version = Column(String(255))
     rank = Column(INTEGER(11), nullable=False)
     attrib = Column(SET("default_version", "sequence_level"))
-    #Many to one relationship
+    # Many to one relationship
     seq_region = relationship("SeqRegion", back_populates="coord_system")
+    meta = relationship("Meta", back_populates="coord_system")
+
 
 
 class Ditag(Base):
@@ -587,22 +590,6 @@ class AnalysisDescription(Base):
     web_data = Column(Text)
 
 
-#  t_analysis_description = Table(
-#      "analysis_description",
-#      metadata,
-#      Column(
-#          "analysis_id",
-#          ForeignKey("analysis.analysis_id"),
-#          nullable=False,
-#          unique=True,
-#      ),
-#      Column("description", Text),
-#      Column("display_label", String(255), nullable=False),
-#      Column("displayable", TINYINT(1), nullable=False, server_default=text("'1'")),
-#      Column("web_data", Text),
-#  )
-
-
 class DataFile(Base):
     __tablename__ = "data_file"
     __table_args__ = (
@@ -718,28 +705,6 @@ class GeneAttrib(Base):
     value = Column(Text, primary_key=True, nullable=False, index=True)
 
 
-#  t_gene_attrib = Table(
-#      "gene_attrib",
-#      metadata,
-#      Column(
-#          "gene_id",
-#          ForeignKey("gene.gene_id"),
-#          nullable=False,
-#          index=True,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "attrib_type_id",
-#          ForeignKey("attrib_type.attrib_type_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("value", Text, nullable=False, index=True),
-#      Index("gene_attribx", "gene_id", "attrib_type_id", "value", unique=True),
-#      Index("type_val_idx", "attrib_type_id", "value"),
-#  )
-
-
 class MarkerMapLocation(Base):
     __tablename__ = "marker_map_location"
     __table_args__ = (Index("map_idx", "map_id", "chromosome_name", "position"),)
@@ -790,9 +755,8 @@ class Meta(Base):
     meta_key = Column(String(40), nullable=False)
     meta_value = Column(String(255), nullable=False)
 
-    species = relationship(
-        "CoordSystem", primaryjoin="Meta.species_id == CoordSystem.species_id"
-    )
+    coord_system = relationship("CoordSystem", back_populates="meta")
+
 
 
 class MetaCoord(Base):
@@ -809,20 +773,6 @@ class MetaCoord(Base):
         nullable=False,
     )
     max_length = Column(INTEGER(11))
-
-
-#  t_meta_coord = Table(
-#      "meta_coord",
-#      metadata,
-#      Column("table_name", String(40), nullable=False),
-#      Column(
-#          "coord_system_id",
-#          ForeignKey("coord_system.coord_system_id"),
-#          nullable=False,
-#      ),
-#      Column("max_length", INTEGER(11)),
-#      Index("cs_table_name_idx", "coord_system_id", "table_name", unique=True),
-#  )
 
 
 class ProteinFeature(Base):
@@ -886,7 +836,7 @@ class SeqRegion(Base):
         index=True,
     )
     length = Column(INTEGER(10), nullable=False)
-    #Many to one relationship
+    # Many to one relationship
     coord_system = relationship("CoordSystem", back_populates="seq_region")
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="seq_region")
     seq_region_synonym = relationship("SeqRegionSynonym", back_populates="seq_region")
@@ -942,34 +892,6 @@ class StableIdEvent(Base):
     score = Column(Float, nullable=False, server_default=text("'0'"))
 
 
-#  t_stable_id_event = Table(
-#      "stable_id_event",
-#      metadata,
-#      Column("old_stable_id", String(128), index=True),
-#      Column("old_version", SMALLINT(6)),
-#      Column("new_stable_id", String(128), index=True),
-#      Column("new_version", SMALLINT(6)),
-#      Column(
-#          "mapping_session_id",
-#          ForeignKey("mapping_session.mapping_session_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "type", Enum("gene", "transcript", "translation", "rnaproduct"), nullable=False
-#      ),
-#      Column("score", Float, nullable=False, server_default=text("'0'")),
-#      Index(
-#          "uni_idx",
-#          "mapping_session_id",
-#          "old_stable_id",
-#          "new_stable_id",
-#          "type",
-#          unique=True,
-#      ),
-#  )
-
-
 class TranscriptAttrib(Base):
     __tablename__ = "transcript_attrib"
     __table_args__ = (
@@ -1001,30 +923,6 @@ class TranscriptAttrib(Base):
     value = Column(Text, primary_key=True, nullable=False, index=True)
 
 
-#  t_transcript_attrib = Table(
-#      "transcript_attrib",
-#      metadata,
-#      Column(
-#          "transcript_id",
-#          ForeignKey("transcript.transcript_id"),
-#          nullable=False,
-#          index=True,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "attrib_type_id",
-#          ForeignKey("attrib_type.attrib_type_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("value", Text, nullable=False, index=True),
-#      Index("type_val_idx", "attrib_type_id", "value"),
-#      Index(
-#          "transcript_attribx", "transcript_id", "attrib_type_id", "value", unique=True
-#      ),
-#  )
-
-
 class TranscriptSupportingFeature(Base):
     __tablename__ = "transcript_supporting_feature"
     __table_args__ = (
@@ -1045,22 +943,6 @@ class TranscriptSupportingFeature(Base):
     feature_id = Column(
         INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'")
     )
-
-
-#  t_transcript_supporting_feature = Table(
-#      "transcript_supporting_feature",
-#      metadata,
-#      Column(
-#          "transcript_id",
-#          ForeignKey("transcript.transcript_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("feature_type", Enum("dna_align_feature", "protein_align_feature")),
-#      Column("feature_id", INTEGER(10), nullable=False, server_default=text("'0'")),
-#      Index("feature_idx", "feature_type", "feature_id"),
-#      Index("all_idx", "transcript_id", "feature_type", "feature_id", unique=True),
-#  )
 
 
 class TranslationAttrib(Base):
@@ -1090,30 +972,6 @@ class TranslationAttrib(Base):
         server_default=text("'0'"),
     )
     value = Column(Text, primary_key=True, nullable=False, index=True)
-
-
-#  t_translation_attrib = Table(
-#      "translation_attrib",
-#      metadata,
-#      Column(
-#          "translation_id",
-#          ForeignKey("translation.translation_id"),
-#          nullable=False,
-#          index=True,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "attrib_type_id",
-#          ForeignKey("attrib_type.attrib_type_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("value", Text, nullable=False, index=True),
-#      Index("type_val_idx", "attrib_type_id", "value"),
-#      Index(
-#          "translation_attribx", "translation_id", "attrib_type_id", "value", unique=True
-#      ),
-#  )
 
 
 class UnmappedObject(Base):
@@ -1282,40 +1140,6 @@ class Assembly(Base):
     cmp_start = Column(INTEGER(10), primary_key=True, nullable=False)
     cmp_end = Column(INTEGER(10), primary_key=True, nullable=False)
     ori = Column(TINYINT(4), primary_key=True, nullable=False)
-
-
-#  t_assembly = Table(
-#      "assembly",
-#      metadata,
-#      Column(
-#          "asm_seq_region_id",
-#          ForeignKey("seq_region.seq_region_id"),
-#          nullable=False,
-#      ),
-#      Column(
-#          "cmp_seq_region_id",
-#          ForeignKey("seq_region.seq_region_id"),
-#          nullable=False,
-#          index=True,
-#      ),
-#      Column("asm_start", INTEGER(10), nullable=False),
-#      Column("asm_end", INTEGER(10), nullable=False),
-#      Column("cmp_start", INTEGER(10), nullable=False),
-#      Column("cmp_end", INTEGER(10), nullable=False),
-#      Column("ori", TINYINT(4), nullable=False),
-#      Index("asm_seq_region_idx", "asm_seq_region_id", "asm_start"),
-#      Index(
-#          "all_idx",
-#          "asm_seq_region_id",
-#          "cmp_seq_region_id",
-#          "asm_start",
-#          "asm_end",
-#          "cmp_start",
-#          "cmp_end",
-#          "ori",
-#          unique=True,
-#      ),
-#  )
 
 
 class AssemblyException(Base):
@@ -1621,23 +1445,6 @@ class MarkerFeature(Base):
     )
 
 
-#  class MiscFeatureMiscSet(Base):
-#      __tablename__ = "misc_feature_misc_set"
-#      __table_args__ = (Index("reverse_idx", "misc_set_id", "misc_feature_id"),)
-
-#      misc_feature_id = Column(
-#          ForeignKey("misc_feature.misc_feature_id"),
-#          primary_key=True,
-#          nullable=False,
-#          server_default=text("'0'"),
-#      )
-#      misc_set_id = Column(
-#          ForeignKey("misc_set.misc_set_id"),
-#          primary_key=True,
-#          nullable=False,
-#          server_default=text("'0'"),
-#     )
-
 t_misc_feature_misc_set = Table(
     "misc_feature_misc_set",
     metadata,
@@ -1750,18 +1557,6 @@ class DependentXref(ObjectXref):
         nullable=False,
         index=True,
     )
-
-    #  dependent_xref = relationship(
-    #      "Xref", primaryjoin="DependentXref.dependent_xref_id == Xref.xref_id"
-    #  )
-    #  master_xref = relationship(
-    #      "Xref", primaryjoin="DependentXref.master_xref_id == Xref.xref_id"
-    #  )
-    #  object_xref = relationship(
-    #      "ObjectXref",
-    #      uselist=False,
-    #      primaryjoin="DependentXref.object_xref_id == ObjectXref.object_xref_id",
-    #  )
 
 
 class IdentityXref(ObjectXref):
@@ -1973,27 +1768,6 @@ class SeqRegionAttrib(Base):
     attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
 
 
-#  t_seq_region_attrib = Table(
-#      "seq_region_attrib",
-#      metadata,
-#      Column(
-#          "seq_region_id",
-#          ForeignKey("seq_region.seq_region_id"),
-#          nullable=False,
-#          index=True,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "attrib_type_id",
-#          ForeignKey("attrib_type.attrib_type_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("value", Text, nullable=False, index=True),
-#      Index("type_val_idx", "attrib_type_id", "value"),
-#      Index("region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True),
-#  )
-
 
 # Not in first normal form, can't be mapped (i.e. it has fully duplicated rows for homo_sapiens_core)
 t_seq_region_mapping = Table(
@@ -2027,8 +1801,10 @@ class SeqRegionSynonym(Base):
     )
     synonym = Column(String(250), nullable=False)
     external_db_id = Column(ForeignKey("external_db.external_db_id"))
+    
     seq_region = relationship("SeqRegion", back_populates="seq_region_synonym")
     external_db = relationship("ExternalDb", back_populates="seq_region_synonym")
+
 
 class SimpleFeature(Base):
     __tablename__ = "simple_feature"
@@ -2156,28 +1932,6 @@ class MiscAttrib(Base):
     value = Column(Text, primary_key=True, nullable=False, index=True)
 
 
-#  t_misc_attrib = Table(
-#      "misc_attrib",
-#      metadata,
-#      Column(
-#          "misc_feature_id",
-#          ForeignKey("misc_feature.misc_feature_id"),
-#          nullable=False,
-#          index=True,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "attrib_type_id",
-#          ForeignKey("attrib_type.attrib_type_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("value", Text, nullable=False, index=True),
-#      Index("misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True),
-#      Index("type_val_idx", "attrib_type_id", "value"),
-#  )
-
-
 class OntologyXref(Base):
     __tablename__ = "ontology_xref"
     __table_args__ = (
@@ -2205,32 +1959,6 @@ class OntologyXref(Base):
         index=True,
     )
     linkage_type = Column(String(3), primary_key=True)
-
-
-#  t_ontology_xref = Table(
-#      "ontology_xref",
-#      metadata,
-#      Column(
-#          "object_xref_id",
-#          ForeignKey("object_xref.object_xref_id"),
-#          nullable=False,
-#          index=True,
-#          server_default=text("'0'"),
-#      ),
-#      Column(
-#          "source_xref_id",
-#          ForeignKey("xref.xref_id"),
-#          index=True,
-#      ),
-#      Column("linkage_type", String(3)),
-#      Index(
-#          "object_source_type_idx",
-#          "object_xref_id",
-#          "source_xref_id",
-#          "linkage_type",
-#          unique=True,
-#      ),
-#  )
 
 
 class OperonTranscript(Base):
@@ -2329,22 +2057,6 @@ class SupportingFeature(Base):
     feature_id = Column(
         INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'")
     )
-
-
-#  t_supporting_feature = Table(
-#      "supporting_feature",
-#      metadata,
-#      Column(
-#          "exon_id",
-#          ForeignKey("exon.exon_id"),
-#          nullable=False,
-#          server_default=text("'0'"),
-#      ),
-#      Column("feature_type", Enum("dna_align_feature", "protein_align_feature")),
-#      Column("feature_id", INTEGER(10), nullable=False, server_default=text("'0'")),
-#      Index("all_idx", "exon_id", "feature_type", "feature_id", unique=True),
-#      Index("feature_idx", "feature_type", "feature_id"),
-#  )
 
 
 t_operon_transcript_gene = Table(
