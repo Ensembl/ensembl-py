@@ -85,6 +85,7 @@ version = {attr = "ensembl.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src/python"]
+exclude = ["tests*"]
 
 # For additional information on `setuptools` configuration see:
 #    https://setuptools.pypa.io/en/latest/userguide/quickstart.html
