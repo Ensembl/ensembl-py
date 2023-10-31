@@ -20,6 +20,8 @@ import argparse
 import os
 from pathlib import Path
 
+import sqlalchemy
+
 
 def _validate_src_path(parser: argparse.ArgumentParser, src_path: os.PathLike) -> Path:
     """Returns the path if exists and it is readable, raises an error through the argument parser otherwise.
@@ -99,6 +101,17 @@ class ArgumentParser(argparse.ArgumentParser):
             kwargs["metavar"] = "PATH"
         kwargs.pop("type", None)
         self.add_argument(*args, **kwargs, type=lambda x: _validate_dst_path(self, x))
+
+    def add_argument_url(self, *args, **kwargs) -> None:
+        """Adds :class:`sqlalchemy.engine.URL` argument.
+
+        If "metavar" is not defined it is added with "URI" as value to improve help text readability.
+
+        """
+        if "metavar" not in kwargs:
+            kwargs["metavar"] = "URI"
+        kwargs.pop("type", None)
+        self.add_argument(*args, **kwargs, type=lambda x: sqlalchemy.engine.make_url(x))
 
     def add_server_arguments(self, prefix: str = "") -> None:
         """Adds the usual set of arguments needed to connect to a server.
