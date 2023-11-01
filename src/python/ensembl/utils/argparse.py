@@ -17,6 +17,7 @@
 __all__ = ["ArgumentParser"]
 
 import argparse
+import logging
 import os
 from pathlib import Path
 
@@ -184,4 +185,8 @@ class ArgumentParser(argparse.ArgumentParser):
                 getattr(args, f"{prefix}database", None),
             )
             setattr(args, f"{prefix}url", server_url)
+        # Log the parsed arguments for debugging purposes
+        logging.debug(f"{self.prog} called with the following arguments:")
+        for x in sorted(vars(args)):
+            logging.debug("  --%s %s", x, getattr(args, x))
         return args
