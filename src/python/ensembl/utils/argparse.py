@@ -24,46 +24,6 @@ from pathlib import Path
 from sqlalchemy.engine import make_url, URL
 
 
-def _validate_src_path(parser: argparse.ArgumentParser, src_path: os.PathLike) -> Path:
-    """Returns the path if exists and it is readable, raises an error through the argument parser otherwise.
-
-    Args:
-        parser: Argument parser.
-        src_path: File or directory path to check.
-
-    """
-    src_path = Path(src_path)
-    if not src_path.exists():
-        parser.error(f"'{src_path}' not found")
-    elif not os.access(src_path, os.R_OK):
-        parser.error(f"'{src_path}' not readable")
-    return src_path
-
-
-def _validate_dst_path(parser: argparse.ArgumentParser, dst_path: os.PathLike, exists_ok: bool) -> Path:
-    """Returns the path if it is writable, raises an error through the argument parser otherwise.
-
-    Args:
-        parser: Argument parser.
-        dst_path: File or directory path to check.
-        exists_ok: Do not raise an error if the destination path already exists.
-
-    """
-    dst_path = Path(dst_path)
-    if dst_path.exists():
-        if os.access(dst_path, os.W_OK):
-            if exists_ok:
-                return dst_path
-            else:
-                parser.error(f"'{dst_path}' already exists")
-        else:
-            parser.error(f"'{dst_path}' is not writable")
-    for parent_path in dst_path.parents:
-        if parent_path.exists() and not os.access(parent_path, os.W_OK):
-            parser.error(f"'{dst_path}' is not writable")
-    return dst_path
-
-
 class ArgumentParser(argparse.ArgumentParser):
     """Extends :class:`argparse.ArgumentParser` with additional methods and functionality.
 
@@ -77,6 +37,43 @@ class ArgumentParser(argparse.ArgumentParser):
         super().__init__(*args, **kwargs)
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
         self.__server_groups = []
+
+    def _validate_src_path(self, src_path: os.PathLike) -> Path:
+        """Returns the path if exists and it is readable, raises an error through the parser otherwise.
+
+        Args:
+            src_path: File or directory path to check.
+
+        """
+        src_path = Path(src_path)
+        if not src_path.exists():
+            self.error(f"'{src_path}' not found")
+        elif not os.access(src_path, os.R_OK):
+            self.error(f"'{src_path}' not readable")
+        return src_path
+
+
+    def _validate_dst_path(self, dst_path: os.PathLike, exists_ok: bool) -> Path:
+        """Returns the path if it is writable, raises an error through the parser otherwise.
+
+        Args:
+            dst_path: File or directory path to check.
+            exists_ok: Do not raise an error if the destination path already exists.
+
+        """
+        dst_path = Path(dst_path)
+        if dst_path.exists():
+            if os.access(dst_path, os.W_OK):
+                if exists_ok:
+                    return dst_path
+                else:
+                    self.error(f"'{dst_path}' already exists")
+            else:
+                self.error(f"'{dst_path}' is not writable")
+        for parent_path in dst_path.parents:
+            if parent_path.exists() and not os.access(parent_path, os.W_OK):
+                self.error(f"'{dst_path}' is not writable")
+        return dst_path
 
     def add_argument(self, *args, **kwargs) -> None:
         """Extends the parent function by excluding the default value in the help text when not provided.
@@ -98,7 +95,7 @@ class ArgumentParser(argparse.ArgumentParser):
         if "metavar" not in kwargs:
             kwargs["metavar"] = "PATH"
         kwargs.pop("type", None)
-        self.add_argument(*args, **kwargs, type=lambda x: _validate_src_path(self, x))
+        self.add_argument(*args, **kwargs, type=lambda x: self._validate_src_path(x))
 
     def add_argument_dst_path(self, *args, exists_ok: bool = True, **kwargs) -> None:
         """Adds :class:`pathlib.Path` argument, checking if it is writable at parsing time.
@@ -112,7 +109,7 @@ class ArgumentParser(argparse.ArgumentParser):
         if "metavar" not in kwargs:
             kwargs["metavar"] = "PATH"
         kwargs.pop("type", None)
-        self.add_argument(*args, **kwargs, type=lambda x: _validate_dst_path(self, x, exists_ok))
+        self.add_argument(*args, **kwargs, type=lambda x: self._validate_dst_path(x, exists_ok))
 
     def add_argument_url(self, *args, **kwargs) -> None:
         """Adds :class:`sqlalchemy.engine.URL` argument.
