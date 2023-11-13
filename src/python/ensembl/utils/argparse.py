@@ -37,6 +37,7 @@ class ArgumentParser(argparse.ArgumentParser):
         super().__init__(*args, **kwargs)
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
         self.__server_groups = []
+        self.__set_logging = False
 
     def _validate_src_path(self, src_path: os.PathLike) -> Path:
         """Returns the path if exists and it is readable, raises an error through the parser otherwise.
@@ -160,11 +161,57 @@ class ArgumentParser(argparse.ArgumentParser):
             )
         self.__server_groups.append(prefix)
 
+    def add_log_arguments(self) -> None:
+        """Adds the usual set of arguments required to set (and initialise) a logging system.
+
+        The current set includes "--log_file" and a mutually exclusive group for the logging level:
+        "--log", "--verbose" or "--debug". The logging level is used at parsing time to initialise the
+        basic configuration of the root logger.
+
+        """
+        group = self.add_argument_group("logging arguments")
+        group.add_argument(
+            "--log_file",
+            type=lambda x: self._validate_dst_path(x, exists_ok=True),
+            metavar="PATH",
+            help="Log file path",
+        )
+        # Add 3 mutually exclusive options to set the logging level
+        subgroup = group.add_mutually_exclusive_group()
+        subgroup.add_argument(
+            "--log",
+            metavar="LEVEL",
+            choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+            # NOTE: in 3.11 the choices value can be changed to: logging.getLevelNamesMapping().keys()
+            type=str.upper,
+            default=logging.getLevelName(logging.root.level),
+            dest="log_level",
+            help="Level or severity of the events to track: %(choices)s",
+        )
+        subgroup.add_argument(
+            "-v",
+            "--verbose",
+            action="store_const",
+            const="INFO",
+            default=argparse.SUPPRESS,
+            dest="log_level",
+            help="Verbose mode",
+        )
+        subgroup.add_argument(
+            "--debug",
+            action="store_const",
+            const="DEBUG",
+            default=argparse.SUPPRESS,
+            dest="log_level",
+            help="Debugging mode",
+        )
+        self.__set_logging = True
+
     def parse_args(self, *args, **kwargs) -> argparse.Namespace:
         """Extends the parent function by adding a new URL argument for every server group added.
 
         The type of this new argument will be :class:`sqlalchemy.engine.URL`. It also logs all the parsed
-        arguments for debugging purposes.
+        arguments for debugging purposes when logging arguments have been added.
 
         """
         args = super().parse_args(*args, **kwargs)
@@ -182,8 +229,14 @@ class ArgumentParser(argparse.ArgumentParser):
                 getattr(args, f"{prefix}database", None),
             )
             setattr(args, f"{prefix}url", server_url)
-        # Log the parsed arguments for debugging purposes
-        logging.debug(f"{self.prog} called with the following arguments:")
-        for x in sorted(vars(args)):
-            logging.debug("  --%s %s", x, getattr(args, x))
+        # Initialise basic logging system with the selected logging level if the arguments have been added
+        if self.__set_logging:
+            if args.log_file:
+                logging.basicConfig(level=args.log_level, filename=args.log_file)
+            else:
+                logging.basicConfig(level=args.log_level)
+            # Log the parsed arguments for debugging purposes
+            logging.debug(f"{self.prog} called with the following arguments:")
+            for x in sorted(vars(args)):
+                logging.debug("  --%s %s", x, getattr(args, x))
         return args
