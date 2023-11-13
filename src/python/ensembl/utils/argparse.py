@@ -83,8 +83,8 @@ class ArgumentParser(argparse.ArgumentParser):
         arguments with "required=True".
 
         """
-        if kwargs.get("required", False) and "default" not in kwargs:
-            kwargs["default"] = argparse.SUPPRESS
+        if kwargs.get("required", False):
+            kwargs.setdefault("default", argparse.SUPPRESS)
         super().add_argument(*args, **kwargs)
 
     def add_argument_src_path(self, *args, **kwargs) -> None:
@@ -93,10 +93,9 @@ class ArgumentParser(argparse.ArgumentParser):
         If "metavar" is not defined it is added with "PATH" as value to improve help text readability.
 
         """
-        if "metavar" not in kwargs:
-            kwargs["metavar"] = "PATH"
-        kwargs.pop("type", None)
-        self.add_argument(*args, **kwargs, type=lambda x: self._validate_src_path(x))
+        kwargs.setdefault("metavar", "PATH")
+        kwargs["type"] = lambda x: self._validate_src_path(x)
+        self.add_argument(*args, **kwargs)
 
     def add_argument_dst_path(self, *args, exists_ok: bool = True, **kwargs) -> None:
         """Adds :class:`pathlib.Path` argument, checking if it is writable at parsing time.
@@ -107,10 +106,9 @@ class ArgumentParser(argparse.ArgumentParser):
             exists_ok: Do not raise an error if the destination path already exists.
 
         """
-        if "metavar" not in kwargs:
-            kwargs["metavar"] = "PATH"
-        kwargs.pop("type", None)
-        self.add_argument(*args, **kwargs, type=lambda x: self._validate_dst_path(x, exists_ok))
+        kwargs.setdefault("metavar", "PATH")
+        kwargs["type"] = lambda x: self._validate_dst_path(x, exists_ok)
+        self.add_argument(*args, **kwargs)
 
     def add_argument_url(self, *args, **kwargs) -> None:
         """Adds :class:`sqlalchemy.engine.URL` argument.
@@ -118,10 +116,9 @@ class ArgumentParser(argparse.ArgumentParser):
         If "metavar" is not defined it is added with "URI" as value to improve help text readability.
 
         """
-        if "metavar" not in kwargs:
-            kwargs["metavar"] = "URI"
-        kwargs.pop("type", None)
-        self.add_argument(*args, **kwargs, type=lambda x: make_url(x))
+        kwargs.setdefault("metavar", "URI")
+        kwargs["type"] = lambda x: make_url(x)
+        self.add_argument(*args, **kwargs)
 
     def add_server_arguments(self, prefix: str = "", include_database: bool = False, help: str = "") -> None:
         """Adds the usual set of arguments needed to connect to a server.
