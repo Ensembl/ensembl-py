@@ -53,7 +53,6 @@ class ArgumentParser(argparse.ArgumentParser):
             self.error(f"'{src_path}' not readable")
         return src_path
 
-
     def _validate_dst_path(self, dst_path: os.PathLike, exists_ok: bool) -> Path:
         """Returns the path if it is writable, raises an error through the parser otherwise.
 
