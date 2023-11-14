@@ -164,10 +164,10 @@ class ArgumentParser(argparse.ArgumentParser):
         )
         subgroup.add_argument(
             "--log",
-            metavar="LEVEL",
             choices=log_levels,
             type=str.upper,
             default="WARNING",
+            metavar="LEVEL",
             dest="log_level",
             help="level of the events to track: %(choices)s",
         )
@@ -177,14 +177,15 @@ class ArgumentParser(argparse.ArgumentParser):
                 "--log_file",
                 type=lambda x: self._validate_dst_path(x, exists_ok=True),
                 metavar="PATH",
+                default=None,
                 help="log file path",
             )
             group.add_argument(
                 "--log_file_level",
-                metavar="LEVEL",
                 choices=log_levels,
                 type=str.upper,
                 default="DEBUG",
+                metavar="LEVEL",
                 help="level of the events to track in the log file: %(choices)s",
             )
 
