@@ -34,6 +34,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs) -> None:
         """Extends the base class to include the information about default argument values by default."""
+        kwargs["argument_default"] = argparse.SUPPRESS
         super().__init__(*args, **kwargs)
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
         self.__server_groups = []
@@ -73,17 +74,6 @@ class ArgumentParser(argparse.ArgumentParser):
             if parent_path.exists() and not os.access(parent_path, os.W_OK):
                 self.error(f"'{dst_path}' is not writable")
         return dst_path
-
-    def add_argument(self, *args, **kwargs) -> None:
-        """Extends the parent function by excluding the default value in the help text when not provided.
-
-        Only applied to required arguments without a default value, i.e. positional arguments or optional
-        arguments with "required=True".
-
-        """
-        if kwargs.get("required", False):
-            kwargs.setdefault("default", argparse.SUPPRESS)
-        super().add_argument(*args, **kwargs)
 
     def add_argument_src_path(self, *args, **kwargs) -> None:
         """Adds :class:`pathlib.Path` argument, checking if it exists and it is readable at parsing time.
@@ -131,29 +121,12 @@ class ArgumentParser(argparse.ArgumentParser):
 
         """
         group = self.add_argument_group(f"{prefix}server connection arguments", description=help)
-        group.add_argument(
-            f"--{prefix}host", required=True, default=argparse.SUPPRESS, metavar="HOST", help="host name"
-        )
-        group.add_argument(
-            f"--{prefix}port",
-            required=True,
-            type=int,
-            default=argparse.SUPPRESS,
-            metavar="PORT",
-            help="port number",
-        )
-        group.add_argument(
-            f"--{prefix}user", required=True, default=argparse.SUPPRESS, metavar="USER", help="user name"
-        )
+        group.add_argument(f"--{prefix}host", required=True, metavar="HOST", help="host name")
+        group.add_argument(f"--{prefix}port", required=True, type=int, metavar="PORT", help="port number")
+        group.add_argument(f"--{prefix}user", required=True, metavar="USER", help="user name")
         group.add_argument(f"--{prefix}password", metavar="PWD", help="host password")
         if include_database:
-            group.add_argument(
-                f"--{prefix}database",
-                required=True,
-                default=argparse.SUPPRESS,
-                metavar="NAME",
-                help="database name",
-            )
+            group.add_argument(f"--{prefix}database", required=True, metavar="NAME", help="database name")
         self.__server_groups.append(prefix)
 
     def add_log_arguments(self, add_log_file: bool = False) -> None:
@@ -179,7 +152,6 @@ class ArgumentParser(argparse.ArgumentParser):
             "--verbose",
             action="store_const",
             const="INFO",
-            default=argparse.SUPPRESS,
             dest="log_level",
             help="verbose mode, i.e. 'INFO' log level",
         )
@@ -187,7 +159,6 @@ class ArgumentParser(argparse.ArgumentParser):
             "--debug",
             action="store_const",
             const="DEBUG",
-            default=argparse.SUPPRESS,
             dest="log_level",
             help="debugging mode, i.e. 'DEBUG' log level",
         )
