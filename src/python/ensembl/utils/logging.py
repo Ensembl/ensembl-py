@@ -12,7 +12,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Easy initialisation functionality to set an event logging system."""
+"""Easy initialisation functionality to set an event logging system.
+
+Example:
+    >>> import logging, pathlib
+    >>> from ensembl.utils.logging import init_logging
+    >>> logfile = pathlib.Path("test.log")
+    >>> init_logging("INFO", logfile, "DEBUG")
+    >>> logging.info("This message is written in both stderr and the log file")
+    >>> logging.debug("This message is only written in the log file")
+
+"""
 
 __all__ = ["LogLevel", "init_logging"]
 
