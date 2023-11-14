@@ -132,7 +132,7 @@ class ArgumentParser(argparse.ArgumentParser):
         """
         group = self.add_argument_group(f"{prefix}server connection arguments", description=help)
         group.add_argument(
-            f"--{prefix}host", required=True, default=argparse.SUPPRESS, metavar="HOST", help="Host name"
+            f"--{prefix}host", required=True, default=argparse.SUPPRESS, metavar="HOST", help="host name"
         )
         group.add_argument(
             f"--{prefix}port",
@@ -140,19 +140,19 @@ class ArgumentParser(argparse.ArgumentParser):
             type=int,
             default=argparse.SUPPRESS,
             metavar="PORT",
-            help="Port number",
+            help="port number",
         )
         group.add_argument(
-            f"--{prefix}user", required=True, default=argparse.SUPPRESS, metavar="USER", help="User name"
+            f"--{prefix}user", required=True, default=argparse.SUPPRESS, metavar="USER", help="user name"
         )
-        group.add_argument(f"--{prefix}password", metavar="PWD", help="Host password")
+        group.add_argument(f"--{prefix}password", metavar="PWD", help="host password")
         if include_database:
             group.add_argument(
                 f"--{prefix}database",
                 required=True,
                 default=argparse.SUPPRESS,
                 metavar="NAME",
-                help="Database name",
+                help="database name",
             )
         self.__server_groups.append(prefix)
 
@@ -181,7 +181,7 @@ class ArgumentParser(argparse.ArgumentParser):
             const="INFO",
             default=argparse.SUPPRESS,
             dest="log_level",
-            help="Verbose mode, i.e. 'INFO' log level",
+            help="verbose mode, i.e. 'INFO' log level",
         )
         subgroup.add_argument(
             "--debug",
@@ -189,7 +189,7 @@ class ArgumentParser(argparse.ArgumentParser):
             const="DEBUG",
             default=argparse.SUPPRESS,
             dest="log_level",
-            help="Debugging mode, i.e. 'DEBUG' log level",
+            help="debugging mode, i.e. 'DEBUG' log level",
         )
         subgroup.add_argument(
             "--log",
@@ -198,7 +198,7 @@ class ArgumentParser(argparse.ArgumentParser):
             type=str.upper,
             default="WARNING",
             dest="log_level",
-            help="Level or severity of the events to track: %(choices)s",
+            help="level of the events to track: %(choices)s",
         )
         if add_log_file:
             # Add log file-related arguments
@@ -206,7 +206,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 "--log_file",
                 type=lambda x: self._validate_dst_path(x, exists_ok=True),
                 metavar="PATH",
-                help="Log file path",
+                help="log file path",
             )
             group.add_argument(
                 "--log_file_level",
@@ -214,7 +214,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 choices=log_levels,
                 type=str.upper,
                 default="DEBUG",
-                help="Level or severity of the events to track in the log file: %(choices)s",
+                help="level of the events to track in the log file: %(choices)s",
             )
 
     def parse_args(self, *args, **kwargs) -> argparse.Namespace:
