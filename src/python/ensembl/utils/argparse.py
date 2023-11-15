@@ -34,7 +34,6 @@ class ArgumentParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs) -> None:
         """Extends the base class to include the information about default argument values by default."""
-        kwargs.setdefault("argument_default", argparse.SUPPRESS)
         super().__init__(*args, **kwargs)
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
         self.__server_groups = []
@@ -74,6 +73,17 @@ class ArgumentParser(argparse.ArgumentParser):
             if parent_path.exists() and not os.access(parent_path, os.W_OK):
                 self.error(f"'{dst_path}' is not writable")
         return dst_path
+
+    def add_argument(self, *args, **kwargs) -> None:
+        """Extends the parent function by excluding the default value in the help text when not provided.
+
+        Only applied to required arguments without a default value, i.e. positional arguments or optional
+        arguments with "required=True".
+
+        """
+        if kwargs.get("required", False):
+            kwargs.setdefault("default", argparse.SUPPRESS)
+        super().add_argument(*args, **kwargs)
 
     def add_argument_src_path(self, *args, **kwargs) -> None:
         """Adds :class:`pathlib.Path` argument, checking if it exists and it is readable at parsing time.
