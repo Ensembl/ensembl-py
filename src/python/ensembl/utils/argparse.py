@@ -34,7 +34,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs) -> None:
         """Extends the base class to include the information about default argument values by default."""
-        kwargs["argument_default"] = argparse.SUPPRESS
+        kwargs.setdefault("argument_default", argparse.SUPPRESS)
         super().__init__(*args, **kwargs)
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
         self.__server_groups = []
