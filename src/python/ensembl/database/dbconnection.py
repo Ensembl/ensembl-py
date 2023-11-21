@@ -52,10 +52,8 @@ class DBConnection:
         url: URL to the database, e.g. ``mysql://user:passwd@host:port/my_db``\.
 
     """
-    def __init__(self, url: URL, engine_extras: dict = None) -> None:
-        if not engine_extras:
-            engine_extras = {}
-        self._engine = create_engine(url, **engine_extras)
+    def __init__(self, url: URL, **kwargs) -> None:
+        self._engine = create_engine(url, **kwargs)
         self.load_metadata()
 
     def __repr__(self) -> str:
