@@ -181,6 +181,7 @@ class ArgumentParser(argparse.ArgumentParser):
             dest="log_level",
             help="level of the events to track: %(choices)s",
         )
+        subgroup.set_defaults(log_level="WARNING")
         if add_log_file:
             # Add log file-related arguments
             group.add_argument(
