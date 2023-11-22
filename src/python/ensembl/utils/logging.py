@@ -24,8 +24,9 @@ Example:
 
 """
 
-__all__ = ["LogLevel", "init_logging"]
+__all__ = ["LogLevel", "init_logging", "init_logging_with_args"]
 
+import argparse
 import logging
 from pathlib import Path
 from typing import Optional, Union
@@ -70,3 +71,15 @@ def init_logging(
         file_handler.setLevel(log_file_level)
         file_handler.setFormatter(formatter)
         logging.root.addHandler(file_handler)
+
+
+def init_logging_with_args(args: argparse.Namespace) -> None:
+    """Processes the Namespace object provided to call `init_logging()` with the right arguments.
+
+    Args:
+        args: Namespace populated by an argument parser.
+
+    """
+    args_dict = vars(args)
+    log_args = {x: args_dict[x] for x in ["log_level", "log_file", "log_file_level"] if x in args_dict}
+    init_logging(**log_args)
