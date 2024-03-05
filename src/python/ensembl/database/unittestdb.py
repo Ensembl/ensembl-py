@@ -105,8 +105,7 @@ class UnitTestDB:
                     conn.execute(f"SET FOREIGN_KEY_CHECKS=1;")
                 elif self.dbc.dialect == 'sqlite':
                     conn.execute(f"PRAGMA foreign_keys = ON;")
-        except Exception as exc:
-            print(exc)
+        except:
             # Make sure the database is deleted before raising the exception
             self.drop()
             raise
