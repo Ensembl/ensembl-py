@@ -49,7 +49,7 @@ class DBConnection:
     """Database connection handler, providing also the database's schema and properties.
 
     Args:
-        url: URL to the database, e.g. ``mysql://user:passwd@host:port/my_db``\.
+        url: URL to the database, e.g. ``mysql://user:passwd@host:port/my_db``.
 
     """
     def __init__(self, url: URL, **kwargs) -> None:
