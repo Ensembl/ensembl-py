@@ -29,17 +29,16 @@ Typical usage example::
 
 __all__ = ['UnitTestDB', 'UnitTestDBError', 'DataLoadingError']
 
-from pathlib import Path
 import os
 import re
 import subprocess
+from pathlib import Path
 from typing import Iterator, Optional, Union
 
 import sqlalchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import make_url
-from sqlalchemy_utils import database_exists
-
+from sqlalchemy import exc
 from .dbconnection import DBConnection, Query, URL
 
 
@@ -105,10 +104,10 @@ class UnitTestDB:
                     conn.execute(f"SET FOREIGN_KEY_CHECKS=1;")
                 elif self.dbc.dialect == 'sqlite':
                     conn.execute(f"PRAGMA foreign_keys = ON;")
-        except:
+        except exc.DBAPIError as e:
             # Make sure the database is deleted before raising the exception
             self.drop()
-            raise
+            raise e
         # Update the loaded metadata information of the database
         self.dbc.load_metadata()
 
