@@ -16,7 +16,7 @@
 name = "ensembl-py"
 description = "Ensembl Python Base Library"
 requires-python = ">= 3.8"
-version = "1.2.2"
+version = "1.2.3"
 readme = "README.md"
 authors = [
     {name = "Ensembl", email = "dev@ensembl.org"},
@@ -46,8 +46,7 @@ dependencies = [
     "python-dotenv ~= 0.19.2",
     "PyYAML ~= 6.0",
     "requests >= 2.22.0",
-    "sqlalchemy ~= 1.4.0",
-    "SQLAlchemy-Utils >= 0.37, < 0.39",
+    "sqlalchemy ~= 1.4.0"
 ]
 
 [project.optional-dependencies]
