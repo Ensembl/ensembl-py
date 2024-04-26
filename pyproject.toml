@@ -75,7 +75,7 @@ homepage = "https://www.ensembl.org"
 repository = "https://github.com/Ensembl/ensembl-py"
 
 [project.scripts]
-# <cmd_name> = "ensembl.<module>:<function>"
+extract_file = "ensembl.utils.archive:extract_file_cli"
 
 [tool.setuptools]
 package-dir = {"" = "src/python"}
