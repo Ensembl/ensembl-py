@@ -42,7 +42,7 @@ class Source(Base):
 
 class Version(Base):
     __tablename__ = "version"
-    __table_args__ = Index("version_idx", "source_id", "revision")
+    __table_args__ = (Index("version_idx", "source_id", "revision"),)
 
     version_id = Column(INTEGER(10), primary_key=True, autoincrement=True)
     source_id = Column(INTEGER(10), ForeignKey("source.source_id"))
