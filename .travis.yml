@@ -6,7 +6,7 @@ services:
   - mysql
 
 python:
-  - "3.8.13"
+  - "3.10"
 
 env:
   - TESTENV=test
