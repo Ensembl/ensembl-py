@@ -25,7 +25,7 @@ Typical usage example::
 from contextlib import nullcontext as does_not_raise
 import os
 from pathlib import Path
-from typing import ContextManager, Dict, Optional
+from typing import ContextManager, Dict
 
 import pytest
 from pytest import FixtureRequest, param, raises
@@ -69,7 +69,7 @@ class TestUnitTestDB:
         request: FixtureRequest,
         shared_data_dir: Path,
         src: Path,
-        name:str,
+        name: str,
         expectation: ContextManager,
     ) -> None:
         """Tests that the object :class:`UnitTestDB` is initialised correctly.
@@ -131,8 +131,8 @@ class TestDBConnection:
 
     """
 
-    dbc: Optional[DBConnection] = None
-    server: Optional[str] = None
+    dbc: DBConnection = None
+    server: str = ""
 
     # autouse=True makes this fixture be executed before any test_* method of this class, and scope='class' to
     # execute it only once per class parametrization

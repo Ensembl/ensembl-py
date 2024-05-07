@@ -28,7 +28,7 @@ from ensembl.utils.argparse import ArgumentParser
 
 def _unpack_gz_files(src_file: Union[str, os.PathLike], dst_dir: Union[str, os.PathLike]) -> None:
     """Unpacks `src_file` to `dst_dir`.
-    
+
     Note: expects `src_file` to have `.gz` extension.
     """
     # Remove '.gz' extension to create the destination file name

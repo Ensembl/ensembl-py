@@ -20,7 +20,7 @@ Typical usage example::
 """
 # pylint: disable=too-many-public-methods
 
-from typing import ContextManager, Optional
+from typing import ContextManager
 
 import pytest
 from pytest import raises
@@ -35,7 +35,7 @@ from ensembl.ncbi_taxonomy.models import NCBITaxonomy
 class TestNCBITaxonomyUtils:
     """Tests :class:`~ensembl.ncbi_taxonomy.api.utils.Taxonomy` in utils.py"""
 
-    dbc: Optional[UnitTestDB] = None
+    dbc: UnitTestDB = None
 
     @pytest.fixture(scope="class", autouse=True)
     def setup(self, db: UnitTestDB) -> None:
