@@ -31,49 +31,6 @@ import sqlalchemy
 
 from ensembl.database import UnitTestDB
 
-@pytest.fixture(name="assert_files")
-def fixture_assert_files() -> Callable[[Path, Path], None]:
-    """Returns a function that asserts if two files are equal and shows a diff if they differ."""
-
-    def _assert_files(result_path: Path, expected_path: Path) -> None:
-        with open(result_path, "r") as result_fh:
-            results = result_fh.readlines()
-        with open(expected_path, "r") as expected_fh:
-            expected = expected_fh.readlines()
-        files_diff = list(
-            unified_diff(
-                results,
-                expected,
-                fromfile=f"Test-made file {result_path.name}",
-                tofile=f"Expected file {expected_path.name}",
-            )
-        )
-        assert_message = f"Test-made and expected files differ\n{' '.join(files_diff)}"
-        assert len(files_diff) == 0, assert_message
-
-    return _assert_files
-
-@pytest.fixture(name="data_dir", scope="module")
-def local_data_dir(request: FixtureRequest) -> Path:
-    """Returns the path to the test data folder matching the test's name.
-
-    Args:
-        request: Fixture providing information of the requesting test function.
-
-    """
-    return Path(request.module.__file__).with_suffix("")
-
-
-@pytest.fixture(scope="package")
-def shared_data_dir(pytestconfig: Config) -> Path:
-    """Returns the path to the shared test data folder.
-
-    Args:
-        pytestconfig: Session-scoped fixture that returns the session's `pytest.Config` object.
-
-    """
-    return pytestconfig.rootpath / "src/python/tests/data"
-
 
 def pytest_addoption(parser: Parser) -> None:
     """Registers argparse-style options for Ensembl's unit testing.
@@ -139,6 +96,51 @@ def pytest_make_parametrize_id(val: Any) -> str:
     if isinstance(val, RaisesContext):
         return str(val.expected_exception)
     return str(val)
+
+
+@pytest.fixture(name="assert_files")
+def fixture_assert_files() -> Callable[[Path, Path], None]:
+    """Returns a function that asserts if two files are equal and shows a diff if they differ."""
+
+    def _assert_files(result_path: Path, expected_path: Path) -> None:
+        with open(result_path, "r") as result_fh:
+            results = result_fh.readlines()
+        with open(expected_path, "r") as expected_fh:
+            expected = expected_fh.readlines()
+        files_diff = list(
+            unified_diff(
+                results,
+                expected,
+                fromfile=f"Test-made file {result_path.name}",
+                tofile=f"Expected file {expected_path.name}",
+            )
+        )
+        assert_message = f"Test-made and expected files differ\n{' '.join(files_diff)}"
+        assert len(files_diff) == 0, assert_message
+
+    return _assert_files
+
+
+@pytest.fixture(name="data_dir", scope="module")
+def local_data_dir(request: FixtureRequest) -> Path:
+    """Returns the path to the test data folder matching the test's name.
+
+    Args:
+        request: Fixture providing information of the requesting test function.
+
+    """
+    return Path(request.module.__file__).with_suffix("")
+
+
+@pytest.fixture(scope="package")
+def shared_data_dir(pytestconfig: Config) -> Path:
+    """Returns the path to the shared test data folder.
+
+    Args:
+        pytestconfig: Session-scoped fixture that returns the session's `pytest.Config` object.
+
+    """
+    return pytestconfig.rootpath / "src/python/tests/data"
 
 
 @pytest.fixture(name="db_factory", scope="session")
