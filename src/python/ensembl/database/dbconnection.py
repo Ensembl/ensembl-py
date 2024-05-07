@@ -28,7 +28,7 @@ Typical usage example::
 
 """
 
-__all__ = ['Query', 'URL', 'DBConnection']
+__all__ = ["Query", "URL", "DBConnection"]
 
 import contextlib
 from typing import Dict, List, TypeVar
@@ -40,9 +40,9 @@ from sqlalchemy.sql import select
 
 
 # Create the Query type as an alias for all the possible types an SQL query can be stored into
-Query = TypeVar('Query', str, sqlalchemy.sql.expression.ClauseElement)
+Query = TypeVar("Query", str, sqlalchemy.sql.expression.ClauseElement)
 # Create the URL type as an alias for all the possible types an URL can be stored into
-URL = TypeVar('URL', str, sqlalchemy.engine.url.URL)
+URL = TypeVar("URL", str, sqlalchemy.engine.url.URL)
 
 
 class DBConnection:
@@ -52,13 +52,14 @@ class DBConnection:
         url: URL to the database, e.g. ``mysql://user:passwd@host:port/my_db``.
 
     """
+
     def __init__(self, url: URL, **kwargs) -> None:
         self._engine = create_engine(url, **kwargs)
         self.load_metadata()
 
     def __repr__(self) -> str:
         """Returns a string representation of this object."""
-        return f'{self.__class__.__name__}({self.url!r})'
+        return f"{self.__class__.__name__}({self.url!r})"
 
     def load_metadata(self) -> None:
         """Loads the metadata information of the database."""
@@ -125,7 +126,7 @@ class DBConnection:
 
         """
         result = self.execute(
-            select([self.tables['meta'].columns.meta_value]).where(text('meta_key = "schema_type"'))
+            select([self.tables["meta"].columns.meta_value]).where(text('meta_key = "schema_type"'))
         )
         return result.one()[0]
 
@@ -140,7 +141,7 @@ class DBConnection:
 
         """
         result = self.execute(
-            select([self.tables['meta'].columns.meta_value]).where(text('meta_key = "schema_version"'))
+            select([self.tables["meta"].columns.meta_value]).where(text('meta_key = "schema_version"'))
         )
         return int(result.one()[0])
 
@@ -208,11 +209,13 @@ class DBConnection:
         session = Session(bind=connection)
         # If the database supports SAVEPOINT, starting a savepoint will allow to also use rollback
         connection.begin_nested()
+
         # Define a new transaction event
         @event.listens_for(session, "after_transaction_end")
         def end_savepoint(session, transaction):  # pylint: disable=unused-argument
             if not connection.in_nested_transaction():
                 connection.begin_nested()
+
         try:
             yield session
         finally:

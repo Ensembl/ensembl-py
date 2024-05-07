@@ -40,7 +40,7 @@ def init_logging(
     log_file: Optional[Path] = None,
     log_file_level: LogLevel = "DEBUG",
     msg_format: str = "%(asctime)s\t%(levelname)s\t%(message)s",
-    date_format: str = r"%Y-%m-%d_%H:%M:%S"
+    date_format: str = r"%Y-%m-%d_%H:%M:%S",
 ) -> None:
     """Initialises the logging system.
 

@@ -27,7 +27,7 @@ Typical usage example::
 
 """
 
-__all__ = ['UnitTestDB', 'UnitTestDBError', 'DataLoadingError']
+__all__ = ["UnitTestDB", "UnitTestDBError", "DataLoadingError"]
 
 import os
 import re
@@ -66,11 +66,11 @@ class UnitTestDB:
     def __init__(self, url: URL, dump_dir: os.PathLike, name: Optional[str] = None) -> None:
         db_url = make_url(url)
         dump_dir_path = Path(dump_dir)
-        db_name = os.environ['USER'] + '_' + (name if name else dump_dir_path.name)
+        db_name = os.environ["USER"] + "_" + (name if name else dump_dir_path.name)
         # Add the database name to the URL
         db_url = db_url.set(database=db_name)
         # SQLite databases are created automatically if they do not exist
-        if db_url.get_dialect().name != 'sqlite':
+        if db_url.get_dialect().name != "sqlite":
             # Connect to the server to create the database
             self._server = create_engine(url)
             # for innodb schema, unitary drop table doesn't work, if data present
@@ -81,11 +81,11 @@ class UnitTestDB:
             # Establish the connection to the database, load the schema and import the data
             self.dbc = DBConnection(db_url)
             with self.dbc.begin() as conn:
-                if self.dbc.dialect == 'mysql':
+                if self.dbc.dialect == "mysql":
                     conn.execute(f"SET FOREIGN_KEY_CHECKS=0;")
-                elif self.dbc.dialect == 'sqlite':
+                elif self.dbc.dialect == "sqlite":
                     conn.execute(f"PRAGMA foreign_keys = OFF;")
-                for query in self._parse_sql_file(dump_dir_path / 'table.sql'):
+                for query in self._parse_sql_file(dump_dir_path / "table.sql"):
                     table = self._get_table_name(query)
                     try:
                         conn.execute(query)
@@ -94,15 +94,15 @@ class UnitTestDB:
                         conn.execute(query)
                     filepath = dump_dir_path / f"{table}.txt"
                     if table and filepath.exists():
-                        if db_url.get_dialect().name != 'sqlite':
+                        if db_url.get_dialect().name != "sqlite":
                             conn.execute(f"TRUNCATE TABLE {table}")
                         else:
                             conn.execute(f"DELETE FROM {table}")
 
                         self._load_data(conn, table, filepath)
-                if self.dbc.dialect == 'mysql':
+                if self.dbc.dialect == "mysql":
                     conn.execute(f"SET FOREIGN_KEY_CHECKS=1;")
-                elif self.dbc.dialect == 'sqlite':
+                elif self.dbc.dialect == "sqlite":
                     conn.execute(f"PRAGMA foreign_keys = ON;")
         except exc.SQLAlchemyError as e:
             # Make sure the database is deleted before raising the exception
@@ -117,16 +117,15 @@ class UnitTestDB:
 
     def drop(self) -> None:
         """Drops the database."""
-        if self.dbc.dialect == 'sqlite':
+        if self.dbc.dialect == "sqlite":
             os.remove(self.dbc.db_name)
-        elif self.dbc.dialect == 'oracle':
+        elif self.dbc.dialect == "oracle":
             self._server.execute(text(f"DROP DATABASE {self.dbc.db_name};"))
         else:
             self._server.execute(text(f"DROP DATABASE IF EXISTS {self.dbc.db_name};"))
         self.dbc.dispose()
 
-    def _load_data(self, conn: sqlalchemy.engine.Connection, table: str, filepath: Union[str, os.PathLike]
-                  ) -> None:
+    def _load_data(self, conn: sqlalchemy.engine.Connection, table: str, filepath: os.PathLike) -> None:
         """Loads the table data from the given file.
 
         Args:
@@ -138,40 +137,40 @@ class UnitTestDB:
             UnitTestDBError: if ``.import`` command fails (SQLite databases only).
 
         """
-        if self.dbc.dialect == 'sqlite':
+        if self.dbc.dialect == "sqlite":
             # SQLite does not have an equivalent to "LOAD DATA": use its '.import' command instead
             try:
                 subprocess.run(
-                    ['sqlite3', self.dbc.db_name, ".mode tabs", f".import {filepath} {table}"],
-                    check=True
+                    ["sqlite3", self.dbc.db_name, ".mode tabs", f".import {filepath} {table}"], check=True
                 )
             except subprocess.CalledProcessError:
                 raise DataLoadingError(f"SQLite3 import of '{filepath}' failed") from None
-        elif self.dbc.dialect == 'postgresql':
+        elif self.dbc.dialect == "postgresql":
             conn.execute(text(f"COPY {table} FROM '{filepath}'"))
-        elif self.dbc.dialect == 'sqlserver':
+        elif self.dbc.dialect == "sqlserver":
             conn.execute(text(f"BULK INSERT {table} FROM '{filepath}'"))
         else:
             conn.execute(text(f"LOAD DATA LOCAL INFILE '{filepath}' INTO TABLE {table}"))
 
     @staticmethod
-    def _parse_sql_file(filepath: Union[str, bytes, os.PathLike]
-                       ) -> Iterator[sqlalchemy.sql.expression.TextClause]:
+    def _parse_sql_file(
+        filepath: Union[str, bytes, os.PathLike]
+    ) -> Iterator[sqlalchemy.sql.expression.TextClause]:
         """Yields each SQL query found parsing the given SQL file.
 
         Args:
             filepath: SQL file path.
 
         """
-        comment_block_start = re.compile(r'\/\*\*')
-        comment_block_end = re.compile(r'\*\/$')
-        single_comment = re.compile(r'(--|#|\/\/).*')
-        inline_comment = re.compile(r'\/\*[^\*]*\*\/')
+        comment_block_start = re.compile(r"\/\*\*")
+        comment_block_end = re.compile(r"\*\/$")
+        single_comment = re.compile(r"(--|#|\/\/).*")
+        inline_comment = re.compile(r"\/\*[^\*]*\*\/")
         with open(filepath) as sql_file:
             query = []
             multiline_comment = False
             for line in sql_file:
-                line = line.strip(' \n')
+                line = line.strip(" \n")
                 # Capture (and discard) multiple-line comments
                 if comment_block_start.match(line):
                     multiline_comment = True
@@ -181,19 +180,19 @@ class UnitTestDB:
                     continue
                 if not multiline_comment:
                     # Remove single- and in-line comments
-                    line = single_comment.sub('', line)
-                    line = inline_comment.sub('', line)
+                    line = single_comment.sub("", line)
+                    line = inline_comment.sub("", line)
                     if line:
                         query.append(line)
-                        if line.endswith(';'):
-                            yield text(' '.join(query))
+                        if line.endswith(";"):
+                            yield text(" ".join(query))
                             query = []
 
     @staticmethod
     def _get_table_name(query: Query) -> str:
         """Returns the table name of a ``CREATE TABLE`` SQL query, empty string otherwise."""
-        match = re.search(r'^CREATE[ ]+TABLE[ ]+(`[^`]+`|[^ ]+)', str(query), flags=re.IGNORECASE)
-        return match.group(1).strip('`') if match else ''
+        match = re.search(r"^CREATE[ ]+TABLE[ ]+(`[^`]+`|[^ ]+)", str(query), flags=re.IGNORECASE)
+        return match.group(1).strip("`") if match else ""
 
 
 class UnitTestDBError(Exception):

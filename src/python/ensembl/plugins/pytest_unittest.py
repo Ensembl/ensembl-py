@@ -44,11 +44,21 @@ def pytest_addoption(parser: Parser) -> None:
     """
     # Add the Ensembl unitary test parameters to pytest parser
     group = parser.getgroup("ensembl unit testing")
-    group.addoption('--server', action='store', metavar='URL', dest='server', required=False,
-                    default=os.getenv('DB_HOST', 'sqlite:////'),
-                    help="URL to the server where to create the test database(s).")
-    group.addoption('--keep-data', action='store_true', dest='keep_data',
-                    help="Do not remove test databases/temporary directories. Default: False")
+    group.addoption(
+        "--server",
+        action="store",
+        metavar="URL",
+        dest="server",
+        required=False,
+        default=os.getenv("DB_HOST", "sqlite:////"),
+        help="URL to the server where to create the test database(s).",
+    )
+    group.addoption(
+        "--keep-data",
+        action="store_true",
+        dest="keep_data",
+        help="Do not remove test databases/temporary directories. Default: False",
+    )
 
 
 def pytest_configure(config: Config) -> None:
@@ -62,13 +72,13 @@ def pytest_configure(config: Config) -> None:
 
     """
     # Load server information
-    server_url = sqlalchemy.engine.url.make_url(config.getoption('server'))
+    server_url = sqlalchemy.engine.url.make_url(config.getoption("server"))
     # If password starts with "$", treat it as an environment variable that needs to be resolved
-    if server_url.password and server_url.password.startswith('$'):
+    if server_url.password and server_url.password.startswith("$"):
         server_url = server_url.set(password=os.environ[server_url.password[1:]])
         config.option.server = str(server_url)
     # Add global variables
-    pytest.dbs_dir = Path(__file__).parents[2] / 'tests' / 'databases'
+    pytest.dbs_dir = Path(__file__).parents[2] / "tests" / "databases"
 
 
 def pytest_make_parametrize_id(val: Any) -> str:
@@ -82,13 +92,13 @@ def pytest_make_parametrize_id(val: Any) -> str:
 
     """
     if isinstance(val, nullcontext):
-        return 'No error'
+        return "No error"
     if isinstance(val, RaisesContext):
         return str(val.expected_exception)
     return str(val)
 
 
-@pytest.fixture(name='db_factory', scope='session')
+@pytest.fixture(name="db_factory", scope="session")
 def db_factory_(request: FixtureRequest) -> Generator:
     """Yields a unit test database (:class:`UnitTestDB`) factory.
 
@@ -97,7 +107,8 @@ def db_factory_(request: FixtureRequest) -> Generator:
 
     """
     created = {}  # type: Dict[str, UnitTestDB]
-    server_url = request.config.getoption('server')
+    server_url = request.config.getoption("server")
+
     def db_factory(src: os.PathLike, name: Optional[str] = None) -> UnitTestDB:
         """Returns a unit test database (:class:`UnitTestDB`) object.
 
@@ -110,14 +121,15 @@ def db_factory_(request: FixtureRequest) -> Generator:
         src_path = Path(src) if os.path.isabs(src) else pytest.dbs_dir / src  # type: ignore
         db_key = name if name else src_path.name
         return created.setdefault(db_key, UnitTestDB(server_url, src_path, name))
+
     yield db_factory
     # Drop all unit test databases unless the user has requested to keep them
-    if not request.config.getoption('keep_data'):
+    if not request.config.getoption("keep_data"):
         for test_db in created.values():
             test_db.drop()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db(request: FixtureRequest, db_factory: Callable) -> Generator:
     """Returns a unit test database (:class:`UnitTestDB`) object.
 
@@ -132,10 +144,10 @@ def db(request: FixtureRequest, db_factory: Callable) -> Generator:
         request: Access to the requesting test context.
 
     """
-    return db_factory(request.param['src'], request.param.get('name', None))
+    return db_factory(request.param["src"], request.param.get("name", None))
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def multi_dbs(request: FixtureRequest, db_factory: Callable) -> Dict:
     """Returns a dictionary of unit test database (:class:`UnitTestDB`) objects with the database name as key.
 
@@ -153,8 +165,8 @@ def multi_dbs(request: FixtureRequest, db_factory: Callable) -> Dict:
     """
     databases = {}
     for element in request.param:
-        src = Path(element['src'])
-        name = element.get('name', None)
+        src = Path(element["src"])
+        name = element.get("name", None)
         key = name if name else src.name
         databases[key] = db_factory(src, name)
     return databases

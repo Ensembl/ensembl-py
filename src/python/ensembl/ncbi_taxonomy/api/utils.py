@@ -29,7 +29,7 @@ Typical usage example::
 
 """
 
-__all__ = ['Taxonomy']
+__all__ = ["Taxonomy"]
 
 from typing import Tuple
 
@@ -41,7 +41,7 @@ from ensembl.ncbi_taxonomy.models import NCBITaxaNode, NCBITaxonomy
 
 
 @as_declarative()
-class Taxonomy():
+class Taxonomy:
     """Contains all the taxonomy related functions over NCBITaxonomy ORM
 
     Attributes:
@@ -58,11 +58,7 @@ class Taxonomy():
         Raises:
             sqlalchemy.orm.exc.NoResultFound: if ``taxon_id`` does not exist
         """
-        q = (
-            session.query(NCBITaxonomy)
-            .filter(NCBITaxonomy.taxon_id == taxon_id)
-            .first()
-        )
+        q = session.query(NCBITaxonomy).filter(NCBITaxonomy.taxon_id == taxon_id).first()
         if not q:
             raise NoResultFound()
         return q
@@ -100,9 +96,7 @@ class Taxonomy():
         ParentTaxonomy = aliased(NCBITaxonomy, name="parent_ncbi_taxonomy")
         q = (
             session.query(NCBITaxonomy, ParentTaxonomy)
-            .outerjoin(
-                (ParentTaxonomy, NCBITaxonomy.parent_id == ParentTaxonomy.taxon_id)
-            )
+            .outerjoin((ParentTaxonomy, NCBITaxonomy.parent_id == ParentTaxonomy.taxon_id))
             .filter(NCBITaxonomy.taxon_id == taxon_id)
             .filter(ParentTaxonomy.name_class == "scientific name")
             .first()
@@ -166,15 +160,9 @@ class Taxonomy():
         """
         session.query(NCBITaxaNode).filter(NCBITaxaNode.taxon_id == taxon_id).one()
         right_index = (
-            session.query(NCBITaxaNode.right_index)
-            .filter(NCBITaxaNode.taxon_id == taxon_id)
-            .scalar()
+            session.query(NCBITaxaNode.right_index).filter(NCBITaxaNode.taxon_id == taxon_id).scalar()
         )
-        left_index = (
-            session.query(NCBITaxaNode.left_index)
-            .filter(NCBITaxaNode.taxon_id == taxon_id)
-            .scalar()
-        )
+        left_index = session.query(NCBITaxaNode.left_index).filter(NCBITaxaNode.taxon_id == taxon_id).scalar()
         return (right_index - left_index - 1) / 2
 
     @classmethod
@@ -208,9 +196,7 @@ class Taxonomy():
             .outerjoin(
                 NCBITaxaNode,
                 and_(
-                    NCBITaxaNode.left_index.between(
-                        ParentTaxaNode.left_index, ParentTaxaNode.right_index
-                    ),
+                    NCBITaxaNode.left_index.between(ParentTaxaNode.left_index, ParentTaxaNode.right_index),
                     ParentTaxaNode.taxon_id != NCBITaxaNode.taxon_id,
                 ),
             )
@@ -228,9 +214,7 @@ class Taxonomy():
         return q
 
     @classmethod
-    def all_common_ancestors(
-        cls, session: Session, taxon_id_1: int, taxon_id_2: int
-    ) -> tuple:
+    def all_common_ancestors(cls, session: Session, taxon_id_1: int, taxon_id_2: int) -> tuple:
         """Returns a tuple of common ancestor node objects shared between taxa
 
         Args:
@@ -250,18 +234,12 @@ class Taxonomy():
         ancestors_ids_1 = [taxon["taxon_id"] for taxon in ancestors_1]
         ancestors_ids_2 = [taxon["taxon_id"] for taxon in ancestors_2]
         common_ancestors = list(set(ancestors_ids_1).intersection(ancestors_ids_2))
-        common_ancestors.sort(
-            key=lambda taxon_id: (-cls.num_descendants(session, taxon_id), taxon_id)
-        )
-        all_common_ancs = [
-            cls.fetch_node_by_id(session, taxon_id) for taxon_id in common_ancestors
-        ]
+        common_ancestors.sort(key=lambda taxon_id: (-cls.num_descendants(session, taxon_id), taxon_id))
+        all_common_ancs = [cls.fetch_node_by_id(session, taxon_id) for taxon_id in common_ancestors]
         return tuple(all_common_ancs)
 
     @classmethod
-    def last_common_ancestor(
-        cls, session: Session, taxon_id_1: int, taxon_id_2: int
-    ) -> NCBITaxonomy:
+    def last_common_ancestor(cls, session: Session, taxon_id_1: int, taxon_id_2: int) -> NCBITaxonomy:
         """Returns most recent common ancestor node object shared between taxa
 
         Args:

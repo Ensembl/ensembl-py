@@ -13,7 +13,7 @@
 # limitations under the License.
 """REST API to interact with eHive pipelines."""
 
-__all__ = ['logger', 'HiveRESTClient']
+__all__ = ["logger", "HiveRESTClient"]
 
 import contextlib
 import logging
@@ -33,7 +33,8 @@ class HiveRESTClient(eHive.BaseRunnable):
     TODO: Authentication, Secured, Files upload.
 
     """
-    available_method = ('post', 'get', 'put', 'patch')
+
+    available_method = ("post", "get", "put", "patch")
 
     def param_defaults(self):
         """
@@ -41,15 +42,15 @@ class HiveRESTClient(eHive.BaseRunnable):
         :return: dict
         """
         return {
-            'payload': {},
-            'headers': {'content-type': 'application/json; charset=utf8'},
-            'files': [],
-            'method': 'get',
-            'timeout': 1,
-            'retry': 3,
-            'check_status': True,
-            'status_retry': list(Retry.RETRY_AFTER_STATUS_CODES),
-            'method_retry': list(Retry.DEFAULT_ALLOWED_METHODS)
+            "payload": {},
+            "headers": {"content-type": "application/json; charset=utf8"},
+            "files": [],
+            "method": "get",
+            "timeout": 1,
+            "retry": 3,
+            "check_status": True,
+            "status_retry": list(Retry.RETRY_AFTER_STATUS_CODES),
+            "method_retry": list(Retry.DEFAULT_ALLOWED_METHODS),
         }
 
     def _open_session(self):
@@ -59,11 +60,13 @@ class HiveRESTClient(eHive.BaseRunnable):
         Returns:
             A new ``requests.Session`` object
         """
-        adapter = HTTPAdapter(max_retries=Retry(
-            total=self.param('retry'),
-            status_forcelist=self.param('status_retry'),
-            allowed_methods=self.param('method_retry')
-        ))
+        adapter = HTTPAdapter(
+            max_retries=Retry(
+                total=self.param("retry"),
+                status_forcelist=self.param("status_retry"),
+                allowed_methods=self.param("method_retry"),
+            )
+        )
         http = requests.Session()
         http.mount("https://", adapter)
         http.mount("http://", adapter)
@@ -78,7 +81,7 @@ class HiveRESTClient(eHive.BaseRunnable):
 
     @contextlib.contextmanager
     def _session_scope(self):
-        """ Ensure HTTP session is closed after processing code"""
+        """Ensure HTTP session is closed after processing code"""
         session = self._open_session()
         logger.debug("HTTP Session opened %s", session)
         try:
@@ -97,14 +100,15 @@ class HiveRESTClient(eHive.BaseRunnable):
         Return response received.
         """
         with self._session_scope() as http:
-            response = http.request(self.param_required('method'),
-                                         self.param_required('endpoint'),
-                                         headers=self.param('headers'),
-                                         files=self.param('files'),
-                                         data=self.param('payload'),
-                                         timeout=self.param('timeout'))
-            self.param('response', response)
-
+            response = http.request(
+                self.param_required("method"),
+                self.param_required("endpoint"),
+                headers=self.param("headers"),
+                files=self.param("files"),
+                data=self.param("payload"),
+                timeout=self.param("timeout"),
+            )
+            self.param("response", response)
 
     def write_output(self):
         """
@@ -113,4 +117,4 @@ class HiveRESTClient(eHive.BaseRunnable):
         :param response:
         :return:
         """
-        self.dataflow({"rest_response": self.param('response').json()}, 1)
+        self.dataflow({"rest_response": self.param("response").json()}, 1)
