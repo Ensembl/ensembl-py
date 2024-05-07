@@ -120,7 +120,7 @@ disable = [
 ]
 
 [tool.mypy]
-mypy_path = "src"
+mypy_path = "src/python/ensembl"
 explicit_package_bases = true
 ignore_missing_imports = true
 show_error_codes = true

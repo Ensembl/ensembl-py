@@ -13,7 +13,7 @@
 # limitations under the License.
 """Ensembl Core database ORM."""
 # Ignore some pylint and mypy checks due to the nature of SQLAlchemy ORMs
-# pylint: disable=missing-class-docstring,too-many-lines
+# pylint: disable=missing-class-docstring,too-many-lines,fixme
 # mypy: disable-error-code="misc, valid-type"
 
 # WIP: This module is not complete nor fully tested and will most likely change its public interface
@@ -105,16 +105,13 @@ class AttribType(Base):
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="attrib_type")
 
 
-
 class Biotype(Base):
     __tablename__ = "biotype"
     __table_args__ = (Index("name_type_idx", "name", "object_type", unique=True),)
 
     biotype_id = Column(INTEGER(10), primary_key=True)
     name = Column(String(64), nullable=False)
-    object_type = Column(
-        Enum("gene", "transcript"), nullable=False, server_default=text("'gene'")
-    )
+    object_type = Column(Enum("gene", "transcript"), nullable=False, server_default=text("'gene'"))
     db_type = Column(
         SET(
             "cdna",
@@ -159,9 +156,7 @@ class CoordSystem(Base):
     )
 
     coord_system_id = Column(INTEGER(10), primary_key=True)
-    species_id = Column(
-        INTEGER(10), nullable=False, index=True, server_default=text("'1'")
-    )
+    species_id = Column(INTEGER(10), nullable=False, index=True, server_default=text("'1'"))
     name = Column(String(40), nullable=False)
     version = Column(String(255))
     rank = Column(INTEGER(11), nullable=False)
@@ -169,7 +164,6 @@ class CoordSystem(Base):
     # Many to one relationship
     seq_region = relationship("SeqRegion", back_populates="coord_system")
     meta = relationship("Meta", back_populates="coord_system")
-
 
 
 class Ditag(Base):
@@ -201,16 +195,12 @@ t_dna_align_feature_attrib = Table(
 
 class ExternalDb(Base):
     __tablename__ = "external_db"
-    __table_args__ = (
-        Index("db_name_db_release_idx", "db_name", "db_release", unique=True),
-    )
+    __table_args__ = (Index("db_name_db_release_idx", "db_name", "db_release", unique=True),)
 
     external_db_id = Column(INTEGER(10), primary_key=True)
     db_name = Column(String(100), nullable=False)
     db_release = Column(String(255))
-    status = Column(
-        Enum("KNOWNXREF", "KNOWN", "XREF", "PRED", "ORTH", "PSEUDO"), nullable=False
-    )
+    status = Column(Enum("KNOWNXREF", "KNOWN", "XREF", "PRED", "ORTH", "PSEUDO"), nullable=False)
     priority = Column(INTEGER(11), nullable=False)
     db_display_name = Column(String(255))
     db_type = Column(
@@ -267,26 +257,18 @@ class Gene(Base):
     created_date = Column(DateTime)
     modified_date = Column(DateTime)
 
-    analysis = relationship(
-        "Analysis", primaryjoin="Gene.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="Gene.analysis_id == Analysis.analysis_id")
     canonical_transcript = relationship(
         "Transcript",
         primaryjoin="Gene.canonical_transcript_id == Transcript.transcript_id",
     )
-    display_xref = relationship(
-        "Xref", primaryjoin="Gene.display_xref_id == Xref.xref_id"
-    )
-    seq_region = relationship(
-        "SeqRegion", primaryjoin="Gene.seq_region_id == SeqRegion.seq_region_id"
-    )
+    display_xref = relationship("Xref", primaryjoin="Gene.display_xref_id == Xref.xref_id")
+    seq_region = relationship("SeqRegion", primaryjoin="Gene.seq_region_id == SeqRegion.seq_region_id")
 
 
 class GenomeStatistics(Base):
     __tablename__ = "genome_statistics"
-    __table_args__ = (
-        Index("stats_uniq", "statistic", "attrib_type_id", "species_id", unique=True),
-    )
+    __table_args__ = (Index("stats_uniq", "statistic", "attrib_type_id", "species_id", unique=True),)
 
     genome_statistics_id = Column(INTEGER(10), primary_key=True)
     statistic = Column(String(128), nullable=False)
@@ -327,11 +309,7 @@ class MappingSession(Base):
 
 class MappingSet(Base):
     __tablename__ = "mapping_set"
-    __table_args__ = (
-        Index(
-            "mapping_idx", "internal_schema_build", "external_schema_build", unique=True
-        ),
-    )
+    __table_args__ = (Index("mapping_idx", "internal_schema_build", "external_schema_build", unique=True),)
 
     mapping_set_id = Column(INTEGER(10), primary_key=True)
     internal_schema_build = Column(String(20), nullable=False)
@@ -373,9 +351,7 @@ class MarkerSynonym(Base):
     source = Column(String(20))
     name = Column(String(50))
 
-    marker = relationship(
-        "Marker", primaryjoin="MarkerSynonym.marker_id == Marker.marker_id"
-    )
+    marker = relationship("Marker", primaryjoin="MarkerSynonym.marker_id == Marker.marker_id")
 
 
 class PeptideArchive(Base):
@@ -426,9 +402,7 @@ t_rnaproduct_attrib = Table(
     Column("attrib_type_id", SMALLINT(5), nullable=False, server_default=text("'0'")),
     Column("value", Text, nullable=False, index=True),
     Index("type_val_idx", "attrib_type_id", "value"),
-    Index(
-        "rnaproduct_attribx", "rnaproduct_id", "attrib_type_id", "value", unique=True
-    ),
+    Index("rnaproduct_attribx", "rnaproduct_id", "attrib_type_id", "value", unique=True),
 )
 
 
@@ -476,29 +450,21 @@ class Transcript(Base):
     created_date = Column(DateTime)
     modified_date = Column(DateTime)
 
-    analysis = relationship(
-        "Analysis", primaryjoin="Transcript.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="Transcript.analysis_id == Analysis.analysis_id")
     canonical_translation = relationship(
         "Translation",
         primaryjoin="Transcript.canonical_translation_id == Translation.translation_id",
     )
-    display_xref = relationship(
-        "Xref", primaryjoin="Transcript.display_xref_id == Xref.xref_id"
-    )
+    display_xref = relationship("Xref", primaryjoin="Transcript.display_xref_id == Xref.xref_id")
     gene = relationship("Gene", primaryjoin="Transcript.gene_id == Gene.gene_id")
-    seq_region = relationship(
-        "SeqRegion", primaryjoin="Transcript.seq_region_id == SeqRegion.seq_region_id"
-    )
+    seq_region = relationship("SeqRegion", primaryjoin="Transcript.seq_region_id == SeqRegion.seq_region_id")
 
 
 class TranscriptIntronSupportingEvidence(Base):
     __tablename__ = "transcript_intron_supporting_evidence"
 
     transcript_id = Column(INTEGER(10), primary_key=True, nullable=False, index=True)
-    intron_supporting_evidence_id = Column(
-        INTEGER(10), primary_key=True, nullable=False
-    )
+    intron_supporting_evidence_id = Column(INTEGER(10), primary_key=True, nullable=False)
     previous_exon_id = Column(INTEGER(10), nullable=False)
     next_exon_id = Column(INTEGER(10), nullable=False)
 
@@ -530,12 +496,8 @@ class Translation(Base):
     created_date = Column(DateTime)
     modified_date = Column(DateTime)
 
-    end_exon = relationship(
-        "Exon", primaryjoin="Translation.end_exon_id == Exon.exon_id"
-    )
-    start_exon = relationship(
-        "Exon", primaryjoin="Translation.start_exon_id == Exon.exon_id"
-    )
+    end_exon = relationship("Exon", primaryjoin="Translation.end_exon_id == Exon.exon_id")
+    start_exon = relationship("Exon", primaryjoin="Translation.start_exon_id == Exon.exon_id")
     transcript = relationship(
         "Transcript",
         primaryjoin="Translation.transcript_id == Transcript.transcript_id",
@@ -618,9 +580,7 @@ class DataFile(Base):
     url = Column(Text)
     file_type = Column(Enum("BAM", "BAMCOV", "BIGBED", "BIGWIG", "VCF"))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="DataFile.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="DataFile.analysis_id == Analysis.analysis_id")
     coord_system = relationship(
         "CoordSystem",
         primaryjoin="DataFile.coord_system_id == CoordSystem.coord_system_id",
@@ -629,11 +589,7 @@ class DataFile(Base):
 
 class DensityType(Base):
     __tablename__ = "density_type"
-    __table_args__ = (
-        Index(
-            "analysis_idx", "analysis_id", "block_size", "region_features", unique=True
-        ),
-    )
+    __table_args__ = (Index("analysis_idx", "analysis_id", "block_size", "region_features", unique=True),)
 
     density_type_id = Column(INTEGER(10), primary_key=True)
     analysis_id = Column(
@@ -644,9 +600,7 @@ class DensityType(Base):
     region_features = Column(INTEGER(11), nullable=False)
     value_type = Column(Enum("sum", "ratio"), nullable=False)
 
-    analysis = relationship(
-        "Analysis", primaryjoin="DensityType.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="DensityType.analysis_id == Analysis.analysis_id")
 
 
 t_gene_archive = Table(
@@ -655,13 +609,9 @@ t_gene_archive = Table(
     Column("gene_stable_id", String(128), nullable=False),
     Column("gene_version", SMALLINT(6), nullable=False, server_default=text("'1'")),
     Column("transcript_stable_id", String(128), nullable=False),
-    Column(
-        "transcript_version", SMALLINT(6), nullable=False, server_default=text("'1'")
-    ),
+    Column("transcript_version", SMALLINT(6), nullable=False, server_default=text("'1'")),
     Column("translation_stable_id", String(128)),
-    Column(
-        "translation_version", SMALLINT(6), nullable=False, server_default=text("'1'")
-    ),
+    Column("translation_version", SMALLINT(6), nullable=False, server_default=text("'1'")),
     Column(
         "peptide_archive_id",
         ForeignKey("peptide_archive.peptide_archive_id"),
@@ -728,9 +678,7 @@ class MarkerMapLocation(Base):
     lod_score = Column(Float(asdecimal=True))
 
     map_r = relationship("Map", primaryjoin="MarkerMapLocation.map_id == Map.map_id")
-    marker = relationship(
-        "Marker", primaryjoin="MarkerMapLocation.marker_id == Marker.marker_id"
-    )
+    marker = relationship("Marker", primaryjoin="MarkerMapLocation.marker_id == Marker.marker_id")
     marker_synonym = relationship(
         "MarkerSynonym",
         primaryjoin="MarkerMapLocation.marker_synonym_id == MarkerSynonym.marker_synonym_id",
@@ -741,9 +689,7 @@ class Meta(Base):
     __tablename__ = "meta"
     __table_args__ = (
         Index("species_value_idx", "species_id", "meta_value"),
-        Index(
-            "species_key_value_idx", "species_id", "meta_key", "meta_value", unique=True
-        ),
+        Index("species_key_value_idx", "species_id", "meta_key", "meta_value", unique=True),
     )
 
     meta_id = Column(INTEGER(11), primary_key=True)
@@ -757,12 +703,9 @@ class Meta(Base):
     coord_system = relationship("CoordSystem", back_populates="meta")
 
 
-
 class MetaCoord(Base):
     __tablename__ = "meta_coord"
-    __table_args__ = (
-        Index("cs_table_name_idx", "coord_system_id", "table_name", unique=True),
-    )
+    __table_args__ = (Index("cs_table_name_idx", "coord_system_id", "table_name", unique=True),)
 
     table_name = Column(String(40), primary_key=True, nullable=False)
     coord_system_id = Column(
@@ -814,9 +757,7 @@ class ProteinFeature(Base):
     cigar_line = Column(Text)
     align_type = Column(Enum("ensembl", "cigar", "cigarplus", "vulgar", "mdtag"))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="ProteinFeature.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="ProteinFeature.analysis_id == Analysis.analysis_id")
     translation = relationship(
         "Translation",
         primaryjoin="ProteinFeature.translation_id == Translation.translation_id",
@@ -936,12 +877,8 @@ class TranscriptSupportingFeature(Base):
         nullable=False,
         server_default=text("'0'"),
     )
-    feature_type = Column(
-        Enum("dna_align_feature", "protein_align_feature"), primary_key=True
-    )
-    feature_id = Column(
-        INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'")
-    )
+    feature_type = Column(Enum("dna_align_feature", "protein_align_feature"), primary_key=True)
+    feature_id = Column(INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'"))
 
 
 class TranslationAttrib(Base):
@@ -1014,9 +951,7 @@ class UnmappedObject(Base):
     )
     parent = Column(String(255))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="UnmappedObject.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="UnmappedObject.analysis_id == Analysis.analysis_id")
     external_db = relationship(
         "ExternalDb",
         primaryjoin="UnmappedObject.external_db_id == ExternalDb.external_db_id",
@@ -1071,9 +1006,7 @@ class Xref(Base):
     )
     info_text = Column(String(255), nullable=False, server_default=text("''"))
 
-    external_db = relationship(
-        "ExternalDb", primaryjoin="Xref.external_db_id == ExternalDb.external_db_id"
-    )
+    external_db = relationship("ExternalDb", primaryjoin="Xref.external_db_id == ExternalDb.external_db_id")
 
 
 t_alt_allele_attrib = Table(
@@ -1176,9 +1109,7 @@ class AssemblyException(Base):
 
 class DensityFeature(Base):
     __tablename__ = "density_feature"
-    __table_args__ = (
-        Index("seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),
-    )
+    __table_args__ = (Index("seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),)
 
     density_feature_id = Column(INTEGER(10), primary_key=True)
     density_type_id = Column(
@@ -1206,9 +1137,7 @@ class DensityFeature(Base):
 
 class DitagFeature(Base):
     __tablename__ = "ditag_feature"
-    __table_args__ = (
-        Index("seq_region_idx", "seq_region_id", "seq_region_start", "seq_region_end"),
-    )
+    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start", "seq_region_end"),)
 
     ditag_feature_id = Column(INTEGER(10), primary_key=True)
     ditag_id = Column(
@@ -1217,9 +1146,7 @@ class DitagFeature(Base):
         index=True,
         server_default=text("'0'"),
     )
-    ditag_pair_id = Column(
-        INTEGER(10), nullable=False, index=True, server_default=text("'0'")
-    )
+    ditag_pair_id = Column(INTEGER(10), nullable=False, index=True, server_default=text("'0'"))
     seq_region_id = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
@@ -1240,9 +1167,7 @@ class DitagFeature(Base):
     cigar_line = Column(TINYTEXT, nullable=False)
     ditag_side = Column(Enum("F", "L", "R"), nullable=False)
 
-    analysis = relationship(
-        "Analysis", primaryjoin="DitagFeature.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="DitagFeature.analysis_id == Analysis.analysis_id")
     ditag = relationship("Ditag", primaryjoin="DitagFeature.ditag_id == Ditag.ditag_id")
     seq_region = relationship(
         "SeqRegion", primaryjoin="DitagFeature.seq_region_id == SeqRegion.seq_region_id"
@@ -1288,13 +1213,9 @@ class DnaAlignFeature(Base):
         index=True,
     )
     hcoverage = Column(Float(asdecimal=True))
-    align_type = Column(
-        Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'")
-    )
+    align_type = Column(Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'"))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="DnaAlignFeature.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="DnaAlignFeature.analysis_id == Analysis.analysis_id")
     external_db = relationship(
         "ExternalDb",
         primaryjoin="DnaAlignFeature.external_db_id == ExternalDb.external_db_id",
@@ -1329,9 +1250,7 @@ class Exon(Base):
     created_date = Column(DateTime)
     modified_date = Column(DateTime)
 
-    seq_region = relationship(
-        "SeqRegion", primaryjoin="Exon.seq_region_id == SeqRegion.seq_region_id"
-    )
+    seq_region = relationship("SeqRegion", primaryjoin="Exon.seq_region_id == SeqRegion.seq_region_id")
 
 
 class ExternalSynonym(Base):
@@ -1404,9 +1323,7 @@ class Karyotype(Base):
     band = Column(String(40))
     stain = Column(String(40))
 
-    seq_region = relationship(
-        "SeqRegion", primaryjoin="Karyotype.seq_region_id == SeqRegion.seq_region_id"
-    )
+    seq_region = relationship("SeqRegion", primaryjoin="Karyotype.seq_region_id == SeqRegion.seq_region_id")
 
 
 class MarkerFeature(Base):
@@ -1432,12 +1349,8 @@ class MarkerFeature(Base):
     )
     map_weight = Column(INTEGER(10))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="MarkerFeature.analysis_id == Analysis.analysis_id"
-    )
-    marker = relationship(
-        "Marker", primaryjoin="MarkerFeature.marker_id == Marker.marker_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="MarkerFeature.analysis_id == Analysis.analysis_id")
+    marker = relationship("Marker", primaryjoin="MarkerFeature.marker_id == Marker.marker_id")
     seq_region = relationship(
         "SeqRegion",
         primaryjoin="MarkerFeature.seq_region_id == SeqRegion.seq_region_id",
@@ -1491,9 +1404,7 @@ class MiscFeature(Base):
     seq_region_end = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
     seq_region_strand = Column(TINYINT(4), nullable=False, server_default=text("'0'"))
 
-    seq_region = relationship(
-        "SeqRegion", primaryjoin="MiscFeature.seq_region_id == SeqRegion.seq_region_id"
-    )
+    seq_region = relationship("SeqRegion", primaryjoin="MiscFeature.seq_region_id == SeqRegion.seq_region_id")
     # misc_sets = relationship("MiscSet", secondary=t_misc_feature_misc_set)
 
 
@@ -1533,9 +1444,7 @@ class ObjectXref(Base):
         index=True,
     )
 
-    analysis = relationship(
-        "Analysis", primaryjoin="ObjectXref.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="ObjectXref.analysis_id == Analysis.analysis_id")
     xref = relationship("Xref", primaryjoin="ObjectXref.xref_id == Xref.xref_id")
 
 
@@ -1608,12 +1517,8 @@ class Operon(Base):
     created_date = Column(DateTime)
     modified_date = Column(DateTime)
 
-    analysis = relationship(
-        "Analysis", primaryjoin="Operon.analysis_id == Analysis.analysis_id"
-    )
-    seq_region = relationship(
-        "SeqRegion", primaryjoin="Operon.seq_region_id == SeqRegion.seq_region_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="Operon.analysis_id == Analysis.analysis_id")
+    seq_region = relationship("SeqRegion", primaryjoin="Operon.seq_region_id == SeqRegion.seq_region_id")
 
 
 class PredictionTranscript(Base):
@@ -1683,9 +1588,7 @@ class ProteinAlignFeature(Base):
         index=True,
     )
     hcoverage = Column(Float(asdecimal=True))
-    align_type = Column(
-        Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'")
-    )
+    align_type = Column(Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'"))
 
     analysis = relationship(
         "Analysis",
@@ -1727,9 +1630,7 @@ class RepeatFeature(Base):
     )
     score = Column(Float(asdecimal=True))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="RepeatFeature.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="RepeatFeature.analysis_id == Analysis.analysis_id")
     repeat_consensus = relationship(
         "RepeatConsensus",
         primaryjoin="RepeatFeature.repeat_consensus_id == RepeatConsensus.repeat_consensus_id",
@@ -1743,9 +1644,7 @@ class RepeatFeature(Base):
 class SeqRegionAttrib(Base):
     __tablename__ = "seq_region_attrib"
     __table_args__ = (
-        Index(
-            "region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True
-        ),
+        Index("region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True),
         Index("type_val_idx", "attrib_type_id", "value"),
     )
 
@@ -1765,7 +1664,6 @@ class SeqRegionAttrib(Base):
     value = Column(Text, primary_key=True, nullable=False, index=True)
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
     attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
-
 
 
 # Not in first normal form, can't be mapped (i.e. it has fully duplicated rows for homo_sapiens_core)
@@ -1800,7 +1698,7 @@ class SeqRegionSynonym(Base):
     )
     synonym = Column(String(250), nullable=False)
     external_db_id = Column(ForeignKey("external_db.external_db_id"))
-    
+
     seq_region = relationship("SeqRegion", back_populates="seq_region_synonym")
     external_db = relationship("ExternalDb", back_populates="seq_region_synonym")
 
@@ -1825,9 +1723,7 @@ class SimpleFeature(Base):
     )
     score = Column(Float(asdecimal=True))
 
-    analysis = relationship(
-        "Analysis", primaryjoin="SimpleFeature.analysis_id == Analysis.analysis_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="SimpleFeature.analysis_id == Analysis.analysis_id")
     seq_region = relationship(
         "SeqRegion",
         primaryjoin="SimpleFeature.seq_region_id == SeqRegion.seq_region_id",
@@ -1908,9 +1804,7 @@ class MiscAttrib(Base):
     __tablename__ = "misc_attrib"
     __table_args__ = (
         Index("type_val_idx", "attrib_type_id", "value"),
-        Index(
-            "misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True
-        ),
+        Index("misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True),
     )
 
     misc_feature_id = Column(
@@ -1991,12 +1885,8 @@ class OperonTranscript(Base):
     created_date = Column(DateTime)
     modified_date = Column(DateTime)
 
-    analysis = relationship(
-        "Analysis", primaryjoin="OperonTranscript.analysis_id == Analysis.analysis_id"
-    )
-    operon = relationship(
-        "Operon", primaryjoin="OperonTranscript.operon_id == Operon.operon_id"
-    )
+    analysis = relationship("Analysis", primaryjoin="OperonTranscript.analysis_id == Analysis.analysis_id")
+    operon = relationship("Operon", primaryjoin="OperonTranscript.operon_id == Operon.operon_id")
     seq_region = relationship(
         "SeqRegion",
         primaryjoin="OperonTranscript.seq_region_id == SeqRegion.seq_region_id",
@@ -2027,8 +1917,9 @@ class PredictionExon(Base):
 
     prediction_transcript = relationship(
         "PredictionTranscript",
-        primaryjoin=("PredictionExon.prediction_transcript_id =="
-                     "PredictionTranscript.prediction_transcript_id"),
+        primaryjoin=(
+            "PredictionExon.prediction_transcript_id ==" "PredictionTranscript.prediction_transcript_id"
+        ),
     )
     seq_region = relationship(
         "SeqRegion",
@@ -2050,12 +1941,8 @@ class SupportingFeature(Base):
         nullable=False,
         server_default=text("'0'"),
     )
-    feature_type = Column(
-        Enum("dna_align_feature", "protein_align_feature"), primary_key=True
-    )
-    feature_id = Column(
-        INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'")
-    )
+    feature_type = Column(Enum("dna_align_feature", "protein_align_feature"), primary_key=True)
+    feature_id = Column(INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'"))
 
 
 t_operon_transcript_gene = Table(

@@ -24,7 +24,7 @@ from typing import ContextManager
 
 import pytest
 from pytest import raises
-from sqlalchemy.exc import  NoResultFound
+from sqlalchemy.exc import NoResultFound
 
 from ensembl.database import UnitTestDB
 from ensembl.ncbi_taxonomy.api.utils import Taxonomy
@@ -73,9 +73,7 @@ class TestNCBITaxonomyUtils:
             assert result == expectation
 
     @pytest.mark.parametrize("taxon_id, expectation", [(9616, raises(NoResultFound))])
-    def test_fetch_node_by_id_false_id(
-        self, taxon_id: int, expectation: ContextManager
-    ) -> None:
+    def test_fetch_node_by_id_false_id(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`fetch_node_by_id()` with a non-existant taxon_id.
 
         Args:
@@ -99,12 +97,8 @@ class TestNCBITaxonomyUtils:
         "root_id": 1,
     }
 
-    @pytest.mark.parametrize(
-        "name, expectation", [("Canis lupus familiaris", result_dict2)]
-    )
-    def test_fetch_taxon_by_species_name(
-        self, name: int, expectation: NCBITaxonomy
-    ) -> None:
+    @pytest.mark.parametrize("name, expectation", [("Canis lupus familiaris", result_dict2)])
+    def test_fetch_taxon_by_species_name(self, name: int, expectation: NCBITaxonomy) -> None:
         """Tests :func:`fetch_taxon_by_species_name()`.
 
         Args:
@@ -117,12 +111,8 @@ class TestNCBITaxonomyUtils:
             result.pop("_sa_instance_state")
             assert result == expectation
 
-    @pytest.mark.parametrize(
-        "name, expectation", [("Canis loopy familiaris", raises(NoResultFound))]
-    )
-    def test_fetch_taxon_by_species_name_false_name(
-        self, name: int, expectation: ContextManager
-    ) -> None:
+    @pytest.mark.parametrize("name, expectation", [("Canis loopy familiaris", raises(NoResultFound))])
+    def test_fetch_taxon_by_species_name_false_name(self, name: int, expectation: ContextManager) -> None:
         """Tests :func:`fetch_taxon_by_species_name()` with a non-existant name.
 
         Args:
@@ -174,9 +164,7 @@ class TestNCBITaxonomyUtils:
                 assert result == expectation
 
     @pytest.mark.parametrize("taxon_id, expectation", [(1, raises(NoResultFound))])
-    def test_parent_as_root_id(
-        self, taxon_id: int, expectation: ContextManager
-    ) -> None:
+    def test_parent_as_root_id(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`parent()` with root taxon_id, no parent expected of course.
 
         Args:
@@ -303,9 +291,7 @@ class TestNCBITaxonomyUtils:
             assert result == expectation
 
     @pytest.mark.parametrize("taxon_id, expectation", [(0, raises(NoResultFound))])
-    def test_num_descendants_false_taxon(
-        self, taxon_id: int, expectation: ContextManager
-    ) -> None:
+    def test_num_descendants_false_taxon(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`num_descendants()` with leaf taxon_id.
 
         Args:
@@ -343,40 +329,40 @@ class TestNCBITaxonomyUtils:
 
     result_tuple2 = (
         {
-            'genbank_hidden_flag': 0,
-            'left_index': 1,
-            'parent_id': 0,
-            'rank': 'no rank',
-            'right_index': 764,
-            'root_id': 1,
-            'taxon_id': 1,
+            "genbank_hidden_flag": 0,
+            "left_index": 1,
+            "parent_id": 0,
+            "rank": "no rank",
+            "right_index": 764,
+            "root_id": 1,
+            "taxon_id": 1,
         },
         {
-            'genbank_hidden_flag': 0,
-            'left_index': 3,
-            'parent_id': 131567,
-            'rank': 'superkingdom',
-            'right_index': 762,
-            'root_id': 1,
-            'taxon_id': 2759,
+            "genbank_hidden_flag": 0,
+            "left_index": 3,
+            "parent_id": 131567,
+            "rank": "superkingdom",
+            "right_index": 762,
+            "root_id": 1,
+            "taxon_id": 2759,
         },
         {
-            'genbank_hidden_flag': 1,
-            'left_index': 4,
-            'parent_id': 2759,
-            'rank': 'no rank',
-            'right_index': 761,
-            'root_id': 1,
-            'taxon_id': 33154,
+            "genbank_hidden_flag": 1,
+            "left_index": 4,
+            "parent_id": 2759,
+            "rank": "no rank",
+            "right_index": 761,
+            "root_id": 1,
+            "taxon_id": 33154,
         },
         {
-            'genbank_hidden_flag': 1,
-            'left_index': 2,
-            'parent_id': 1,
-            'rank': 'no rank',
-            'right_index': 763,
-            'root_id': 1,
-            'taxon_id': 131567,
+            "genbank_hidden_flag": 1,
+            "left_index": 2,
+            "parent_id": 1,
+            "rank": "no rank",
+            "right_index": 763,
+            "root_id": 1,
+            "taxon_id": 131567,
         },
     )
 
@@ -397,9 +383,7 @@ class TestNCBITaxonomyUtils:
             assert results == expectation
 
     @pytest.mark.parametrize("taxon_id, expectation", [(1, raises(NoResultFound))])
-    def test_fetch_ancestors_root(
-        self, taxon_id: int, expectation: ContextManager
-    ) -> None:
+    def test_fetch_ancestors_root(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`fetch_ancestors()` with root taxon_id.
 
         Args:
@@ -412,9 +396,7 @@ class TestNCBITaxonomyUtils:
                 assert result == expectation
 
     @pytest.mark.parametrize("taxon_id, expectation", [(0, raises(NoResultFound))])
-    def test_fetch_ancestors_false_taxon(
-        self, taxon_id: int, expectation: ContextManager
-    ) -> None:
+    def test_fetch_ancestors_false_taxon(self, taxon_id: int, expectation: ContextManager) -> None:
         """Tests :func:`fetch_ancestors()` with non-existant taxon_id.
 
         Args:
@@ -473,12 +455,8 @@ class TestNCBITaxonomyUtils:
         },
     )
 
-    @pytest.mark.parametrize(
-        "taxon_id1, taxon_id2, expectation", [(33208, 4751, result_tuple3)]
-    )
-    def test_all_common_ancestors(
-        self, taxon_id1: int, taxon_id2: int, expectation: tuple
-    ) -> None:
+    @pytest.mark.parametrize("taxon_id1, taxon_id2, expectation", [(33208, 4751, result_tuple3)])
+    def test_all_common_ancestors(self, taxon_id1: int, taxon_id2: int, expectation: tuple) -> None:
         """Tests :func:`all_common_ancestors()`.
 
         Args:
@@ -497,9 +475,7 @@ class TestNCBITaxonomyUtils:
             results = tuple(result)
             assert results == expectation
 
-    @pytest.mark.parametrize(
-        "taxon_id1, taxon_id2, expectation", [(1, 9615, raises(NoResultFound))]
-    )
+    @pytest.mark.parametrize("taxon_id1, taxon_id2, expectation", [(1, 9615, raises(NoResultFound))])
     def test_all_common_ancestors_root(
         self, taxon_id1: int, taxon_id2: int, expectation: ContextManager
     ) -> None:
@@ -527,12 +503,8 @@ class TestNCBITaxonomyUtils:
         "taxon_id": 1,
     }
 
-    @pytest.mark.parametrize(
-        "taxon_id1, taxon_id2, expectation", [(33154, 131567, result_dict4)]
-    )
-    def test_last_common_ancestors(
-        self, taxon_id1: int, taxon_id2: int, expectation: tuple
-    ) -> None:
+    @pytest.mark.parametrize("taxon_id1, taxon_id2, expectation", [(33154, 131567, result_dict4)])
+    def test_last_common_ancestors(self, taxon_id1: int, taxon_id2: int, expectation: tuple) -> None:
         """Tests :func:`all_common_ancestors()`.
 
         Args:

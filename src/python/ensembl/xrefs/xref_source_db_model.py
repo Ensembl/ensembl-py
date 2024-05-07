@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Xref Source database ORM."""
+# Ignore some pylint and mypy checks due to the nature of SQLAlchemy ORMs
+# pylint: disable=missing-class-docstring,too-many-lines
+# mypy: disable-error-code="misc, valid-type"
 
 from sqlalchemy import Column, Index, ForeignKey, text
 from sqlalchemy.dialects.mysql import INTEGER, VARCHAR, BOOLEAN

@@ -40,7 +40,7 @@ class NCBITaxaNode(Base):
     __tablename__ = "ncbi_taxa_node"
 
     taxon_id = Column(INTEGER(10), primary_key=True)
-    parent_id = Column(INTEGER(10), ForeignKey('ncbi_taxa_node.taxon_id'), nullable=False, index=True)
+    parent_id = Column(INTEGER(10), ForeignKey("ncbi_taxa_node.taxon_id"), nullable=False, index=True)
     rank = Column(CHAR(32), nullable=False, index=True)
     genbank_hidden_flag = Column(TINYINT(1), nullable=False, default=0)
     left_index = Column(INTEGER(10), nullable=False, default=0, index=True)
@@ -60,7 +60,6 @@ class NCBITaxaName(Base):
 
 
 class NCBITaxonomy(Base):
-
     ncbi_taxa_name_table = NCBITaxaName.__table__
     ncbi_taxa_node_table = NCBITaxaNode.__table__
 

@@ -12,7 +12,7 @@
 
 """Allow to seamlessly load / read the content of a remote file as if it was located locally."""
 
-__all__ = ['RemoteFileLoader']
+__all__ = ["RemoteFileLoader"]
 
 import configparser
 import json
@@ -40,7 +40,8 @@ class RemoteFileLoader:
         parser (str): Parser selected for this object.
 
     """
-    available_formats = {'yaml', 'ini', 'env', 'json'}
+
+    available_formats = {"yaml", "ini", "env", "json"}
     parser = None
 
     def __init__(self, parser: Optional[str] = None) -> None:
@@ -48,9 +49,9 @@ class RemoteFileLoader:
             self.parser = parser
 
     def __parse(self, content: str) -> Any:
-        if self.parser == 'yaml':
+        if self.parser == "yaml":
             return yaml.load(content, yaml.SafeLoader)
-        if self.parser == 'ini':
+        if self.parser == "ini":
             config = configparser.ConfigParser()
             try:
                 config.read_string(content)
@@ -58,29 +59,29 @@ class RemoteFileLoader:
                 content = "[DEFAULT]\n" + content
                 config.read_string(content)
             return config
-        if self.parser == 'env':
+        if self.parser == "env":
             return dotenv.dotenv_values(stream=StringIO(content))
-        if self.parser == 'json':
+        if self.parser == "json":
             return json.loads(content)
         # only return content, no parsing
         return content
 
     def r_open(self, url: str) -> Any:
         """Returns the parsed remote file from the given URL.
-        
+
         Args:
             url: URL of the remote file to fetch.
 
         Raises:
             requests.exception.HTTPError: if loading or requesting the given URL returned an error.
             requests.exception.Timeout: if a timeout was raised whilst requesting the given URL.
-        
+
         """
         try:
             r = requests.get(url, timeout=120)
             if r.status_code == 200:
                 return self.__parse(r.text)
-            raise exc.HTTPError(f"Loading {url} received: {r.status_code} ({r.reason})")
+            raise exc.HTTPError(response=r)
         except exc.HTTPError as ex:
             logger.exception(f"Error with request to {url}: {ex}")
             raise ex
