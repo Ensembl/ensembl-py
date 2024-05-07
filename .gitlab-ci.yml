@@ -80,12 +80,12 @@ python:prepare_venv:
 python:pylint:src:
   extends: .python:pylint
   script:
-    - $PYLINT_CMD src
+    - $PYLINT_CMD src/python/ensembl
 
 python:pylint:tests:
   extends: .python:pylint
   script:
-    - $PYLINT_CMD tests
+    - $PYLINT_CMD --recursive=y src/python/tests
 
 ### mypy
 .python:mypy:
@@ -96,13 +96,13 @@ python:pylint:tests:
 python:mypy:src:
   extends: .python:mypy
   script:
-    - $MYPY_CMD src
+    - $MYPY_CMD src/python/ensembl
 
 python:mypy:tests:
   extends: .python:mypy
   allow_failure: true
   script:
-    - $MYPY_CMD tests
+    - $MYPY_CMD src/python/tests
 
 ### black
 python:black:
