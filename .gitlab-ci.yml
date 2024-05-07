@@ -24,7 +24,7 @@ workflow:
 
 default:
   tags:
-    - docker
+    - dind
 
 variables:
   PYTHON_IMAGE: python:3.9
