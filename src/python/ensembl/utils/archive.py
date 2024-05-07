@@ -72,7 +72,7 @@ def extract_file(src_file: PathLike, dst_dir: PathLike) -> None:
 
     """
     src_file = Path(src_file)
-    extensions = set(["".join(src_file.suffixes[i:]) for i in range(0, len(src_file.suffixes))])
+    extensions = {"".join(src_file.suffixes[i:]) for i in range(0, len(src_file.suffixes))}
 
     if extensions.intersection(SUPPORTED_ARCHIVE_FORMATS):
         shutil.unpack_archive(src_file, dst_dir)
@@ -85,8 +85,8 @@ def extract_file(src_file: PathLike, dst_dir: PathLike) -> None:
 def extract_file_cli() -> None:
     """Entry-point for the `extract_file` method."""
     parser = ArgumentParser(description="Extracts file to the given location.")
-    parser.add_argument_inpath("--src_file", required=True, help="Path to the file to unpack")
-    parser.add_argument_outpath(
+    parser.add_argument_src_path("--src_file", required=True, help="Path to the file to unpack")
+    parser.add_argument_dst_path(
         "--dst_dir", default=Path.cwd(), help="Path to the folder where to extract the file"
     )
     args = parser.parse_args()

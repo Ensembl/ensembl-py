@@ -18,7 +18,6 @@
 from contextlib import nullcontext
 import os
 from pathlib import Path
-import shutil
 from typing import Any, Callable, Dict, Generator, Optional
 
 import pytest
@@ -26,7 +25,6 @@ from _pytest.config import Config
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
 from _pytest.python_api import RaisesContext
-from _pytest.tmpdir import TempPathFactory
 import sqlalchemy
 
 from ensembl.database import UnitTestDB

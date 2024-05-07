@@ -17,7 +17,6 @@
 __all__ = ["ArgumentParser"]
 
 import argparse
-import logging
 import os
 from pathlib import Path
 
@@ -65,8 +64,7 @@ class ArgumentParser(argparse.ArgumentParser):
             if os.access(dst_path, os.W_OK):
                 if exists_ok:
                     return dst_path
-                else:
-                    self.error(f"'{dst_path}' already exists")
+                self.error(f"'{dst_path}' already exists")
             else:
                 self.error(f"'{dst_path}' is not writable")
         for parent_path in dst_path.parents:
@@ -92,7 +90,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         """
         kwargs.setdefault("metavar", "PATH")
-        kwargs["type"] = lambda x: self._validate_src_path(x)
+        kwargs["type"] = self._validate_src_path
         self.add_argument(*args, **kwargs)
 
     def add_argument_dst_path(self, *args, exists_ok: bool = True, **kwargs) -> None:
@@ -115,9 +113,10 @@ class ArgumentParser(argparse.ArgumentParser):
 
         """
         kwargs.setdefault("metavar", "URI")
-        kwargs["type"] = lambda x: make_url(x)
+        kwargs["type"] = make_url
         self.add_argument(*args, **kwargs)
 
+    # pylint: disable=redefined-builtin
     def add_server_arguments(self, prefix: str = "", include_database: bool = False, help: str = "") -> None:
         """Adds the usual set of arguments needed to connect to a server.
 

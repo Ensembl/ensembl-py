@@ -82,9 +82,9 @@ class UnitTestDB:
             self.dbc = DBConnection(db_url)
             with self.dbc.begin() as conn:
                 if self.dbc.dialect == "mysql":
-                    conn.execute(f"SET FOREIGN_KEY_CHECKS=0;")
+                    conn.execute("SET FOREIGN_KEY_CHECKS=0;")
                 elif self.dbc.dialect == "sqlite":
-                    conn.execute(f"PRAGMA foreign_keys = OFF;")
+                    conn.execute("PRAGMA foreign_keys = OFF;")
                 for query in self._parse_sql_file(dump_dir_path / "table.sql"):
                     table = self._get_table_name(query)
                     try:
@@ -101,9 +101,9 @@ class UnitTestDB:
 
                         self._load_data(conn, table, filepath)
                 if self.dbc.dialect == "mysql":
-                    conn.execute(f"SET FOREIGN_KEY_CHECKS=1;")
+                    conn.execute("SET FOREIGN_KEY_CHECKS=1;")
                 elif self.dbc.dialect == "sqlite":
-                    conn.execute(f"PRAGMA foreign_keys = ON;")
+                    conn.execute("PRAGMA foreign_keys = ON;")
         except exc.SQLAlchemyError as e:
             # Make sure the database is deleted before raising the exception
             self.drop()
