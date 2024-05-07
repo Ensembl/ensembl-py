@@ -1,5 +1,8 @@
 # ensembl-py
 
+[![GitHub license](https://img.shields.io/github/license/Ensembl/ensembl-py)](https://github.com/Ensembl/ensembl-py/blob/main/LICENSE)
+[![coverage report](https://jalvarez.gitdocs.ebi.ac.uk/ensembl-py/coverage-badge.svg)](https://jalvarez.gitdocs.ebi.ac.uk/ensembl-py/)
+
 Ensembl Python Base Library
 
 > _Note_: bear in mind that this repository will put apart in the future and the different components moved to their corresponding Python repositories.

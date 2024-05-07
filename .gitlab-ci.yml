@@ -1,0 +1,161 @@
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# GitLab CI/CD for Python
+
+workflow:
+  rules:
+    - if: $CI_EXTERNAL_PULL_REQUEST_IID &&
+          $CI_EXTERNAL_PULL_REQUEST_SOURCE_REPOSITORY == $CI_EXTERNAL_PULL_REQUEST_TARGET_REPOSITORY &&
+          $CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+default:
+  tags:
+    - docker
+
+variables:
+  PYTHON_IMAGE: python:3.9
+  RUN_DIR: ./cicd/runtime
+  # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
+  MYSQL_ROOT_PASSWORD: root
+  MYSQL_USER: runner
+  MYSQL_PASSWORD: mysql
+
+.python:
+  stage: test
+  image: $PYTHON_IMAGE
+  services:
+  - mysql:5.7
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - pyproject.toml
+      - "*.py"
+      - src/python/**/*.py
+
+## Prepare and load the Python virtual environment
+
+python:prepare_venv:
+  extends: .python
+  artifacts:
+    paths:
+      - $RUN_DIR
+  before_script:
+    - python --version  # for debugging
+    - python -m venv $RUN_DIR/venv
+    - source $RUN_DIR/venv/bin/activate
+  script:
+    - pip install -e .[cicd]
+
+.python:test:
+  extends: .python
+  needs:
+    # Using `needs` as it allows to depend on jobs from the same stage
+    # (https://docs.gitlab.com/ee/ci/yaml/#needs)
+    - job: python:prepare_venv
+      artifacts: true
+  before_script:
+    - source $RUN_DIR/venv/bin/activate
+
+## Linting, type checking and formatting
+
+### pylint
+.python:pylint:
+  extends: .python:test
+  variables:
+    PYLINT_CMD: pylint --rcfile pyproject.toml
+
+python:pylint:src:
+  extends: .python:pylint
+  script:
+    - $PYLINT_CMD src
+
+python:pylint:tests:
+  extends: .python:pylint
+  script:
+    - $PYLINT_CMD tests
+
+### mypy
+.python:mypy:
+  extends: .python:test
+  variables:
+    MYPY_CMD: mypy --config-file pyproject.toml
+
+python:mypy:src:
+  extends: .python:mypy
+  script:
+    - $MYPY_CMD src
+
+python:mypy:tests:
+  extends: .python:mypy
+  allow_failure: true
+  script:
+    - $MYPY_CMD tests
+
+### black
+python:black:
+  extends: .python:test
+  allow_failure: true
+  script:
+    - black --config pyproject.toml --check .
+
+## Unit tests and coverage
+
+python:pytest:
+  extends: .python:test
+  script:
+    - coverage run -m pytest --server=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306// --junitxml=$RUN_DIR/junit_reports.xml
+  artifacts:
+    when: always
+    reports:
+      junit: $RUN_DIR/junit_reports.xml
+    paths:
+      - .coverage
+
+python:coverage:
+  extends: .python:test
+  needs:
+    # "extends" cannot merge arrays (https://docs.gitlab.com/ee/ci/yaml/yaml_optimization.html#merge-details)
+    - !reference [.python:test, needs]
+    - job: python:pytest
+      artifacts: true
+  script:
+    - coverage html -d $RUN_DIR/coverage
+    - coverage xml -o $RUN_DIR/coverage.xml
+    - genbadge coverage -i $RUN_DIR/coverage.xml -o $RUN_DIR/coverage/coverage-badge.svg
+    - coverage report
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    when: always
+    paths:
+      - $RUN_DIR/coverage
+
+## Generate GitLab pages with HTML coverage report
+
+pages:
+  extends: .python
+  stage: deploy
+  needs:
+    - job: python:coverage
+      artifacts: true
+  script:
+    - mv $RUN_DIR/coverage/ public/
+  artifacts:
+    paths:
+      - public
+  only:
+    refs:
+      - main

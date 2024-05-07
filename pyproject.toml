@@ -50,18 +50,21 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
+cicd = [
     "black",
-    "coverage[toml]",
-    "ipython",
-    "mock",
+    "coverage",
+    "genbadge[coverage]",
     "mypy",
     "pylint",
     "pytest",
+    "pytest-dependency",
+    "pytest-mock",
     "requests-mock >= 1.8.0",
-    "Sphinx",
-    "sphinx-rtd-theme",
     "types-PyYAML",
+    "types-requests",
+]
+dev = [
+    "ipython",
 ]
 doc = [
     "mock",
@@ -124,14 +127,14 @@ show_error_codes = true
 warn_unused_configs = true
 
 [tool.pytest.ini_options]
-addopts = "-v --tb=native --server=sqlite:///"
+addopts = [
+    "--import-mode=importlib",
+    "--tb=native",
+    "--server=sqlite:///",
+]
 norecursedirs = [
-    "apps",
-    "basic_modules",
     "data",
     "docs",
-    "env",
-    "tmp*",
     "*.egg_info",
 ]
 testpaths = ["src/python/tests"]
