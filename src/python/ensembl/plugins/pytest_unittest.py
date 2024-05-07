@@ -23,9 +23,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Generator, Optional
 
 import pytest
-from _pytest.config import Config
-from _pytest.config.argparsing import Parser
-from _pytest.fixtures import FixtureRequest
+from pytest import Config, FixtureRequest, Parser
 from _pytest.python_api import RaisesContext
 import sqlalchemy
 
@@ -77,8 +75,6 @@ def pytest_configure(config: Config) -> None:
     if server_url.password and server_url.password.startswith("$"):
         server_url = server_url.set(password=os.environ[server_url.password[1:]])
         config.option.server = str(server_url)
-    # Add global variables
-    pytest.dbs_dir = Path(__file__).parents[2] / "tests" / "databases"
 
 
 def pytest_make_parametrize_id(val: Any) -> str:
@@ -144,14 +140,15 @@ def shared_data_dir(pytestconfig: Config) -> Path:
 
 
 @pytest.fixture(name="db_factory", scope="session")
-def db_factory_(request: FixtureRequest) -> Generator:
+def db_factory_(request: FixtureRequest, shared_data_dir: Path) -> Generator:
     """Yields a unit test database (:class:`UnitTestDB`) factory.
 
     Args:
         request: Access to the requesting test context.
+        shared_data_dir: Path to the shared test data folder.
 
     """
-    created = {}  # type: Dict[str, UnitTestDB]
+    created: Dict[str, UnitTestDB] = {}
     server_url = request.config.getoption("server")
 
     def db_factory(src: os.PathLike, name: Optional[str] = None) -> UnitTestDB:
@@ -163,7 +160,7 @@ def db_factory_(request: FixtureRequest) -> Generator:
             name: Name to give to the new database. See :meth:`UnitTestDB.__init__()` for more information.
 
         """
-        src_path = Path(src) if os.path.isabs(src) else pytest.dbs_dir / src  # type: ignore
+        src_path = Path(src) if os.path.isabs(src) else shared_data_dir / src
         db_key = name if name else src_path.name
         return created.setdefault(db_key, UnitTestDB(server_url, src_path, name))
 

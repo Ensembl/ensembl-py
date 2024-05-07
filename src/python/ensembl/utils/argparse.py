@@ -19,7 +19,7 @@ __all__ = ["ArgumentParser"]
 import argparse
 import os
 from pathlib import Path
-from typing import Any, List, Union
+from typing import List, Union
 
 from sqlalchemy.engine import make_url, URL
 

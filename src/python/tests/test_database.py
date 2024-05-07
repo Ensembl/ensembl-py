@@ -25,11 +25,10 @@ Typical usage example::
 from contextlib import nullcontext as does_not_raise
 import os
 from pathlib import Path
-from typing import ContextManager, Dict
+from typing import ContextManager, Dict, Optional
 
 import pytest
-from pytest import param, raises
-from _pytest.fixtures import FixtureRequest
+from pytest import FixtureRequest, param, raises
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.exc import IntegrityError, OperationalError, SQLAlchemyError
 from sqlalchemy.ext.automap import automap_base
@@ -45,7 +44,7 @@ class TestUnitTestDB:
 
     """
 
-    dbs = {}  # type: Dict[str, UnitTestDB]
+    dbs: Dict[str, UnitTestDB] = {}
 
     @pytest.mark.parametrize(
         "src, name, expectation",
@@ -65,13 +64,21 @@ class TestUnitTestDB:
             ),
         ],
     )
-    def test_init(self, request: FixtureRequest, src: Path, name: str, expectation: ContextManager) -> None:
+    def test_init(
+        self,
+        request: FixtureRequest,
+        shared_data_dir: Path,
+        src: Path,
+        name:str,
+        expectation: ContextManager,
+    ) -> None:
         """Tests that the object :class:`UnitTestDB` is initialised correctly.
 
         See :class:`UnitTestDB` for a detailed description of `src` (i.e. `dump_dir`) and `name` parameters.
 
         Args:
             request: Access to the requesting test context.
+            shared_data_dir: Path to the shared test data folder.
             src: Directory path where the test database schema and content files are located. If a relative
                 path is provided, the root folder will be ``src/python/tests/databases``.
             name: Name to give to the new database.
@@ -81,7 +88,7 @@ class TestUnitTestDB:
         """
         with expectation:
             server_url = request.config.getoption("server")
-            src_path = src if src.is_absolute() else pytest.dbs_dir / src  # type: ignore
+            src_path = src if src.is_absolute() else shared_data_dir / src
             db_key = name if name else src.name
             self.dbs[db_key] = UnitTestDB(server_url, src_path, name)
             # Check that the database has been created correctly
@@ -124,8 +131,8 @@ class TestDBConnection:
 
     """
 
-    dbc = None  # type: DBConnection
-    server = None  # type: str
+    dbc: Optional[DBConnection] = None
+    server: Optional[str] = None
 
     # autouse=True makes this fixture be executed before any test_* method of this class, and scope='class' to
     # execute it only once per class parametrization
