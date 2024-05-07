@@ -81,7 +81,7 @@ class RemoteFileLoader:
             r = requests.get(url, timeout=120)
             if r.status_code == 200:
                 return self.__parse(r.text)
-            raise exc.HTTPError(f"Loading {url} received: {r.status_code} ({r.reason})")
+            raise exc.HTTPError(response=r)
         except exc.HTTPError as ex:
             logger.exception(f"Error with request to {url}: {ex}")
             raise ex

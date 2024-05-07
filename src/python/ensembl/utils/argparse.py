@@ -19,6 +19,7 @@ __all__ = ["ArgumentParser"]
 import argparse
 import os
 from pathlib import Path
+from typing import Any, List, Union
 
 from sqlalchemy.engine import make_url, URL
 
@@ -35,9 +36,9 @@ class ArgumentParser(argparse.ArgumentParser):
         """Extends the base class to include the information about default argument values by default."""
         super().__init__(*args, **kwargs)
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
-        self.__server_groups = []
+        self.__server_groups: List[str] = []
 
-    def _validate_src_path(self, src_path: os.PathLike) -> Path:
+    def _validate_src_path(self, src_path: Union[str, os.PathLike]) -> Path:
         """Returns the path if exists and it is readable, raises an error through the parser otherwise.
 
         Args:
@@ -51,7 +52,7 @@ class ArgumentParser(argparse.ArgumentParser):
             self.error(f"'{src_path}' not readable")
         return src_path
 
-    def _validate_dst_path(self, dst_path: os.PathLike, exists_ok: bool) -> Path:
+    def _validate_dst_path(self, dst_path: Union[str, os.PathLike], exists_ok: bool) -> Path:
         """Returns the path if it is writable, raises an error through the parser otherwise.
 
         Args:
@@ -72,7 +73,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 self.error(f"'{dst_path}' is not writable")
         return dst_path
 
-    def add_argument(self, *args, **kwargs) -> None:
+    def add_argument(self, *args, **kwargs) -> None:  # type: ignore[override]
         """Extends the parent function by excluding the default value in the help text when not provided.
 
         Only applied to required arguments without a default value, i.e. positional arguments or optional
@@ -199,26 +200,26 @@ class ArgumentParser(argparse.ArgumentParser):
                 help="level of the events to track in the log file: %(choices)s",
             )
 
-    def parse_args(self, *args, **kwargs) -> argparse.Namespace:
+    def parse_args(self, *args, **kwargs) -> argparse.Namespace:  # type: ignore[override]
         """Extends the parent function by adding a new URL argument for every server group added.
 
         The type of this new argument will be :class:`sqlalchemy.engine.URL`. It also logs all the parsed
         arguments for debugging purposes when logging arguments have been added.
 
         """
-        args = super().parse_args(*args, **kwargs)
+        arguments = super().parse_args(*args, **kwargs)
         # Build and add an sqlalchemy.engine.URL object for every server group added
         for prefix in self.__server_groups:
             # Raise an error rather than overwriting when the URL argument is already present
-            if f"{prefix}url" in args:
+            if f"{prefix}url" in arguments:
                 self.error(f"argument '{prefix}url' is already present")
             server_url = URL.create(
                 "mysql",
-                getattr(args, f"{prefix}user"),
-                getattr(args, f"{prefix}password"),
-                getattr(args, f"{prefix}host"),
-                getattr(args, f"{prefix}port"),
-                getattr(args, f"{prefix}database", None),
+                getattr(arguments, f"{prefix}user"),
+                getattr(arguments, f"{prefix}password"),
+                getattr(arguments, f"{prefix}host"),
+                getattr(arguments, f"{prefix}port"),
+                getattr(arguments, f"{prefix}database", None),
             )
-            setattr(args, f"{prefix}url", server_url)
-        return args
+            setattr(arguments, f"{prefix}url", server_url)
+        return arguments

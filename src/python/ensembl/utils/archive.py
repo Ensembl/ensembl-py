@@ -18,18 +18,21 @@ __all__ = ["SUPPORTED_ARCHIVE_FORMATS", "open_gz_file", "extract_file"]
 
 from contextlib import contextmanager
 import gzip
-from os import PathLike
+import os
 from pathlib import Path
 import shutil
-from typing import Generator, TextIO
+from typing import Generator, TextIO, Union
 
 from ensembl.utils.argparse import ArgumentParser
 
 
-def _unpack_gz_files(src_file: PathLike, dst_dir: PathLike) -> None:
-    """TODO"""
+def _unpack_gz_files(src_file: Union[str, os.PathLike], dst_dir: Union[str, os.PathLike]) -> None:
+    """Unpacks `src_file` to `dst_dir`.
+    
+    Note: expects `src_file` to have `.gz` extension.
+    """
     # Remove '.gz' extension to create the destination file name
-    dst_file = Path(dst_dir) / src_file[:-3]
+    dst_file = Path(dst_dir) / str(src_file)[:-3]
     with gzip.open(src_file, "rb") as f_in:
         with dst_file.open("wb") as f_out:
             shutil.copyfileobj(f_in, f_out)
@@ -42,7 +45,7 @@ SUPPORTED_ARCHIVE_FORMATS = [ext for elem in shutil.get_unpack_formats() for ext
 
 
 @contextmanager
-def open_gz_file(file_path: PathLike) -> Generator[TextIO, None, None]:
+def open_gz_file(file_path: Union[str, os.PathLike]) -> Generator[TextIO, None, None]:
     """Yields an open file object, even if the file is compressed with gzip.
 
     The file is expected to contain a text, and this can be used with the usual "with".
@@ -60,7 +63,7 @@ def open_gz_file(file_path: PathLike) -> Generator[TextIO, None, None]:
             yield fh
 
 
-def extract_file(src_file: PathLike, dst_dir: PathLike) -> None:
+def extract_file(src_file: Union[str, os.PathLike], dst_dir: Union[str, os.PathLike]) -> None:
     """Extracts the `src_file` into `dst_dir`.
 
     If the file is not an archive, it will be copied to `dst_dir`. `dst_dir` will be created if it
@@ -78,7 +81,7 @@ def extract_file(src_file: PathLike, dst_dir: PathLike) -> None:
         shutil.unpack_archive(src_file, dst_dir)
     else:
         # Replicate the functionality of shutil.unpack_archive() by creating `dst_dir`
-        dst_dir.mkdir(parents=True, exist_ok=True)
+        Path(dst_dir).mkdir(parents=True, exist_ok=True)
         shutil.copy(src_file, dst_dir)
 
 
