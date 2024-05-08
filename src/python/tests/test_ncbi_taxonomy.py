@@ -35,7 +35,7 @@ from ensembl.ncbi_taxonomy.models import NCBITaxonomy
 class TestNCBITaxonomyUtils:
     """Tests :class:`~ensembl.ncbi_taxonomy.api.utils.Taxonomy` in utils.py"""
 
-    dbc = None  # type: UnitTestDB
+    dbc: UnitTestDB = None
 
     @pytest.fixture(scope="class", autouse=True)
     def setup(self, db: UnitTestDB) -> None:
