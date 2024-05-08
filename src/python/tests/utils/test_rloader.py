@@ -29,7 +29,12 @@ class TestRemoteFileLoader:
     def test_yaml_load(self):
         """Tests `r_open()` with YAML file"""
         loader = RemoteFileLoader("yaml")
-        content = loader.r_open("https://raw.githubusercontent.com/Ensembl/ensembl-py/main/src/python/tests/utils/test_rloader/sample.yml")
+        content = loader.r_open(
+            (
+                "https://raw.githubusercontent.com/Ensembl/ensembl-py/main/src/python/tests/utils/"
+                "test_rloader/sample.yml"
+            )
+        )
         assert "language" in content
         assert "os" in content
 
