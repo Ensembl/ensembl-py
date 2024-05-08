@@ -17,9 +17,9 @@
 
 from contextlib import nullcontext
 from difflib import unified_diff
-
 import os
 from pathlib import Path
+import re
 from typing import Any, Callable, Dict, Generator, Optional
 
 import pytest
@@ -48,15 +48,29 @@ def pytest_addoption(parser: Parser) -> None:
         metavar="URL",
         dest="server",
         required=False,
-        default=os.getenv("DB_HOST", "sqlite:////"),
+        default=os.getenv("DB_HOST", "sqlite:///"),
         help="URL to the server where to create the test database(s).",
     )
     group.addoption(
         "--keep-data",
         action="store_true",
         dest="keep_data",
-        help="Do not remove test databases/temporary directories. Default: False",
+        required=False,
+        help="Do not remove test databases. Default: False",
     )
+
+
+def pytest_report_header(config: Config) -> str:
+    """Presents extra information in the report header.
+
+    Args:
+        config: Access to configuration values, pluginmanager and plugin hooks.
+
+    """
+    server = config.getoption("server")
+    if server:
+        server = re.sub(r"(//[^/]+:).*(@)", r"\1xxxxxx\2", server)
+        return f"server: {server}"
 
 
 def pytest_configure(config: Config) -> None:
@@ -128,7 +142,7 @@ def local_data_dir(request: FixtureRequest) -> Path:
     return Path(request.module.__file__).with_suffix("")
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="session")
 def shared_data_dir(pytestconfig: Config) -> Path:
     """Returns the path to the shared test data folder.
 

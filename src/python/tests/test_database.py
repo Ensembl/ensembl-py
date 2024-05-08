@@ -163,7 +163,7 @@ class TestDBConnection:
     @pytest.mark.dependency(depends=["test_init", "test_db_name"], scope="class")
     def test_url(self) -> None:
         """Tests :meth:`DBConnection.url` property."""
-        assert self.dbc.url == self.server + self.dbc.db_name
+        assert self.dbc.url == str(make_url(self.server).set(database=self.dbc.db_name))
 
     @pytest.mark.dependency(depends=["test_init"], scope="class")
     def test_host(self) -> None:

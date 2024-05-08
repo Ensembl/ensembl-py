@@ -116,7 +116,7 @@ python:black:
 python:pytest:
   extends: .python:test
   script:
-    - coverage run -m pytest --server=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306// --junitxml=$RUN_DIR/junit_reports.xml
+    - coverage run -m pytest --server=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/?local_infile=1 --junitxml=$RUN_DIR/junit_reports.xml
   artifacts:
     when: always
     reports:
