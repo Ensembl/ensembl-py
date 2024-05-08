@@ -2,6 +2,7 @@
 
 [![GitHub license](https://img.shields.io/github/license/Ensembl/ensembl-py)](https://github.com/Ensembl/ensembl-py/blob/main/LICENSE)
 [![coverage report](https://jalvarez.gitdocs.ebi.ac.uk/ensembl-py/coverage-badge.svg)](https://jalvarez.gitdocs.ebi.ac.uk/ensembl-py/)
+[![Documentation deploy](https://github.com/Ensembl/ensembl-py/actions/workflows/documentation.yml/badge.svg)](https://ensembl.github.io/ensembl-py)
 
 Ensembl Python Base Library
 
