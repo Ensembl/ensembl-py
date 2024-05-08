@@ -68,9 +68,8 @@ def pytest_report_header(config: Config) -> str:
 
     """
     server = config.getoption("server")
-    if server:
-        server = re.sub(r"(//[^/]+:).*(@)", r"\1xxxxxx\2", server)
-        return f"server: {server}"
+    server = re.sub(r"(//[^/]+:).*(@)", r"\1xxxxxx\2", server)
+    return f"server: {server}"
 
 
 def pytest_configure(config: Config) -> None:
