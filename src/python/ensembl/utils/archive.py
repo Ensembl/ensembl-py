@@ -18,15 +18,15 @@ __all__ = ["SUPPORTED_ARCHIVE_FORMATS", "open_gz_file", "extract_file"]
 
 from contextlib import contextmanager
 import gzip
-import os
 from pathlib import Path
 import shutil
-from typing import Generator, TextIO, Union
+from typing import Generator, TextIO
 
-from ensembl.utils.argparse import ArgumentParser
+from ensembl.utils import StrPath
+from .argparse import ArgumentParser
 
 
-def _unpack_gz_files(src_file: Union[str, os.PathLike], dst_dir: Union[str, os.PathLike]) -> None:
+def _unpack_gz_files(src_file: StrPath, dst_dir: StrPath) -> None:
     """Unpacks `src_file` to `dst_dir`.
 
     Note: expects `src_file` to have `.gz` extension.
@@ -45,7 +45,7 @@ SUPPORTED_ARCHIVE_FORMATS = [ext for elem in shutil.get_unpack_formats() for ext
 
 
 @contextmanager
-def open_gz_file(file_path: Union[str, os.PathLike]) -> Generator[TextIO, None, None]:
+def open_gz_file(file_path: StrPath) -> Generator[TextIO, None, None]:
     """Yields an open file object, even if the file is compressed with gzip.
 
     The file is expected to contain a text, and this can be used with the usual "with".
@@ -63,7 +63,7 @@ def open_gz_file(file_path: Union[str, os.PathLike]) -> Generator[TextIO, None, 
             yield fh
 
 
-def extract_file(src_file: Union[str, os.PathLike], dst_dir: Union[str, os.PathLike]) -> None:
+def extract_file(src_file: StrPath, dst_dir: StrPath) -> None:
     """Extracts the `src_file` into `dst_dir`.
 
     If the file is not an archive, it will be copied to `dst_dir`. `dst_dir` will be created if it

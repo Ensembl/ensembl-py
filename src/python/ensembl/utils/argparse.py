@@ -19,9 +19,11 @@ __all__ = ["ArgumentParser"]
 import argparse
 import os
 from pathlib import Path
-from typing import List, Union
+from typing import List
 
 from sqlalchemy.engine import make_url, URL
+
+from ensembl.utils import StrPath
 
 
 class ArgumentParser(argparse.ArgumentParser):
@@ -38,7 +40,7 @@ class ArgumentParser(argparse.ArgumentParser):
         self.formatter_class = argparse.ArgumentDefaultsHelpFormatter
         self.__server_groups: List[str] = []
 
-    def _validate_src_path(self, src_path: Union[str, os.PathLike]) -> Path:
+    def _validate_src_path(self, src_path: StrPath) -> Path:
         """Returns the path if exists and it is readable, raises an error through the parser otherwise.
 
         Args:
@@ -52,7 +54,7 @@ class ArgumentParser(argparse.ArgumentParser):
             self.error(f"'{src_path}' not readable")
         return src_path
 
-    def _validate_dst_path(self, dst_path: Union[str, os.PathLike], exists_ok: bool) -> Path:
+    def _validate_dst_path(self, dst_path: StrPath, exists_ok: bool) -> Path:
         """Returns the path if it is writable, raises an error through the parser otherwise.
 
         Args:
