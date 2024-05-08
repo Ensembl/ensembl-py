@@ -16,10 +16,8 @@
 # GitLab CI/CD for Python
 
 workflow:
-  rules:
-    - if: $CI_EXTERNAL_PULL_REQUEST_IID &&
-          $CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  auto_cancel:
+    on_new_commit: interruptible
 
 default:
   tags:
@@ -38,6 +36,7 @@ variables:
   image: $PYTHON_IMAGE
   services:
   - mysql:5.7
+  interruptible: true
   only:
     changes:
       - .gitlab-ci.yml
@@ -150,6 +149,7 @@ pages:
   needs:
     - job: python:coverage
       artifacts: true
+  interruptible: false
   script:
     - mv $RUN_DIR/coverage/ public/
   artifacts:
