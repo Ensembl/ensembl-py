@@ -20,7 +20,7 @@ import mkdocs_gen_files
 
 nav = mkdocs_gen_files.Nav()
 
-root = Path("src/ensembl")
+root = Path("src/python/ensembl")
 for path in sorted(root.rglob("__init__.py")):
     # Get the relative module path
     module_path = path.relative_to(root).parent
