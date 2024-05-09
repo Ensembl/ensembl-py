@@ -118,21 +118,6 @@ python:pytest:
     - dind
   script:
     - coverage run -m pytest --server=mysql://${MYSQL_ROOT_USER}:${MYSQL_ROOT_PASSWORD}@mysql:3306/?local_infile=1 --junitxml=$RUN_DIR/junit_reports.xml
-  artifacts:
-    when: always
-    reports:
-      junit: $RUN_DIR/junit_reports.xml
-    paths:
-      - .coverage
-
-python:coverage:
-  extends: .python:test
-  needs:
-    # "extends" cannot merge arrays (https://docs.gitlab.com/ee/ci/yaml/yaml_optimization.html#merge-details)
-    - !reference [.python:test, needs]
-    - job: python:pytest
-      artifacts: true
-  script:
     - coverage html -d $RUN_DIR/coverage
     - coverage xml -o $RUN_DIR/coverage.xml
     - genbadge coverage -i $RUN_DIR/coverage.xml -o $RUN_DIR/coverage/coverage-badge.svg
@@ -140,6 +125,8 @@ python:coverage:
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     when: always
+    reports:
+      junit: $RUN_DIR/junit_reports.xml
     paths:
       - $RUN_DIR/coverage
 
