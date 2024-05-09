@@ -148,8 +148,26 @@ def shared_data_dir(pytestconfig: Config) -> Path:
     Args:
         pytestconfig: Session-scoped fixture that returns the session's `pytest.Config` object.
 
+    Raises:
+        IOError: If `[src/[python/]]tests/data` folder does not exists from the root of the repository.
+
     """
-    return pytestconfig.rootpath / "src/python/tests/data"
+    # Try to get the most likely place for the shared test data folder from the pyproject.toml file
+    test_paths = pytestconfig.getini("testpaths")
+    if test_paths:
+        return pytestconfig.rootpath / test_paths[0] / "data"
+    # If not defined, look for the expected places
+    shared_data_path = pytestconfig.rootpath / "src/python/tests/data"
+    if shared_data_path.is_dir():
+        return shared_data_path
+    shared_data_path = pytestconfig.rootpath / "src/tests/data"
+    if shared_data_path.is_dir():
+        return shared_data_path
+    shared_data_path = pytestconfig.rootpath / "tests/data"
+    if shared_data_path.is_dir():
+        return shared_data_path
+    # Else, raise an exception to avoid running more tests
+    raise IOError("No shared test data folder found")
 
 
 @pytest.fixture(name="db_factory", scope="session")
