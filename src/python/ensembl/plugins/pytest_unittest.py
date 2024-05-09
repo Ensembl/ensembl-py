@@ -149,13 +149,16 @@ def shared_data_dir(pytestconfig: Config) -> Path:
         pytestconfig: Session-scoped fixture that returns the session's `pytest.Config` object.
 
     Raises:
-        IOError: If `src/[python/]tests/data` folder does not exists from the root of this repository.
+        IOError: If `[src/[python/]]tests/data` folder does not exists from the root of the repository.
 
     """
     shared_data_path = pytestconfig.rootpath / "src/python/tests/data"
     if shared_data_path.is_dir():
         return shared_data_path
     shared_data_path = pytestconfig.rootpath / "src/tests/data"
+    if shared_data_path.is_dir():
+        return shared_data_path
+    shared_data_path = pytestconfig.rootpath / "tests/data"
     if shared_data_path.is_dir():
         return shared_data_path
     raise IOError("No shared test data folder found")
