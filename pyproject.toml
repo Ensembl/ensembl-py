@@ -67,9 +67,15 @@ dev = [
     "ipython",
 ]
 doc = [
-    "mock",
-    "Sphinx",
-    "sphinx-rtd-theme",
+    "mkdocs >= 1.5.3",
+    "mkdocs-autorefs",
+    "mkdocs-gen-files",
+    "mkdocs-literate-nav",
+    "mkdocs-material",
+    "mkdocs-material-extensions",
+    "mkdocs-section-index",
+    "mkdocstrings",
+    "mkdocstrings-python",
 ]
 
 [project.urls]
