@@ -15,14 +15,6 @@
 
 # GitLab CI/CD for Python
 
-workflow:
-  auto_cancel:
-    on_new_commit: interruptible
-
-default:
-  tags:
-    - dind
-
 variables:
   PYTHON_IMAGE: python:3.9
   RUN_DIR: ./cicd/runtime
@@ -30,23 +22,33 @@ variables:
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
   MYSQL_ROOT_PASSWORD: root
 
-.python:
-  stage: test
-  image: $PYTHON_IMAGE
-  services:
-  - mysql:5.7
-  interruptible: true
-  only:
-    changes:
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+  rules:
+    - changes:
       - .gitlab-ci.yml
       - pyproject.toml
       - "*.py"
       - src/python/**/*.py
 
+default:
+  image: $PYTHON_IMAGE
+  interruptible: true
+  tags:
+    - docker
+
+stages:
+  - build
+  - test
+  - deploy
+
+# Build stage
+
 ## Prepare and load the Python virtual environment
 
 python:prepare_venv:
-  extends: .python
+  stage: build
   artifacts:
     paths:
       - $RUN_DIR
@@ -57,13 +59,10 @@ python:prepare_venv:
   script:
     - pip install -e .[cicd]
 
+# Test stage
+
 .python:test:
-  extends: .python
-  needs:
-    # Using `needs` as it allows to depend on jobs from the same stage
-    # (https://docs.gitlab.com/ee/ci/yaml/#needs)
-    - job: python:prepare_venv
-      artifacts: true
+  stage: test
   before_script:
     - source $RUN_DIR/venv/bin/activate
 
@@ -113,6 +112,10 @@ python:black:
 
 python:pytest:
   extends: .python:test
+  services:
+  - mysql:5.7
+  tags:
+    - dind
   script:
     - coverage run -m pytest --server=mysql://${MYSQL_ROOT_USER}:${MYSQL_ROOT_PASSWORD}@mysql:3306/?local_infile=1 --junitxml=$RUN_DIR/junit_reports.xml
   artifacts:
@@ -140,14 +143,12 @@ python:coverage:
     paths:
       - $RUN_DIR/coverage
 
+# Deploy stage
+
 ## Generate GitLab pages with HTML coverage report
 
 pages:
-  extends: .python
   stage: deploy
-  needs:
-    - job: python:coverage
-      artifacts: true
   interruptible: false
   script:
     - mv $RUN_DIR/coverage/ public/
