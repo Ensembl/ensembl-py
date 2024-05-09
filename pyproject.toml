@@ -43,7 +43,7 @@ dependencies = [
     "mysqlclient >= 1.4.6, < 2.2.0",
     "pytest >= 5.2.1",
     "pytest-dependency == 0.5.1",
-    "python-dotenv ~= 1.0.1",
+    "python-dotenv >= 0.19.2",
     "PyYAML ~= 6.0",
     "requests >= 2.22.0",
     "sqlalchemy ~= 1.4.0"
