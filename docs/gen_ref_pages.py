@@ -21,13 +21,14 @@ import mkdocs_gen_files
 nav = mkdocs_gen_files.Nav()
 
 root = Path("src/python/ensembl")
+num_parents = len(root.parents) - 1
 for path in sorted(root.rglob("__init__.py")):
     # Get the relative module path
     module_path = path.relative_to(root).parent
     doc_path = module_path.with_suffix(".md")
     full_doc_path = Path("reference", doc_path)
-    # Drop "src" and "__init__.py" from the path components
-    parts = path.parts[1:-1]
+    # Drop all the parents of the namespace and "__init__.py" file from the path components
+    parts = path.parts[num_parents:-1]
     # Add markdown file path with its index tree
     nav[parts] = doc_path.as_posix()
     # Populate the markdown file with the doc stub of this Python module
