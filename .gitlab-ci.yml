@@ -17,7 +17,7 @@
 
 variables:
   PYTHON_IMAGE: python:3.9
-  RUN_DIR: ./cicd/runtime
+  RUN_DIR: ./.gitlab/runtime
   USER: $GITLAB_USER_LOGIN
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
   MYSQL_ROOT_PASSWORD: root
