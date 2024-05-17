@@ -65,12 +65,7 @@ python:prepare_venv:
   stage: test
   before_script:
     - source $RUN_DIR/venv/bin/activate
-  rules:
-    - changes:
-      - .gitlab-ci.yml
-      - pyproject.toml
-      - src/ensembl/**/*.py
-      - tests/**/*.py
+  needs: ['python:prepare_venv']
 
 ## Linting, type checking and formatting
 
