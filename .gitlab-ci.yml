@@ -17,7 +17,7 @@
 
 variables:
   PYTHON_IMAGE: python:3.9
-  RUN_DIR: ./cicd/runtime
+  RUN_DIR: ./.gitlab/runtime
   USER: $GITLAB_USER_LOGIN
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
   MYSQL_ROOT_PASSWORD: root
@@ -25,12 +25,6 @@ variables:
 workflow:
   auto_cancel:
     on_new_commit: interruptible
-  rules:
-    - changes:
-      - .gitlab-ci.yml
-      - pyproject.toml
-      - "*.py"
-      - src/python/**/*.py
 
 default:
   image: $PYTHON_IMAGE
@@ -58,6 +52,12 @@ python:prepare_venv:
     - source $RUN_DIR/venv/bin/activate
   script:
     - pip install -e .[cicd]
+  rules:
+    - changes:
+      - .gitlab-ci.yml
+      - pyproject.toml
+      - src/ensembl/**/*.py
+      - tests/**/*.py
 
 # Test stage
 
@@ -65,6 +65,7 @@ python:prepare_venv:
   stage: test
   before_script:
     - source $RUN_DIR/venv/bin/activate
+  needs: ['python:prepare_venv']
 
 ## Linting, type checking and formatting
 
@@ -129,6 +130,23 @@ python:pytest:
       junit: $RUN_DIR/junit_reports.xml
     paths:
       - $RUN_DIR/coverage
+
+## License-related checks: NOTICE file and license headers
+
+.license:
+  stage: test
+  variables:
+    CMD: python .gitlab/scripts/check_license.py
+
+license:notice:
+  extends: .license
+  script:
+    - $CMD notice
+
+license:header:
+  extends: .license
+  script:
+    - $CMD header
 
 # Deploy stage
 
