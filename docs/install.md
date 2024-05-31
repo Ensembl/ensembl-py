@@ -1,6 +1,6 @@
 # How to install this repository
 
-This Python library only requires Python 3.8+ to work.
+This Python library only requires Python 3.9+ to work.
 
 ## Basic installation
 
