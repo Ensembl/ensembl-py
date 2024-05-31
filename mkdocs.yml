@@ -16,7 +16,7 @@ site_name: "Ensembl Python Base Library"
 site_url: "https://ensembl.github.io/ensembl-py"
 repo_url: "https://github.com/Ensembl/ensembl-py"
 repo_name: "Ensembl/ensembl-py"
-copyright: "Copyright &copy; [2016-<script>document.write(new Date().getFullYear())</script>] EMBL-European Bioinformatics Institute"
+copyright: Copyright &copy; [2016-<script>document.write(new Date().getFullYear())</script>] <a href="https://www.ebi.ac.uk">EMBL-European Bioinformatics Institute</a>
 
 theme:
   name: "material"
@@ -25,6 +25,18 @@ theme:
     repo: fontawesome/brands/github
   palette:
     scheme: ensembl
+  font:
+    text: Lato
+    code: IBM Plex Mono
+  features:
+      - content.tooltips
+      - navigation.expand
+      - navigation.tabs
+      - navigation.tabs.sticky
+      - navigation.top
+      - search.highlight
+      - search.suggest
+      - toc.follow
 extra_css:
   - stylesheets/extra.css
 
@@ -45,9 +57,10 @@ plugins:
     default_handler: python
     handlers:
       python:
+        paths: [src]
         options:
-          inherited_members: true
-          members: true
+          filters: ["!^_"]
+          show_if_no_docstring: true
           show_root_heading: true
           show_source: true
           show_symbol_type_heading: true

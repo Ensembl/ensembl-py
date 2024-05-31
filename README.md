@@ -15,7 +15,7 @@ python -m venv <VIRTUAL_ENVIRONMENT_NAME>
 source <VIRTUAL_ENVIRONMENT_NAME>/bin/activate
 git clone https://github.com/Ensembl/ensembl-py.git
 cd ensembl-py
-pip install -e .[cicd,dev,doc]
+pip install -e .[cicd,dev,docs]
 ```
 
 ### Testing with `pytest`

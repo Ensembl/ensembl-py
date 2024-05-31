@@ -33,14 +33,13 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Iterator, Optional, Union
 
 import sqlalchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import make_url
 from sqlalchemy import exc
 
-from ensembl.utils import StrPath
 from .dbconnection import DBConnection, Query, URL
 
 
@@ -155,7 +154,7 @@ class UnitTestDB:
             conn.execute(text(f"LOAD DATA LOCAL INFILE '{filepath}' INTO TABLE {table}"))
 
     @staticmethod
-    def _parse_sql_file(filepath: StrPath) -> Iterator[sqlalchemy.sql.expression.TextClause]:
+    def _parse_sql_file(filepath: Union[str, os.PathLike]) -> Iterator[sqlalchemy.sql.expression.TextClause]:
         """Yields each SQL query found parsing the given SQL file.
 
         Args:

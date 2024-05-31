@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Deploy_docs
+name: Documentation
 run-name: ${{ github.actor }} triggered mkdocs generation
 on:
   pull_request:
@@ -20,53 +20,38 @@ on:
       - closed
     branches:
       - main
+      - 'hackathon/**'
     paths:
       - 'src/python/ensembl/**'
       - 'docs/**'
-      - '.github/workflows/documentation.yml'
-permissions:
-    contents: write
-    
+      - '.github/workflows/mkdocs_docs_generation.yml'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.8"
+
 jobs:
   Mkdocs_Doc_generation:
+    name: Deploy documentation to GitHub Pages
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.9
-        allow-prereleases: false
-        cache: 'pip'
-        cache-dependency-path: '**/pip'
-        run: echo '${{ steps.cp39.outputs.cache-hit }}'
-
-    - name: Set pip cache directory path
-      id: pip-cache-dir-path
-      run: |
-        echo "PIPCACHE=(`pip cache dir`)" >> "$GITHUB_OUTPUT"
-    
-    - name: Get pip cache dir 
-      env:
-        PIPCACHE: ${{ steps.pip-cache-dir-path.outputs.PIPCACHE }}
-      run: echo "The pip cache dir located is $PIPCACHE"
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Install dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install -e .[doc]
 
-    - name: Build documentation
+    - name: Run mkdocs
       run: |
-        mkdocs build
-        
-    - name: Deploy documentation to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: ${{ github.event_name == 'pull_request' && github.ref == 'refs/heads/main' }}
-      with:
-        publish_branch: mkdocs
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./site
-        force_orphan: true
+        mkdocs gh-deploy --force
