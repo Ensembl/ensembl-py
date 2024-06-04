@@ -16,7 +16,7 @@
 # GitLab CI/CD for Python
 
 variables:
-  PYTHON_IMAGE: python:3.9
+  PYTHON_IMAGE: python:3.10
   RUN_DIR: ./.gitlab/runtime
   USER: $GITLAB_USER_LOGIN
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
