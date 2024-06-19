@@ -26,9 +26,9 @@ import pytest
 from pytest import raises
 from sqlalchemy.exc import NoResultFound
 
-from ensembl.database import UnitTestDB
 from ensembl.ncbi_taxonomy.api.utils import Taxonomy
 from ensembl.ncbi_taxonomy.models import NCBITaxonomy
+from ensembl.utils.database import UnitTestDB
 
 
 @pytest.mark.parametrize("test_dbs", [[{"src": "ncbi_db"}]], indirect=True)
