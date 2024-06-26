@@ -17,7 +17,6 @@
 # mypy: disable-error-code="misc, valid-type"
 
 from sqlalchemy import (
-    Column,
     ForeignKey,
     join,
 )
@@ -28,35 +27,41 @@ from sqlalchemy.dialects.mysql import (
     CHAR,
 )
 from sqlalchemy.orm import (
-    relationship,
     column_property,
+    DeclarativeBase,
+    Mapped,
+    mapped_column,
+    relationship,
 )
-from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass
 
 
 class NCBITaxaNode(Base):
     __tablename__ = "ncbi_taxa_node"
 
-    taxon_id = Column(INTEGER(10), primary_key=True)
-    parent_id = Column(INTEGER(10), ForeignKey("ncbi_taxa_node.taxon_id"), nullable=False, index=True)
-    rank = Column(CHAR(32), nullable=False, index=True)
-    genbank_hidden_flag = Column(TINYINT(1), nullable=False, default=0)
-    left_index = Column(INTEGER(10), nullable=False, default=0, index=True)
-    right_index = Column(INTEGER(10), nullable=False, default=0, index=True)
-    root_id = Column(INTEGER(10), nullable=False, default=1)
+    taxon_id: Mapped[int] = mapped_column(INTEGER(10), primary_key=True)
+    parent_id: Mapped[int] = mapped_column(INTEGER(10), ForeignKey("ncbi_taxa_node.taxon_id"), index=True)
+    rank: Mapped[str] = mapped_column(CHAR(32), index=True)
+    genbank_hidden_flag: Mapped[int] = mapped_column(TINYINT(1), default=0)
+    left_index: Mapped[int] = mapped_column(INTEGER(10), default=0, index=True)
+    right_index: Mapped[int] = mapped_column(INTEGER(10), default=0, index=True)
+    root_id: Mapped[int] = mapped_column(INTEGER(10), default=1)
 
-    parent = relationship("NCBITaxaNode", remote_side=[taxon_id])
+    parent: Mapped["NCBITaxaNode"] = relationship("NCBITaxaNode", remote_side=[taxon_id])
     children = relationship("NCBITaxaName")
 
 
 class NCBITaxaName(Base):
     __tablename__ = "ncbi_taxa_name"
 
-    taxon_id = Column(INTEGER(10), ForeignKey("ncbi_taxa_node.taxon_id"), index=True, primary_key=True)
-    name = Column(VARCHAR(500), index=True, primary_key=True)
-    name_class = Column(VARCHAR(50), nullable=False, index=True)
+    taxon_id: Mapped[int] = mapped_column(
+        INTEGER(10), ForeignKey("ncbi_taxa_node.taxon_id"), index=True, primary_key=True
+    )
+    name: Mapped[str] = mapped_column(VARCHAR(500), index=True, primary_key=True)
+    name_class: Mapped[str] = mapped_column(VARCHAR(50), index=True)
 
 
 class NCBITaxonomy(Base):
