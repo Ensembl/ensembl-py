@@ -41,8 +41,8 @@ jobs:
 
       - name: Run pylint
         run: |
-          pylint --rcfile pyproject.toml src/ensembl
-          pylint --rcfile pyproject.toml tests
+          pylint --rcfile pyproject.toml src/python/ensembl
+          pylint --rcfile pyproject.toml src/python/tests
 
   mypy:
     runs-on: ubuntu-latest
@@ -57,8 +57,8 @@ jobs:
 
       - name: Run mypy
         run: |
-          mypy --config-file pyproject.toml src/ensembl
-          mypy --config-file pyproject.toml tests
+          mypy --config-file pyproject.toml src/python/ensembl
+          mypy --config-file pyproject.toml src/python/tests
 
   black:
     runs-on: ubuntu-latest
