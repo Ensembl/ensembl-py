@@ -4,7 +4,8 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# http://www.apache.org/licenses/LICENSE-2.0
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,40 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Documentation
-run-name: ${{ github.actor }} triggered mkdocs generation
+name: "CI"
+
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
-      - 'hackathon/**'
-    paths:
-      - 'src/python/ensembl/**'
-      - 'docs/**'
-      - '.github/workflows/mkdocs_docs_generation.yml'
-  workflow_dispatch:
-
-env:
-  PYTHON_VERSION: "3.10"
+  pull_request:
 
 jobs:
-  Mkdocs_Doc_generation:
-    name: Deploy documentation to GitHub Pages
-    if: github.event.pull_request.merged == true
+  license_check:
+    name: Check missing license headers
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/python_build
+      - name: Check license header
+        uses: apache/skywalking-eyes/header@v0.6.0
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          tags: "[docs]"
+          config: .licenserc.yml
 
-      - name: Run mkdocs
-        run: |
-          mkdocs gh-deploy --force
+  python_ci:
+    name: Python CI
+    uses: ./.github/workflows/python_ci.yml
+    with:
+      python-version: "3.10"
