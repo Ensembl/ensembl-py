@@ -1,6 +1,6 @@
 # How to install this repository
 
-This Python library only requires Python 3.8+ to work.
+This Python library only requires Python 3.10+ to work. However, it is likely most functionalities and modules will still be Python 3.9 compatible.
 
 ## Basic installation
 
@@ -24,7 +24,7 @@ And then clone the GitHub repository and install it in edit mode:
 
 ```bash
 git clone https://github.com/Ensembl/ensembl-py.git
-pip3 install -e ensembl-py/.[cicd,dev,doc]
+pip3 install -e ensembl-py/.[cicd,dev,docs]
 ```
 
 Documentation generated using _mkdocs_. For full information visit [mkdocs.org](https://www.mkdocs.org).

@@ -1,7 +1,8 @@
 # Ensembl Python Base Library
 
-[![GitHub license](https://img.shields.io/github/license/Ensembl/ensembl-py)](https://github.com/Ensembl/ensembl-py/blob/main/LICENSE)
-[![coverage report](https://jalvarez.gitdocs.ebi.ac.uk/ensembl-py/coverage-badge.svg)](https://jalvarez.gitdocs.ebi.ac.uk/ensembl-py/)
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](https://github.com/Ensembl/ensembl-py/blob/main/LICENSE)
+[![Coverage](https://ensembl.github.io/ensembl-py/coverage/coverage-badge.svg)](https://ensembl.github.io/ensembl-py/coverage)
+[![CI](https://github.com/Ensembl/ensembl-py/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Ensembl/ensembl-py/actions/workflows/ci.yml)
 [![Documentation deploy](https://github.com/Ensembl/ensembl-py/actions/workflows/documentation.yml/badge.svg)](https://ensembl.github.io/ensembl-py)
 
 Centralise generic Python code use across all other project within Ensembl, more particularly database access layers, reusable eHive components, etc.
@@ -15,7 +16,7 @@ python -m venv <VIRTUAL_ENVIRONMENT_NAME>
 source <VIRTUAL_ENVIRONMENT_NAME>/bin/activate
 git clone https://github.com/Ensembl/ensembl-py.git
 cd ensembl-py
-pip install -e .[cicd,dev,doc]
+pip install -e .[cicd,dev,docs]
 ```
 
 ### Testing with `pytest`
