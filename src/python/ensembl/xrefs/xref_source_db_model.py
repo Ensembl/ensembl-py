@@ -18,7 +18,7 @@
 
 from sqlalchemy import Column, Index, ForeignKey, text
 from sqlalchemy.dialects.mysql import INTEGER, VARCHAR, BOOLEAN
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 

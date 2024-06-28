@@ -96,7 +96,7 @@ class Taxonomy:
         ParentTaxonomy = aliased(NCBITaxonomy, name="parent_ncbi_taxonomy")
         q = (
             session.query(NCBITaxonomy, ParentTaxonomy)
-            .outerjoin((ParentTaxonomy, NCBITaxonomy.parent_id == ParentTaxonomy.taxon_id))
+            .outerjoin(ParentTaxonomy, NCBITaxonomy.parent_id == ParentTaxonomy.taxon_id)
             .filter(NCBITaxonomy.taxon_id == taxon_id)
             .filter(ParentTaxonomy.name_class == "scientific name")
             .first()
