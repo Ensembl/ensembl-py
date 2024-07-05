@@ -125,6 +125,17 @@ disable = [
     "wildcard-import",
 ]
 
+[tool.ruff]
+line-length = 110
+show-fixes = true
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore `F403` (unable to detect undefined names) in all `__init__.py` files
+"__init__.py" = ["F403"]
+
 [tool.mypy]
 mypy_path = "src/python/ensembl"
 explicit_package_bases = true
