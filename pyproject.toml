@@ -43,9 +43,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "ensembl-hive @ git+https://github.com/Ensembl/ensembl-hive.git",
-    "mysqlclient >= 1.4.6, < 2.3.0",
-    "requests >= 2.22.0",
     "sqlalchemy ~= 1.4.0",
 ]
 
@@ -76,6 +73,7 @@ dev = [
 docs = [
     "mkdocs >= 1.5.3",
     "mkdocs-autorefs",
+    "mkdocs-coverage",
     "mkdocs-gen-files",
     "mkdocs-literate-nav",
     "mkdocs-material",
@@ -83,6 +81,9 @@ docs = [
     "mkdocs-section-index",
     "mkdocstrings",
     "mkdocstrings-python",
+]
+mysql = [
+    "mysqlclient >= 1.4.6, < 2.3.0",
 ]
 
 [project.urls]
