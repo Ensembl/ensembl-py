@@ -16,7 +16,7 @@
 name = "ensembl-py"
 description = "Ensembl Python Base Library"
 requires-python = ">= 3.10"
-version = "2.0.0"
+version = "2.0.1"
 readme = "README.md"
 authors = [
     {name = "Ensembl", email = "dev@ensembl.org"},
@@ -50,6 +50,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+build = [
+    "build",
+    "setuptools",
+    "setuptools-scm",
+    "wheel",
+]
 cicd = [
     "black",
     "coverage",
@@ -80,16 +86,15 @@ docs = [
 ]
 
 [project.urls]
-homepage = "https://www.ensembl.org"
-repository = "https://github.com/Ensembl/ensembl-py"
+Homepage = "https://www.ensembl.org"
+Documentation = "https://ensembl.github.io/ensembl-py/"
+Repository = "https://github.com/Ensembl/ensembl-py.git"
+Issues = "https://github.com/Ensembl/ensembl-py/issues"
 
 # [project.scripts]
 
 [tool.setuptools]
 package-dir = {"" = "src/python"}
-
-[tool.setuptools.dynamic]
-version = {attr = "ensembl.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src/python"]
