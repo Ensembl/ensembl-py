@@ -50,6 +50,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+build = [
+    "build",
+    "setuptools",
+    "setuptools-scm",
+    "wheel",
+]
 cicd = [
     "black",
     "coverage",
@@ -89,9 +95,6 @@ Issues = "https://github.com/Ensembl/ensembl-py/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src/python"}
-
-[tool.setuptools.dynamic]
-version = {attr = "ensembl.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src/python"]
