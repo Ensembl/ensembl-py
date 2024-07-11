@@ -26,25 +26,25 @@ import pytest
 from pytest import raises
 from sqlalchemy.exc import NoResultFound
 
-from ensembl.database import UnitTestDB
 from ensembl.ncbi_taxonomy.api.utils import Taxonomy
 from ensembl.ncbi_taxonomy.models import NCBITaxonomy
+from ensembl.utils.database import UnitTestDB
 
 
-@pytest.mark.parametrize("db", [{"src": "ncbi_db"}], indirect=True)
+@pytest.mark.parametrize("test_dbs", [[{"src": "ncbi_db"}]], indirect=True)
 class TestNCBITaxonomyUtils:
     """Tests :class:`~ensembl.ncbi_taxonomy.api.utils.Taxonomy` in utils.py"""
 
     dbc: UnitTestDB = None
 
     @pytest.fixture(scope="class", autouse=True)
-    def setup(self, db: UnitTestDB) -> None:
+    def setup(self, test_dbs: dict[str, UnitTestDB]) -> None:
         """Loads the required fixtures and values as class attributes.
 
         Args:
             db: Generator of unit test database (fixture).
         """
-        type(self).dbc = db.dbc
+        type(self).dbc = test_dbs["ncbi_db"].dbc
 
     result_dict = {
         "taxon_id": 9615,

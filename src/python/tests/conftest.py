@@ -18,4 +18,4 @@ to the plugins, hooks and fixtures defined here.
 
 """
 
-pytest_plugins = ("ensembl.plugins.pytest_unittest",)
+pytest_plugins = ("ensembl.utils.plugin",)
