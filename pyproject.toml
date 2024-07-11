@@ -80,8 +80,10 @@ docs = [
 ]
 
 [project.urls]
-homepage = "https://www.ensembl.org"
-repository = "https://github.com/Ensembl/ensembl-py"
+Homepage = "https://www.ensembl.org"
+Documentation = "https://ensembl.github.io/ensembl-py/"
+Repository = "https://github.com/Ensembl/ensembl-py.git"
+Issues = "https://github.com/Ensembl/ensembl-py/issues"
 
 # [project.scripts]
 

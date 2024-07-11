@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-site_name: "Ensembl Python Base Library"
-site_url: "https://ensembl.github.io/ensembl-py"
-repo_url: "https://github.com/Ensembl/ensembl-py"
-repo_name: "Ensembl/ensembl-py"
+site_name: Ensembl Python Base Library
+site_url: https://ensembl.github.io/ensembl-py
+site_description: Database access layers and ORMs, and reusable eHive components used by other projects within Ensembl
+repo_url: https://github.com/Ensembl/ensembl-py
+repo_name: Ensembl/ensembl-py
 copyright: Copyright &copy; [2016-<script>document.write(new Date().getFullYear())</script>] <a href="https://www.ebi.ac.uk">EMBL-European Bioinformatics Institute</a>
 
 theme:
@@ -48,7 +49,7 @@ plugins:
 - search
 - gen-files:
      scripts:
-     - docs/gen_ref_pages.py
+     - docs/scripts/gen_ref_pages.py
 - literate-nav:
     nav_file: summary.md
 - section-index
@@ -65,8 +66,15 @@ plugins:
           show_source: true
           show_symbol_type_heading: true
           show_symbol_type_toc: true
+- coverage:
+    page_name: coverage
+    html_report_dir: reports/htmlcov
 
 nav:
-  - Home: index.md
-  - Install: install.md
-  - Code Reference: reference/
+  - Home:
+    - Overview: index.md
+    - Install: install.md
+  - Development:
+    - Code of Conduct: code_of_conduct.md
+    - Coverage report: coverage.md
+  - Code reference: reference/

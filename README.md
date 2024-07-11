@@ -3,9 +3,8 @@
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](https://github.com/Ensembl/ensembl-py/blob/main/LICENSE)
 [![Coverage](https://ensembl.github.io/ensembl-py/coverage/coverage-badge.svg)](https://ensembl.github.io/ensembl-py/coverage)
 [![CI](https://github.com/Ensembl/ensembl-py/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Ensembl/ensembl-py/actions/workflows/ci.yml)
-[![Documentation deploy](https://github.com/Ensembl/ensembl-py/actions/workflows/documentation.yml/badge.svg)](https://ensembl.github.io/ensembl-py)
 
-Centralise generic Python code use across all other project within Ensembl, more particularly database access layers, reusable eHive components, etc.
+Centralise generic Python code use across all other project within Ensembl, more particularly database access layers and ORMs, reusable eHive components, etc.
 
 ## Getting Started
 
