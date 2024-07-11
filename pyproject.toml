@@ -73,6 +73,7 @@ dev = [
 docs = [
     "mkdocs >= 1.5.3",
     "mkdocs-autorefs",
+    "mkdocs-coverage",
     "mkdocs-gen-files",
     "mkdocs-literate-nav",
     "mkdocs-material",
