@@ -13,11 +13,8 @@
 # limitations under the License.
 """Unit testing of :mod:`core` module."""
 
-from typing import ContextManager
 
 import pytest
-from pytest import raises
-from sqlalchemy.exc import NoResultFound
 
 from ensembl.core.models import Base
 from ensembl.utils.database import UnitTestDB
@@ -39,6 +36,6 @@ class TestCoreModels:
         type(self).dbc = test_dbs["core_db"].dbc
 
     def test_create_db(self) -> None:
-        Base.metadata
+        """Test the creation of a database with the core models schema."""
         self.dbc.create_all_tables(Base.metadata)
         assert set(self.dbc.tables.keys()) == set(Base.metadata.tables.keys())

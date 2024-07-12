@@ -868,7 +868,13 @@ class TranscriptSupportingFeature(Base):
     __tablename__ = "transcript_supporting_feature"
     __table_args__ = (
         Index("transcript_supporting_feature_idx", "feature_type", "feature_id"),
-        Index("transcript_supporting_feature_all_idx", "transcript_id", "feature_type", "feature_id", unique=True),
+        Index(
+            "transcript_supporting_feature_all_idx",
+            "transcript_id",
+            "feature_type",
+            "feature_id",
+            unique=True,
+        ),
     )
 
     transcript_id = Column(
@@ -1110,7 +1116,9 @@ class AssemblyException(Base):
 
 class DensityFeature(Base):
     __tablename__ = "density_feature"
-    __table_args__ = (Index("density_seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (
+        Index("density_seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),
+    )
 
     density_feature_id = Column(INTEGER(10), primary_key=True)
     density_type_id = Column(
@@ -1959,25 +1967,30 @@ t_operon_transcript_gene = Table(
 
 
 @compiles(SET, "sqlite")
-def compile_set_sqlite(type_, compiler, **kw):
+def compile_set_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL SET to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(TINYTEXT, "sqlite")
-def compile_tinytext_sqlite(type_, compiler, **kw):
+def compile_tinytext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL TINYTEXT to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(MEDIUMTEXT, "sqlite")
-def compile_mediumtext_sqlite(type_, compiler, **kw):
+def compile_mediumtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL MEDIUMTEXT to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(LONGTEXT, "sqlite")
-def compile_longtext_sqlite(type_, compiler, **kw):
+def compile_longtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL LONGTEXT to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(TINYINT, "sqlite")
-def compile_tinyint_sqlite(type_, compiler, **kw):
+def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL TINYINT to SQLite INT."""
     return "INT"
