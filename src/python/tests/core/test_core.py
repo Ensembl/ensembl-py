@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Unit testing of :mod:`core` module."""
+"""Unit testing of `ensembl.core.models` module."""
 
 
 import pytest
@@ -22,7 +22,7 @@ from ensembl.utils.database import UnitTestDB
 
 @pytest.mark.parametrize("test_dbs", [[{"src": "core_db"}]], indirect=True)
 class TestCoreModels:
-    """Tests :class:`~ensembl.core.models`"""
+    """Tests the `~ensembl.core.models` ORMs"""
 
     dbc: UnitTestDB = None
 
@@ -31,7 +31,7 @@ class TestCoreModels:
         """Loads the required fixtures and values as class attributes.
 
         Args:
-            db: Generator of unit test database (fixture).
+            test_dbs: Generator of unit test databases (fixture).
         """
         type(self).dbc = test_dbs["core_db"].dbc
 
