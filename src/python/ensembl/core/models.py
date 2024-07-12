@@ -56,6 +56,7 @@ from sqlalchemy.dialects.mysql import (
     TINYTEXT,
     VARCHAR,
 )
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -189,7 +190,7 @@ t_dna_align_feature_attrib = Table(
         "value",
         unique=True,
     ),
-    Index("type_val_idx", "attrib_type_id", "value"),
+    Index("ditag_type_val_idx", "attrib_type_id", "value"),
 )
 
 
@@ -225,8 +226,8 @@ class ExternalDb(Base):
 class Gene(Base):
     __tablename__ = "gene"
     __table_args__ = (
-        Index("seq_region_idx", "seq_region_id", "seq_region_start"),
-        Index("stable_id_idx", "stable_id", "version"),
+        Index("gene_seq_region_idx", "seq_region_id", "seq_region_start"),
+        Index("gene_stable_id_idx", "stable_id", "version"),
     )
 
     gene_id = Column(INTEGER(10), primary_key=True)
@@ -374,7 +375,7 @@ class RepeatConsensus(Base):
 
 class Rnaproduct(Base):
     __tablename__ = "rnaproduct"
-    __table_args__ = (Index("stable_id_idx", "stable_id", "version"),)
+    __table_args__ = (Index("rnaproduct_stable_id_idx", "stable_id", "version"),)
 
     rnaproduct_id = Column(INTEGER(10), primary_key=True)
     rnaproduct_type_id = Column(SMALLINT(5), nullable=False)
@@ -401,7 +402,7 @@ t_rnaproduct_attrib = Table(
     ),
     Column("attrib_type_id", SMALLINT(5), nullable=False, server_default=text("'0'")),
     Column("value", Text, nullable=False, index=True),
-    Index("type_val_idx", "attrib_type_id", "value"),
+    Index("rnaproduct_type_val_idx", "attrib_type_id", "value"),
     Index("rnaproduct_attribx", "rnaproduct_id", "attrib_type_id", "value", unique=True),
 )
 
@@ -418,8 +419,8 @@ class RnaproductType(Base):
 class Transcript(Base):
     __tablename__ = "transcript"
     __table_args__ = (
-        Index("seq_region_idx", "seq_region_id", "seq_region_start"),
-        Index("stable_id_idx", "stable_id", "version"),
+        Index("transcript_seq_region_idx", "seq_region_id", "seq_region_start"),
+        Index("transcript_stable_id_idx", "stable_id", "version"),
     )
 
     transcript_id = Column(INTEGER(10), primary_key=True)
@@ -471,7 +472,7 @@ class TranscriptIntronSupportingEvidence(Base):
 
 class Translation(Base):
     __tablename__ = "translation"
-    __table_args__ = (Index("stable_id_idx", "stable_id", "version"),)
+    __table_args__ = (Index("translation_stable_id_idx", "stable_id", "version"),)
 
     translation_id = Column(INTEGER(10), primary_key=True)
     transcript_id = Column(
@@ -633,7 +634,7 @@ class GeneAttrib(Base):
     __tablename__ = "gene_attrib"
     __table_args__ = (
         Index("gene_attribx", "gene_id", "attrib_type_id", "value", unique=True),
-        Index("type_val_idx", "attrib_type_id", "value"),
+        Index("gene_attrib_type_val_idx", "attrib_type_id", "value"),
     )
 
     gene_id = Column(
@@ -835,7 +836,7 @@ class StableIdEvent(Base):
 class TranscriptAttrib(Base):
     __tablename__ = "transcript_attrib"
     __table_args__ = (
-        Index("type_val_idx", "attrib_type_id", "value"),
+        Index("transcript_attrib_type_val_idx", "attrib_type_id", "value"),
         Index(
             "transcript_attribx",
             "transcript_id",
@@ -866,8 +867,14 @@ class TranscriptAttrib(Base):
 class TranscriptSupportingFeature(Base):
     __tablename__ = "transcript_supporting_feature"
     __table_args__ = (
-        Index("feature_idx", "feature_type", "feature_id"),
-        Index("all_idx", "transcript_id", "feature_type", "feature_id", unique=True),
+        Index("transcript_supporting_feature_idx", "feature_type", "feature_id"),
+        Index(
+            "transcript_supporting_feature_all_idx",
+            "transcript_id",
+            "feature_type",
+            "feature_id",
+            unique=True,
+        ),
     )
 
     transcript_id = Column(
@@ -884,7 +891,7 @@ class TranscriptSupportingFeature(Base):
 class TranslationAttrib(Base):
     __tablename__ = ("translation_attrib",)
     __table_args__ = (
-        Index("type_val_idx", "attrib_type_id", "value"),
+        Index("translation_attrib_type_val_idx", "attrib_type_id", "value"),
         Index(
             "translation_attribx",
             "translation_id",
@@ -1043,7 +1050,7 @@ class Assembly(Base):
     __table_args__ = (
         Index("asm_seq_region_idx", "asm_seq_region_id", "asm_start"),
         Index(
-            "all_idx",
+            "asm_all_idx",
             "asm_seq_region_id",
             "cmp_seq_region_id",
             "asm_start",
@@ -1109,7 +1116,9 @@ class AssemblyException(Base):
 
 class DensityFeature(Base):
     __tablename__ = "density_feature"
-    __table_args__ = (Index("seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (
+        Index("density_seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),
+    )
 
     density_feature_id = Column(INTEGER(10), primary_key=True)
     density_type_id = Column(
@@ -1137,7 +1146,7 @@ class DensityFeature(Base):
 
 class DitagFeature(Base):
     __tablename__ = "ditag_feature"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start", "seq_region_end"),)
+    __table_args__ = (Index("ditag_seq_region_idx", "seq_region_id", "seq_region_start", "seq_region_end"),)
 
     ditag_feature_id = Column(INTEGER(10), primary_key=True)
     ditag_id = Column(
@@ -1177,9 +1186,9 @@ class DitagFeature(Base):
 class DnaAlignFeature(Base):
     __tablename__ = "dna_align_feature"
     __table_args__ = (
-        Index("seq_region_idx_2", "seq_region_id", "seq_region_start"),
+        Index("dna_align_seq_region_idx_2", "seq_region_id", "seq_region_start"),
         Index(
-            "seq_region_idx",
+            "dna_align_seq_region_idx",
             "seq_region_id",
             "analysis_id",
             "seq_region_start",
@@ -1229,8 +1238,8 @@ class DnaAlignFeature(Base):
 class Exon(Base):
     __tablename__ = "exon"
     __table_args__ = (
-        Index("seq_region_idx", "seq_region_id", "seq_region_start"),
-        Index("stable_id_idx", "stable_id", "version"),
+        Index("exon_seq_region_idx", "seq_region_id", "seq_region_start"),
+        Index("exon_stable_id_idx", "stable_id", "version"),
     )
 
     exon_id = Column(INTEGER(10), primary_key=True)
@@ -1279,7 +1288,7 @@ class IntronSupportingEvidence(Base):
             "hit_name",
             unique=True,
         ),
-        Index("seq_region_idx", "seq_region_id", "seq_region_start"),
+        Index("intron_evidence_seq_region_idx", "seq_region_id", "seq_region_start"),
     )
 
     intron_supporting_evidence_id = Column(INTEGER(10), primary_key=True)
@@ -1328,7 +1337,7 @@ class Karyotype(Base):
 
 class MarkerFeature(Base):
     __tablename__ = "marker_feature"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (Index("marker_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
     marker_feature_id = Column(INTEGER(10), primary_key=True)
     marker_id = Column(
@@ -1392,7 +1401,7 @@ class MiscSet(Base):
 
 class MiscFeature(Base):
     __tablename__ = "misc_feature"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (Index("misc_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
     misc_feature_id = Column(INTEGER(10), primary_key=True)
     seq_region_id = Column(
@@ -1494,8 +1503,8 @@ class IdentityXref(ObjectXref):
 class Operon(Base):
     __tablename__ = "operon"
     __table_args__ = (
-        Index("seq_region_idx", "seq_region_id", "seq_region_start"),
-        Index("stable_id_idx", "stable_id", "version"),
+        Index("operon_seq_region_idx", "seq_region_id", "seq_region_start"),
+        Index("operon_stable_id_idx", "stable_id", "version"),
     )
 
     operon_id = Column(INTEGER(10), primary_key=True)
@@ -1523,7 +1532,7 @@ class Operon(Base):
 
 class PredictionTranscript(Base):
     __tablename__ = "prediction_transcript"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (Index("prediction_transcript_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
     prediction_transcript_id = Column(INTEGER(10), primary_key=True)
     seq_region_id = Column(
@@ -1553,7 +1562,7 @@ class PredictionTranscript(Base):
 class ProteinAlignFeature(Base):
     __tablename__ = "protein_align_feature"
     __table_args__ = (
-        Index("seq_region_idx_2", "seq_region_id", "seq_region_start"),
+        Index("protein_align_seq_region_idx_2", "seq_region_id", "seq_region_start"),
         Index(
             "seq_region_idx",
             "seq_region_id",
@@ -1606,7 +1615,7 @@ class ProteinAlignFeature(Base):
 
 class RepeatFeature(Base):
     __tablename__ = "repeat_feature"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (Index("repeat_feature_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
     repeat_feature_id = Column(INTEGER(10), primary_key=True)
     seq_region_id = Column(
@@ -1645,7 +1654,7 @@ class SeqRegionAttrib(Base):
     __tablename__ = "seq_region_attrib"
     __table_args__ = (
         Index("region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True),
-        Index("type_val_idx", "attrib_type_id", "value"),
+        Index("region_attrib_type_val_idx", "attrib_type_id", "value"),
     )
 
     seq_region_id = Column(
@@ -1705,7 +1714,7 @@ class SeqRegionSynonym(Base):
 
 class SimpleFeature(Base):
     __tablename__ = "simple_feature"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (Index("simple_feature_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
     simple_feature_id = Column(INTEGER(10), primary_key=True)
     seq_region_id = Column(
@@ -1803,7 +1812,7 @@ class ExonTranscript(Base):
 class MiscAttrib(Base):
     __tablename__ = "misc_attrib"
     __table_args__ = (
-        Index("type_val_idx", "attrib_type_id", "value"),
+        Index("misc_attrib_type_val_idx", "attrib_type_id", "value"),
         Index("misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True),
     )
 
@@ -1857,8 +1866,8 @@ class OntologyXref(Base):
 class OperonTranscript(Base):
     __tablename__ = "operon_transcript"
     __table_args__ = (
-        Index("stable_id_idx", "stable_id", "version"),
-        Index("seq_region_idx", "seq_region_id", "seq_region_start"),
+        Index("operon_transcript_stable_id_idx", "stable_id", "version"),
+        Index("operon_transcript_seq_region_idx", "seq_region_id", "seq_region_start"),
     )
 
     operon_transcript_id = Column(INTEGER(10), primary_key=True)
@@ -1895,7 +1904,7 @@ class OperonTranscript(Base):
 
 class PredictionExon(Base):
     __tablename__ = "prediction_exon"
-    __table_args__ = (Index("seq_region_idx", "seq_region_id", "seq_region_start"),)
+    __table_args__ = (Index("prediction_exon_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
     prediction_exon_id = Column(INTEGER(10), primary_key=True)
     prediction_transcript_id = Column(
@@ -1930,8 +1939,8 @@ class PredictionExon(Base):
 class SupportingFeature(Base):
     __tablename__ = "supporting_feature"
     __table_args__ = (
-        Index("all_idx", "exon_id", "feature_type", "feature_id", unique=True),
-        Index("feature_idx", "feature_type", "feature_id"),
+        Index("supporting_feature_all_idx", "exon_id", "feature_type", "feature_id", unique=True),
+        Index("supporting_feature_idx", "feature_type", "feature_id"),
     )
 
     exon_id = Column(
@@ -1955,3 +1964,33 @@ t_operon_transcript_gene = Table(
     Column("gene_id", ForeignKey("gene.gene_id"), index=True),
     Index("operon_transcript_gene_idx", "operon_transcript_id", "gene_id"),
 )
+
+
+@compiles(SET, "sqlite")
+def compile_set_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL SET to SQLite TEXT."""
+    return "TEXT"
+
+
+@compiles(TINYTEXT, "sqlite")
+def compile_tinytext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL TINYTEXT to SQLite TEXT."""
+    return "TEXT"
+
+
+@compiles(MEDIUMTEXT, "sqlite")
+def compile_mediumtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL MEDIUMTEXT to SQLite TEXT."""
+    return "TEXT"
+
+
+@compiles(LONGTEXT, "sqlite")
+def compile_longtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL LONGTEXT to SQLite TEXT."""
+    return "TEXT"
+
+
+@compiles(TINYINT, "sqlite")
+def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL TINYINT to SQLite INT."""
+    return "INT"
