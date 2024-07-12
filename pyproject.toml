@@ -16,7 +16,7 @@
 name = "ensembl-py"
 description = "Ensembl Python Base Library"
 requires-python = ">= 3.10"
-version = "2.0.1"
+version = "2.0.2"
 readme = "README.md"
 authors = [
     {name = "Ensembl", email = "dev@ensembl.org"},
