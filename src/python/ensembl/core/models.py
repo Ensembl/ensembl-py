@@ -836,20 +836,22 @@ class StableIdEvent(Base):
 class TranscriptAttrib(Base):
     __tablename__ = "transcript_attrib"
     __table_args__ = (
-        Index("transcript_attrib_type_val_idx", "attrib_type_id", "value"),
+        Index("transcript_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
         Index(
             "transcript_attribx",
             "transcript_id",
             "attrib_type_id",
             "value",
             unique=True,
+            mysql_length={"value":10}
         ),
+        Index("transcript_attrib_value_idx", "value", mysql_length=10)
     )
 
+    transcript_attrib_id = Column(INTEGER(10), primary_key=True)
     transcript_id = Column(
         INTEGER(10),
         ForeignKey("transcript.transcript_id"),
-        primary_key=True,
         nullable=False,
         index=True,
         server_default=text("'0'"),
@@ -857,11 +859,10 @@ class TranscriptAttrib(Base):
     attrib_type_id = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
-        primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, primary_key=True, nullable=False, index=True)
+    value = Column(Text, nullable=False)
 
 
 class TranscriptSupportingFeature(Base):
