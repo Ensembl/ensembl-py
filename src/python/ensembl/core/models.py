@@ -633,14 +633,15 @@ t_gene_archive = Table(
 class GeneAttrib(Base):
     __tablename__ = "gene_attrib"
     __table_args__ = (
-        Index("gene_attribx", "gene_id", "attrib_type_id", "value", unique=True),
-        Index("gene_attrib_type_val_idx", "attrib_type_id", "value"),
+        Index("gene_attribx", "gene_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
+        Index("gene_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("gene_attrib_value_idx", "value", mysql_length=10),
     )
 
+    gene_attrib_id = Column(INTEGER(10), primary_key=True)
     gene_id = Column(
         INTEGER(10),
         ForeignKey("gene.gene_id"),
-        primary_key=True,
         nullable=False,
         index=True,
         server_default=text("'0'"),
@@ -648,11 +649,10 @@ class GeneAttrib(Base):
     attrib_type_id = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
-        primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, primary_key=True, nullable=False, index=True)
+    value = Column(Text, nullable=False)
 
 
 class MarkerMapLocation(Base):
