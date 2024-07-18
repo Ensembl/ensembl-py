@@ -185,14 +185,16 @@ class DNAAlignFeatureAttrib(Base):
             "attrib_type_id",
             "value",
             unique=True,
+            mysql_length={"value":10},
         ),
-        Index("ditag_type_val_idx", "attrib_type_id", "value"),
+        Index("ditag_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("ditag_value_idx", "value", mysql_length=10),
     )
 
     dna_align_feature_attrib_id = Column(INTEGER(10), primary_key=True)
     dna_align_feature_id = Column(INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True)
     attrib_type_id = Column(SMALLINT(5), nullable=False)
-    value = Column(Text, nullable=False, index=True)
+    value = Column(Text, nullable=False)
 
 
 class ExternalDb(Base):
