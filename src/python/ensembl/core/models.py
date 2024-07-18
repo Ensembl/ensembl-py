@@ -366,12 +366,15 @@ class PeptideArchive(Base):
 
 class RepeatConsensus(Base):
     __tablename__ = "repeat_consensus"
+    __table_args__ = (
+        Index("repeat_consensus_idx", "repeat_consensus", unique=True, mysql_length=10),
+    )
 
     repeat_consensus_id = Column(INTEGER(10), primary_key=True)
     repeat_name = Column(String(255), nullable=False, index=True)
     repeat_class = Column(String(100), nullable=False, index=True)
     repeat_type = Column(String(40), nullable=False, index=True)
-    repeat_consensus = Column(Text, index=True)
+    repeat_consensus = Column(Text)
 
 
 class Rnaproduct(Base):
