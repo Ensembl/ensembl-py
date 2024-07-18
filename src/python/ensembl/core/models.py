@@ -1655,24 +1655,24 @@ class RepeatFeature(Base):
 class SeqRegionAttrib(Base):
     __tablename__ = "seq_region_attrib"
     __table_args__ = (
-        Index("region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True),
-        Index("region_attrib_type_val_idx", "attrib_type_id", "value"),
+        Index("region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
+        Index("region_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("region_attrib_value_idx", "value", mysql_length=10),
     )
 
+    seq_region_attrib_id = Column(INTEGER(10), primary_key=True)
     seq_region_id = Column(
         ForeignKey("seq_region.seq_region_id"),
-        primary_key=True,
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
     attrib_type_id = Column(
         ForeignKey("attrib_type.attrib_type_id"),
-        primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, primary_key=True, nullable=False, index=True)
+    value = Column(Text, nullable=False)
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
     attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
 
