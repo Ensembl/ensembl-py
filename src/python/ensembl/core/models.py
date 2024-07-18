@@ -176,22 +176,23 @@ class Ditag(Base):
     tag_count = Column(SMALLINT(6), nullable=False, server_default=text("'1'"))
     sequence = Column(TINYTEXT, nullable=False)
 
+class DNAAlignFeatureAttrib(Base):
+    __tablename__ = "dna_align_feature_attrib"
+    __table_args__ = (
+        Index(
+            "dna_align_feature_attribx",
+            "dna_align_feature_id",
+            "attrib_type_id",
+            "value",
+            unique=True,
+        ),
+        Index("ditag_type_val_idx", "attrib_type_id", "value"),
+    )
 
-t_dna_align_feature_attrib = Table(
-    "dna_align_feature_attrib",
-    metadata,
-    Column("dna_align_feature_id", INTEGER(10), nullable=False, index=True),
-    Column("attrib_type_id", SMALLINT(5), nullable=False),
-    Column("value", Text, nullable=False, index=True),
-    Index(
-        "dna_align_feature_attribx",
-        "dna_align_feature_id",
-        "attrib_type_id",
-        "value",
-        unique=True,
-    ),
-    Index("ditag_type_val_idx", "attrib_type_id", "value"),
-)
+    dna_align_feature_attrib_id = Column(INTEGER(10), primary_key=True)
+    dna_align_feature_id = Column(INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True)
+    attrib_type_id = Column(SMALLINT(5), nullable=False)
+    value = Column(Text, nullable=False, index=True)
 
 
 class ExternalDb(Base):
