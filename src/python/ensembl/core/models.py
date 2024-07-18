@@ -515,7 +515,7 @@ class UnmappedReason(Base):
 
 class AltAllele(Base):
     __tablename__ = "alt_allele"
-    __table_args__ = (Index("gene_id", "gene_id", "alt_allele_group_id"),)
+    __table_args__ = (Index("alt_allele_gene_id_idx", "gene_id", "alt_allele_group_id"),)
 
     alt_allele_id = Column(INTEGER(10), primary_key=True)
     alt_allele_group_id = Column(
