@@ -394,21 +394,17 @@ class Rnaproduct(Base):
     modified_date = Column(DateTime)
 
 
-t_rnaproduct_attrib = Table(
-    "rnaproduct_attrib",
-    metadata,
-    Column(
-        "rnaproduct_id",
-        INTEGER(10),
-        nullable=False,
-        index=True,
-        server_default=text("'0'"),
-    ),
-    Column("attrib_type_id", SMALLINT(5), nullable=False, server_default=text("'0'")),
-    Column("value", Text, nullable=False, index=True),
-    Index("rnaproduct_type_val_idx", "attrib_type_id", "value"),
-    Index("rnaproduct_attribx", "rnaproduct_id", "attrib_type_id", "value", unique=True),
-)
+class RNAproductAttrib(Base):
+    __tablename__ = "rnaproduct_attrib"
+    __table_args__ = (
+        Index("rnaproduct_attribx", "rnaproduct_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
+        Index("rnaproduct_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("rnaproduct_value_idx", "value", mysql_length=10),
+    )
+    rnaproduct_attrib_id = Column(INTEGER(10), primary_key=True)
+    rnaproduct_id = Column(ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True)
+    attrib_type_id = Column(SMALLINT(5), nullable=False)
+    value = Column(Text, nullable=False)
 
 
 class RnaproductType(Base):
