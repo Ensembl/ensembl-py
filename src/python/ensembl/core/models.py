@@ -1816,14 +1816,15 @@ class ExonTranscript(Base):
 class MiscAttrib(Base):
     __tablename__ = "misc_attrib"
     __table_args__ = (
-        Index("misc_attrib_type_val_idx", "attrib_type_id", "value"),
-        Index("misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True),
+        Index("misc_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
+        Index("misc_attrib_value_idex", "value", mysql_length=10),
     )
 
+    misc_attrib_id = Column(INTEGER(10), primary_key=10)
     misc_feature_id = Column(
         INTEGER(10),
         ForeignKey("misc_feature.misc_feature_id"),
-        primary_key=True,
         nullable=False,
         index=True,
         server_default=text("'0'"),
@@ -1831,11 +1832,10 @@ class MiscAttrib(Base):
     attrib_type_id = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
-        primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, primary_key=True, nullable=False, index=True)
+    value = Column(Text, nullable=False)
 
 
 class OntologyXref(Base):
