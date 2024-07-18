@@ -892,30 +892,31 @@ class TranscriptSupportingFeature(Base):
 class TranslationAttrib(Base):
     __tablename__ = ("translation_attrib",)
     __table_args__ = (
-        Index("translation_attrib_type_val_idx", "attrib_type_id", "value"),
+        Index("translation_attrib_type_val_idx", "attrib_type_id", "value",  mysql_length={"value": 10}),
         Index(
             "translation_attribx",
             "translation_id",
             "attrib_type_id",
             "value",
             unique=True,
+            mysql_length={"value": 10}
         ),
+        Index("translation_attrib_value_idx", "value", mysql_length=10)
     )
 
+    translation_attrib_id = Column(INTEGER(10), primary_key=True)
     translation_id = Column(
         ForeignKey("translation.translation_id"),
-        primary_key=True,
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
     attrib_type_id = Column(
         ForeignKey("attrib_type.attrib_type_id"),
-        primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, primary_key=True, nullable=False, index=True)
+    value = Column(Text, nullable=False)
 
 
 class UnmappedObject(Base):
