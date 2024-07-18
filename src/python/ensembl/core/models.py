@@ -176,6 +176,7 @@ class Ditag(Base):
     tag_count = Column(SMALLINT(6), nullable=False, server_default=text("'1'"))
     sequence = Column(TINYTEXT, nullable=False)
 
+
 class DNAAlignFeatureAttrib(Base):
     __tablename__ = "dna_align_feature_attrib"
     __table_args__ = (
@@ -185,14 +186,16 @@ class DNAAlignFeatureAttrib(Base):
             "attrib_type_id",
             "value",
             unique=True,
-            mysql_length={"value":10},
+            mysql_length={"value": 10},
         ),
-        Index("ditag_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("ditag_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("ditag_value_idx", "value", mysql_length=10),
     )
 
     dna_align_feature_attrib_id = Column(INTEGER(10), primary_key=True)
-    dna_align_feature_id = Column(INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True)
+    dna_align_feature_id = Column(
+        INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True
+    )
     attrib_type_id = Column(SMALLINT(5), nullable=False)
     value = Column(Text, nullable=False)
 
@@ -368,9 +371,7 @@ class PeptideArchive(Base):
 
 class RepeatConsensus(Base):
     __tablename__ = "repeat_consensus"
-    __table_args__ = (
-        Index("repeat_consensus_idx", "repeat_consensus", unique=True, mysql_length=10),
-    )
+    __table_args__ = (Index("repeat_consensus_idx", "repeat_consensus", unique=True, mysql_length=10),)
 
     repeat_consensus_id = Column(INTEGER(10), primary_key=True)
     repeat_name = Column(String(255), nullable=False, index=True)
@@ -399,8 +400,15 @@ class Rnaproduct(Base):
 class RNAproductAttrib(Base):
     __tablename__ = "rnaproduct_attrib"
     __table_args__ = (
-        Index("rnaproduct_attribx", "rnaproduct_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
-        Index("rnaproduct_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index(
+            "rnaproduct_attribx",
+            "rnaproduct_id",
+            "attrib_type_id",
+            "value",
+            unique=True,
+            mysql_length={"value": 10},
+        ),
+        Index("rnaproduct_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("rnaproduct_value_idx", "value", mysql_length=10),
     )
     rnaproduct_attrib_id = Column(INTEGER(10), primary_key=True)
@@ -635,8 +643,8 @@ t_gene_archive = Table(
 class GeneAttrib(Base):
     __tablename__ = "gene_attrib"
     __table_args__ = (
-        Index("gene_attribx", "gene_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
-        Index("gene_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("gene_attribx", "gene_id", "attrib_type_id", "value", unique=True, mysql_length={"value": 10}),
+        Index("gene_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("gene_attrib_value_idx", "value", mysql_length=10),
     )
 
@@ -838,16 +846,16 @@ class StableIdEvent(Base):
 class TranscriptAttrib(Base):
     __tablename__ = "transcript_attrib"
     __table_args__ = (
-        Index("transcript_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index("transcript_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index(
             "transcript_attribx",
             "transcript_id",
             "attrib_type_id",
             "value",
             unique=True,
-            mysql_length={"value":10}
+            mysql_length={"value": 10},
         ),
-        Index("transcript_attrib_value_idx", "value", mysql_length=10)
+        Index("transcript_attrib_value_idx", "value", mysql_length=10),
     )
 
     transcript_attrib_id = Column(INTEGER(10), primary_key=True)
@@ -894,16 +902,16 @@ class TranscriptSupportingFeature(Base):
 class TranslationAttrib(Base):
     __tablename__ = ("translation_attrib",)
     __table_args__ = (
-        Index("translation_attrib_type_val_idx", "attrib_type_id", "value",  mysql_length={"value": 10}),
+        Index("translation_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index(
             "translation_attribx",
             "translation_id",
             "attrib_type_id",
             "value",
             unique=True,
-            mysql_length={"value": 10}
+            mysql_length={"value": 10},
         ),
-        Index("translation_attrib_value_idx", "value", mysql_length=10)
+        Index("translation_attrib_value_idx", "value", mysql_length=10),
     )
 
     translation_attrib_id = Column(INTEGER(10), primary_key=True)
@@ -1657,8 +1665,15 @@ class RepeatFeature(Base):
 class SeqRegionAttrib(Base):
     __tablename__ = "seq_region_attrib"
     __table_args__ = (
-        Index("region_attribx", "seq_region_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
-        Index("region_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
+        Index(
+            "region_attribx",
+            "seq_region_id",
+            "attrib_type_id",
+            "value",
+            unique=True,
+            mysql_length={"value": 10},
+        ),
+        Index("region_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("region_attrib_value_idx", "value", mysql_length=10),
     )
 
@@ -1816,8 +1831,15 @@ class ExonTranscript(Base):
 class MiscAttrib(Base):
     __tablename__ = "misc_attrib"
     __table_args__ = (
-        Index("misc_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value":10}),
-        Index("misc_attribx", "misc_feature_id", "attrib_type_id", "value", unique=True, mysql_length={"value":10}),
+        Index("misc_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
+        Index(
+            "misc_attribx",
+            "misc_feature_id",
+            "attrib_type_id",
+            "value",
+            unique=True,
+            mysql_length={"value": 10},
+        ),
         Index("misc_attrib_value_idex", "value", mysql_length=10),
     )
 
