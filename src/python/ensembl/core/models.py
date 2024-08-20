@@ -66,42 +66,42 @@ metadata = Base.metadata
 class AltAlleleGroup(Base):
     __tablename__ = "alt_allele_group"
 
-    alt_allele_group_id = Column(INTEGER(10), primary_key=True)
+    alt_allele_group_id: Column = Column(INTEGER(10), primary_key=True)
 
 
 class Analysis(Base):
     __tablename__ = "analysis"
 
-    analysis_id = Column(SMALLINT(5), primary_key=True)
-    created = Column(DateTime)
-    logic_name = Column(String(128), nullable=False, unique=True)
-    db = Column(String(120))
-    db_version = Column(String(40))
-    db_file = Column(String(120))
-    program = Column(String(80))
-    program_version = Column(String(40))
-    program_file = Column(String(80))
-    parameters = Column(Text)
-    module = Column(String(80))
-    module_version = Column(String(40))
-    gff_source = Column(String(40))
-    gff_feature = Column(String(40))
+    analysis_id: Column = Column(SMALLINT(5), primary_key=True)
+    created: Column = Column(DateTime)
+    logic_name: Column = Column(String(128), nullable=False, unique=True)
+    db: Column = Column(String(120))
+    db_version: Column = Column(String(40))
+    db_file: Column = Column(String(120))
+    program: Column = Column(String(80))
+    program_version: Column = Column(String(40))
+    program_file: Column = Column(String(80))
+    parameters: Column = Column(Text)
+    module: Column = Column(String(80))
+    module_version: Column = Column(String(40))
+    gff_source: Column = Column(String(40))
+    gff_feature: Column = Column(String(40))
 
 
 class AssociatedGroup(Base):
     __tablename__ = "associated_group"
 
-    associated_group_id = Column(INTEGER(10), primary_key=True)
-    description = Column(String(128))
+    associated_group_id: Column = Column(INTEGER(10), primary_key=True)
+    description: Column = Column(String(128))
 
 
 class AttribType(Base):
     __tablename__ = "attrib_type"
 
-    attrib_type_id = Column(SMALLINT(5), primary_key=True)
-    code = Column(String(20), nullable=False, unique=True, server_default=text("''"))
-    name = Column(String(255), nullable=False, server_default=text("''"))
-    description = Column(Text)
+    attrib_type_id: Column = Column(SMALLINT(5), primary_key=True)
+    code: Column = Column(String(20), nullable=False, unique=True, server_default=text("''"))
+    name: Column = Column(String(255), nullable=False, server_default=text("''"))
+    description: Column = Column(Text)
 
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="attrib_type")
 
@@ -110,10 +110,10 @@ class Biotype(Base):
     __tablename__ = "biotype"
     __table_args__ = (Index("name_type_idx", "name", "object_type", unique=True),)
 
-    biotype_id = Column(INTEGER(10), primary_key=True)
-    name = Column(String(64), nullable=False)
-    object_type = Column(Enum("gene", "transcript"), nullable=False, server_default=text("'gene'"))
-    db_type = Column(
+    biotype_id: Column = Column(INTEGER(10), primary_key=True)
+    name: Column = Column(String(64), nullable=False)
+    object_type: Column = Column(Enum("gene", "transcript"), nullable=False, server_default=text("'gene'"))
+    db_type: Column = Column(
         SET(
             "cdna",
             "core",
@@ -131,9 +131,9 @@ class Biotype(Base):
         nullable=False,
         server_default=text("'core'"),
     )
-    attrib_type_id = Column(INTEGER(11))
-    description = Column(Text)
-    biotype_group = Column(
+    attrib_type_id: Column = Column(INTEGER(11))
+    description: Column = Column(Text)
+    biotype_group: Column = Column(
         Enum(
             "coding",
             "pseudogene",
@@ -145,8 +145,8 @@ class Biotype(Base):
             "no_group",
         )
     )
-    so_acc = Column(String(64))
-    so_term = Column(String(1023))
+    so_acc: Column = Column(String(64))
+    so_term: Column = Column(String(1023))
 
 
 class CoordSystem(Base):
@@ -156,12 +156,12 @@ class CoordSystem(Base):
         Index("rank_idx", "rank", "species_id", unique=True),
     )
 
-    coord_system_id = Column(INTEGER(10), primary_key=True)
-    species_id = Column(INTEGER(10), nullable=False, index=True, server_default=text("'1'"))
-    name = Column(String(40), nullable=False)
-    version = Column(String(255))
-    rank = Column(INTEGER(11), nullable=False)
-    attrib = Column(SET("default_version", "sequence_level"))
+    coord_system_id: Column = Column(INTEGER(10), primary_key=True)
+    species_id: Column = Column(INTEGER(10), nullable=False, index=True, server_default=text("'1'"))
+    name: Column = Column(String(40), nullable=False)
+    version: Column = Column(String(255))
+    rank: Column = Column(INTEGER(11), nullable=False)
+    attrib: Column = Column(SET("default_version", "sequence_level"))
     # Many to one relationship
     seq_region = relationship("SeqRegion", back_populates="coord_system")
     meta = relationship("Meta", back_populates="coord_system")
@@ -170,11 +170,11 @@ class CoordSystem(Base):
 class Ditag(Base):
     __tablename__ = "ditag"
 
-    ditag_id = Column(INTEGER(10), primary_key=True)
-    name = Column(String(30), nullable=False)
-    tag_type = Column("type", String(30), nullable=False)
-    tag_count = Column(SMALLINT(6), nullable=False, server_default=text("'1'"))
-    sequence = Column(TINYTEXT, nullable=False)
+    ditag_id: Column = Column(INTEGER(10), primary_key=True)
+    name: Column = Column(String(30), nullable=False)
+    tag_type: Column = Column("type", String(30), nullable=False)
+    tag_count: Column = Column(SMALLINT(6), nullable=False, server_default=text("'1'"))
+    sequence: Column = Column(TINYTEXT, nullable=False)
 
 
 class DNAAlignFeatureAttrib(Base):
@@ -192,25 +192,25 @@ class DNAAlignFeatureAttrib(Base):
         Index("ditag_value_idx", "value", mysql_length=10),
     )
 
-    dna_align_feature_attrib_id = Column(INTEGER(10), primary_key=True)
-    dna_align_feature_id = Column(
+    dna_align_feature_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    dna_align_feature_id: Column = Column(
         INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True
     )
-    attrib_type_id = Column(SMALLINT(5), nullable=False)
-    value = Column(Text, nullable=False)
+    attrib_type_id: Column = Column(SMALLINT(5), nullable=False)
+    value: Column = Column(Text, nullable=False)
 
 
 class ExternalDb(Base):
     __tablename__ = "external_db"
     __table_args__ = (Index("db_name_db_release_idx", "db_name", "db_release", unique=True),)
 
-    external_db_id = Column(INTEGER(10), primary_key=True)
-    db_name = Column(String(100), nullable=False)
-    db_release = Column(String(255))
-    status = Column(Enum("KNOWNXREF", "KNOWN", "XREF", "PRED", "ORTH", "PSEUDO"), nullable=False)
-    priority = Column(INTEGER(11), nullable=False)
-    db_display_name = Column(String(255))
-    db_type = Column(
+    external_db_id: Column = Column(INTEGER(10), primary_key=True)
+    db_name: Column = Column(String(100), nullable=False)
+    db_release: Column = Column(String(255))
+    status: Column = Column(Enum("KNOWNXREF", "KNOWN", "XREF", "PRED", "ORTH", "PSEUDO"), nullable=False)
+    priority: Column = Column(INTEGER(11), nullable=False)
+    db_display_name: Column = Column(String(255))
+    db_type: Column = Column(
         "type",
         Enum(
             "ARRAY",
@@ -223,9 +223,9 @@ class ExternalDb(Base):
         ),
         nullable=False,
     )
-    secondary_db_name = Column(String(255))
-    secondary_db_table = Column(String(255))
-    description = Column(Text)
+    secondary_db_name: Column = Column(String(255))
+    secondary_db_table: Column = Column(String(255))
+    description: Column = Column(Text)
     seq_region_synonym = relationship("SeqRegionSynonym", back_populates="external_db")
 
 
@@ -236,33 +236,33 @@ class Gene(Base):
         Index("gene_stable_id_idx", "stable_id", "version"),
     )
 
-    gene_id = Column(INTEGER(10), primary_key=True)
-    biotype = Column(String(40), nullable=False)
-    analysis_id = Column(
+    gene_id: Column = Column(INTEGER(10), primary_key=True)
+    biotype: Column = Column(String(40), nullable=False)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    seq_region_id = Column(
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(2), nullable=False)
-    display_xref_id = Column(ForeignKey("xref.xref_id"), index=True)
-    source = Column(String(40), nullable=False)
-    description = Column(Text)
-    is_current = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
-    canonical_transcript_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(2), nullable=False)
+    display_xref_id: Column = Column(ForeignKey("xref.xref_id"), index=True)
+    source: Column = Column(String(40), nullable=False)
+    description: Column = Column(Text)
+    is_current: Column = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    canonical_transcript_id: Column = Column(
         ForeignKey("transcript.transcript_id"),
         nullable=False,
         index=True,
     )
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
     analysis = relationship("Analysis", primaryjoin="Gene.analysis_id == Analysis.analysis_id")
     canonical_transcript = relationship(
@@ -277,12 +277,12 @@ class GenomeStatistics(Base):
     __tablename__ = "genome_statistics"
     __table_args__ = (Index("stats_uniq", "statistic", "attrib_type_id", "species_id", unique=True),)
 
-    genome_statistics_id = Column(INTEGER(10), primary_key=True)
-    statistic = Column(String(128), nullable=False)
-    value = Column(BIGINT(11), nullable=False, server_default=text("'0'"))
-    species_id = Column(INTEGER(10), server_default=text("'1'"))
-    attrib_type_id = Column(INTEGER(10))
-    timestamp = Column(DateTime)
+    genome_statistics_id: Column = Column(INTEGER(10), primary_key=True)
+    statistic: Column = Column(String(128), nullable=False)
+    value: Column = Column(BIGINT(11), nullable=False, server_default=text("'0'"))
+    species_id: Column = Column(INTEGER(10), server_default=text("'1'"))
+    attrib_type_id: Column = Column(INTEGER(10))
+    timestamp: Column = Column(DateTime)
 
 
 t_interpro = Table(
@@ -297,47 +297,47 @@ t_interpro = Table(
 class Map(Base):
     __tablename__ = "map"
 
-    map_id = Column(INTEGER(10), primary_key=True)
-    map_name = Column(String(30), nullable=False)
+    map_id: Column = Column(INTEGER(10), primary_key=True)
+    map_name: Column = Column(String(30), nullable=False)
 
 
 class MappingSession(Base):
     __tablename__ = "mapping_session"
 
-    mapping_session_id = Column(INTEGER(10), primary_key=True)
-    old_db_name = Column(String(80), nullable=False, server_default=text("''"))
-    new_db_name = Column(String(80), nullable=False, server_default=text("''"))
-    old_release = Column(String(5), nullable=False, server_default=text("''"))
-    new_release = Column(String(5), nullable=False, server_default=text("''"))
-    old_assembly = Column(String(80), nullable=False, server_default=text("''"))
-    new_assembly = Column(String(80), nullable=False, server_default=text("''"))
-    created = Column(DateTime, nullable=False)
+    mapping_session_id: Column = Column(INTEGER(10), primary_key=True)
+    old_db_name: Column = Column(String(80), nullable=False, server_default=text("''"))
+    new_db_name: Column = Column(String(80), nullable=False, server_default=text("''"))
+    old_release: Column = Column(String(5), nullable=False, server_default=text("''"))
+    new_release: Column = Column(String(5), nullable=False, server_default=text("''"))
+    old_assembly: Column = Column(String(80), nullable=False, server_default=text("''"))
+    new_assembly: Column = Column(String(80), nullable=False, server_default=text("''"))
+    created: Column = Column(DateTime, nullable=False)
 
 
 class MappingSet(Base):
     __tablename__ = "mapping_set"
     __table_args__ = (Index("mapping_idx", "internal_schema_build", "external_schema_build", unique=True),)
 
-    mapping_set_id = Column(INTEGER(10), primary_key=True)
-    internal_schema_build = Column(String(20), nullable=False)
-    external_schema_build = Column(String(20), nullable=False)
+    mapping_set_id: Column = Column(INTEGER(10), primary_key=True)
+    internal_schema_build: Column = Column(String(20), nullable=False)
+    external_schema_build: Column = Column(String(20), nullable=False)
 
 
 class Marker(Base):
     __tablename__ = "marker"
     __table_args__ = (Index("marker_idx", "marker_id", "priority"),)
 
-    marker_id = Column(INTEGER(10), primary_key=True)
-    display_marker_synonym_id = Column(
+    marker_id: Column = Column(INTEGER(10), primary_key=True)
+    display_marker_synonym_id: Column = Column(
         ForeignKey("marker_synonym.marker_synonym_id"),
         index=True,
     )
-    left_primer = Column(String(100), nullable=False)
-    right_primer = Column(String(100), nullable=False)
-    min_primer_dist = Column(INTEGER(10), nullable=False)
-    max_primer_dist = Column(INTEGER(10), nullable=False)
-    priority = Column(INTEGER(11))
-    marker_type = Column("type", Enum("est", "microsatellite"))
+    left_primer: Column = Column(String(100), nullable=False)
+    right_primer: Column = Column(String(100), nullable=False)
+    min_primer_dist: Column = Column(INTEGER(10), nullable=False)
+    max_primer_dist: Column = Column(INTEGER(10), nullable=False)
+    priority: Column = Column(INTEGER(11))
+    marker_type: Column = Column("type", Enum("est", "microsatellite"))
 
     display_marker_synonym = relationship(
         "MarkerSynonym",
@@ -349,14 +349,14 @@ class MarkerSynonym(Base):
     __tablename__ = "marker_synonym"
     __table_args__ = (Index("marker_synonym_idx", "marker_synonym_id", "name"),)
 
-    marker_synonym_id = Column(INTEGER(10), primary_key=True)
-    marker_id = Column(
+    marker_synonym_id: Column = Column(INTEGER(10), primary_key=True)
+    marker_id: Column = Column(
         ForeignKey("marker.marker_id"),
         nullable=False,
         index=True,
     )
-    source = Column(String(20))
-    name = Column(String(50))
+    source: Column = Column(String(20))
+    name: Column = Column(String(50))
 
     marker = relationship("Marker", primaryjoin="MarkerSynonym.marker_id == Marker.marker_id")
 
@@ -364,37 +364,37 @@ class MarkerSynonym(Base):
 class PeptideArchive(Base):
     __tablename__ = "peptide_archive"
 
-    peptide_archive_id = Column(INTEGER(10), primary_key=True)
-    md5_checksum = Column(String(32), index=True)
-    peptide_seq = Column(MEDIUMTEXT, nullable=False)
+    peptide_archive_id: Column = Column(INTEGER(10), primary_key=True)
+    md5_checksum: Column = Column(String(32), index=True)
+    peptide_seq: Column = Column(MEDIUMTEXT, nullable=False)
 
 
 class RepeatConsensus(Base):
     __tablename__ = "repeat_consensus"
     __table_args__ = (Index("repeat_consensus_idx", "repeat_consensus", unique=True, mysql_length=10),)
 
-    repeat_consensus_id = Column(INTEGER(10), primary_key=True)
-    repeat_name = Column(String(255), nullable=False, index=True)
-    repeat_class = Column(String(100), nullable=False, index=True)
-    repeat_type = Column(String(40), nullable=False, index=True)
-    repeat_consensus = Column(Text)
+    repeat_consensus_id: Column = Column(INTEGER(10), primary_key=True)
+    repeat_name: Column = Column(String(255), nullable=False, index=True)
+    repeat_class: Column = Column(String(100), nullable=False, index=True)
+    repeat_type: Column = Column(String(40), nullable=False, index=True)
+    repeat_consensus: Column = Column(Text)
 
 
 class Rnaproduct(Base):
     __tablename__ = "rnaproduct"
     __table_args__ = (Index("rnaproduct_stable_id_idx", "stable_id", "version"),)
 
-    rnaproduct_id = Column(INTEGER(10), primary_key=True)
-    rnaproduct_type_id = Column(SMALLINT(5), nullable=False)
-    transcript_id = Column(INTEGER(10), nullable=False, index=True)
-    seq_start = Column(INTEGER(10), nullable=False)
-    start_exon_id = Column(INTEGER(10))
-    seq_end = Column(INTEGER(10), nullable=False)
-    end_exon_id = Column(INTEGER(10))
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    rnaproduct_id: Column = Column(INTEGER(10), primary_key=True)
+    rnaproduct_type_id: Column = Column(SMALLINT(5), nullable=False)
+    transcript_id: Column = Column(INTEGER(10), nullable=False, index=True)
+    seq_start: Column = Column(INTEGER(10), nullable=False)
+    start_exon_id: Column = Column(INTEGER(10))
+    seq_end: Column = Column(INTEGER(10), nullable=False)
+    end_exon_id: Column = Column(INTEGER(10))
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
 
 class RNAproductAttrib(Base):
@@ -411,19 +411,19 @@ class RNAproductAttrib(Base):
         Index("rnaproduct_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("rnaproduct_value_idx", "value", mysql_length=10),
     )
-    rnaproduct_attrib_id = Column(INTEGER(10), primary_key=True)
-    rnaproduct_id = Column(ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True)
-    attrib_type_id = Column(SMALLINT(5), nullable=False)
-    value = Column(Text, nullable=False)
+    rnaproduct_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    rnaproduct_id: Column = Column(ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True)
+    attrib_type_id: Column = Column(SMALLINT(5), nullable=False)
+    value: Column = Column(Text, nullable=False)
 
 
 class RnaproductType(Base):
     __tablename__ = "rnaproduct_type"
 
-    rnaproduct_type_id = Column(SMALLINT(5), primary_key=True)
-    code = Column(String(20), nullable=False, unique=True, server_default=text("''"))
-    name = Column(String(255), nullable=False, server_default=text("''"))
-    description = Column(Text)
+    rnaproduct_type_id: Column = Column(SMALLINT(5), primary_key=True)
+    code: Column = Column(String(20), nullable=False, unique=True, server_default=text("''"))
+    name: Column = Column(String(255), nullable=False, server_default=text("''"))
+    description: Column = Column(Text)
 
 
 class Transcript(Base):
@@ -433,33 +433,33 @@ class Transcript(Base):
         Index("transcript_stable_id_idx", "stable_id", "version"),
     )
 
-    transcript_id = Column(INTEGER(10), primary_key=True)
-    gene_id = Column(ForeignKey("gene.gene_id"), index=True)
-    analysis_id = Column(
+    transcript_id: Column = Column(INTEGER(10), primary_key=True)
+    gene_id: Column = Column(ForeignKey("gene.gene_id"), index=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    seq_region_id = Column(
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(2), nullable=False)
-    display_xref_id = Column(ForeignKey("xref.xref_id"), index=True)
-    source = Column(String(40), nullable=False, server_default=text("'ensembl'"))
-    biotype = Column(String(40), nullable=False)
-    description = Column(Text)
-    is_current = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
-    canonical_translation_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(2), nullable=False)
+    display_xref_id: Column = Column(ForeignKey("xref.xref_id"), index=True)
+    source: Column = Column(String(40), nullable=False, server_default=text("'ensembl'"))
+    biotype: Column = Column(String(40), nullable=False)
+    description: Column = Column(Text)
+    is_current: Column = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    canonical_translation_id: Column = Column(
         ForeignKey("translation.translation_id"),
         unique=True,
     )
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
     analysis = relationship("Analysis", primaryjoin="Transcript.analysis_id == Analysis.analysis_id")
     canonical_translation = relationship(
@@ -474,38 +474,38 @@ class Transcript(Base):
 class TranscriptIntronSupportingEvidence(Base):
     __tablename__ = "transcript_intron_supporting_evidence"
 
-    transcript_id = Column(INTEGER(10), primary_key=True, nullable=False, index=True)
-    intron_supporting_evidence_id = Column(INTEGER(10), primary_key=True, nullable=False)
-    previous_exon_id = Column(INTEGER(10), nullable=False)
-    next_exon_id = Column(INTEGER(10), nullable=False)
+    transcript_id: Column = Column(INTEGER(10), primary_key=True, nullable=False, index=True)
+    intron_supporting_evidence_id: Column = Column(INTEGER(10), primary_key=True, nullable=False)
+    previous_exon_id: Column = Column(INTEGER(10), nullable=False)
+    next_exon_id: Column = Column(INTEGER(10), nullable=False)
 
 
 class Translation(Base):
     __tablename__ = "translation"
     __table_args__ = (Index("translation_stable_id_idx", "stable_id", "version"),)
 
-    translation_id = Column(INTEGER(10), primary_key=True)
-    transcript_id = Column(
+    translation_id: Column = Column(INTEGER(10), primary_key=True)
+    transcript_id: Column = Column(
         ForeignKey("transcript.transcript_id"),
         nullable=False,
         index=True,
     )
-    seq_start = Column(INTEGER(10), nullable=False)
-    start_exon_id = Column(
+    seq_start: Column = Column(INTEGER(10), nullable=False)
+    start_exon_id: Column = Column(
         ForeignKey("exon.exon_id"),
         nullable=False,
         index=True,
     )
-    seq_end = Column(INTEGER(10), nullable=False)
-    end_exon_id = Column(
+    seq_end: Column = Column(INTEGER(10), nullable=False)
+    end_exon_id: Column = Column(
         ForeignKey("exon.exon_id"),
         nullable=False,
         index=True,
     )
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
     end_exon = relationship("Exon", primaryjoin="Translation.end_exon_id == Exon.exon_id")
     start_exon = relationship("Exon", primaryjoin="Translation.start_exon_id == Exon.exon_id")
@@ -518,22 +518,22 @@ class Translation(Base):
 class UnmappedReason(Base):
     __tablename__ = "unmapped_reason"
 
-    unmapped_reason_id = Column(INTEGER(10), primary_key=True)
-    summary_description = Column(String(255))
-    full_description = Column(String(255))
+    unmapped_reason_id: Column = Column(INTEGER(10), primary_key=True)
+    summary_description: Column = Column(String(255))
+    full_description: Column = Column(String(255))
 
 
 class AltAllele(Base):
     __tablename__ = "alt_allele"
     __table_args__ = (Index("alt_allele_gene_id_idx", "gene_id", "alt_allele_group_id"),)
 
-    alt_allele_id = Column(INTEGER(10), primary_key=True)
-    alt_allele_group_id = Column(
+    alt_allele_id: Column = Column(INTEGER(10), primary_key=True)
+    alt_allele_group_id: Column = Column(
         ForeignKey("alt_allele_group.alt_allele_group_id"),
         nullable=False,
         index=True,
     )
-    gene_id = Column(
+    gene_id: Column = Column(
         ForeignKey("gene.gene_id"),
         nullable=False,
         unique=True,
@@ -549,17 +549,17 @@ class AltAllele(Base):
 class AnalysisDescription(Base):
     __tablename__ = "analysis_description"
 
-    analysis_id = Column(
+    analysis_id: Column = Column(
         SMALLINT(5),
         ForeignKey("analysis.analysis_id"),
         primary_key=True,
         nullable=False,
         unique=True,
     )
-    description = Column(Text)
-    display_label = Column(String(255), nullable=False)
-    displayable = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
-    web_data = Column(Text)
+    description: Column = Column(Text)
+    display_label: Column = Column(String(255), nullable=False)
+    displayable: Column = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    web_data: Column = Column(Text)
 
 
 class DataFile(Base):
@@ -575,21 +575,21 @@ class DataFile(Base):
         ),
     )
 
-    data_file_id = Column(INTEGER(10), primary_key=True)
-    coord_system_id = Column(
+    data_file_id: Column = Column(INTEGER(10), primary_key=True)
+    coord_system_id: Column = Column(
         ForeignKey("coord_system.coord_system_id"),
         nullable=False,
     )
-    analysis_id = Column(
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    name = Column(String(100), nullable=False, index=True)
-    version_lock = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
-    absolute = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
-    url = Column(Text)
-    file_type = Column(Enum("BAM", "BAMCOV", "BIGBED", "BIGWIG", "VCF"))
+    name: Column = Column(String(100), nullable=False, index=True)
+    version_lock: Column = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    absolute: Column = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    url: Column = Column(Text)
+    file_type: Column = Column(Enum("BAM", "BAMCOV", "BIGBED", "BIGWIG", "VCF"))
 
     analysis = relationship("Analysis", primaryjoin="DataFile.analysis_id == Analysis.analysis_id")
     coord_system = relationship(
@@ -602,14 +602,14 @@ class DensityType(Base):
     __tablename__ = "density_type"
     __table_args__ = (Index("analysis_idx", "analysis_id", "block_size", "region_features", unique=True),)
 
-    density_type_id = Column(INTEGER(10), primary_key=True)
-    analysis_id = Column(
+    density_type_id: Column = Column(INTEGER(10), primary_key=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
     )
-    block_size = Column(INTEGER(11), nullable=False)
-    region_features = Column(INTEGER(11), nullable=False)
-    value_type = Column(Enum("sum", "ratio"), nullable=False)
+    block_size: Column = Column(INTEGER(11), nullable=False)
+    region_features: Column = Column(INTEGER(11), nullable=False)
+    value_type: Column = Column(Enum("sum", "ratio"), nullable=False)
 
     analysis = relationship("Analysis", primaryjoin="DensityType.analysis_id == Analysis.analysis_id")
 
@@ -648,45 +648,45 @@ class GeneAttrib(Base):
         Index("gene_attrib_value_idx", "value", mysql_length=10),
     )
 
-    gene_attrib_id = Column(INTEGER(10), primary_key=True)
-    gene_id = Column(
+    gene_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    gene_id: Column = Column(
         INTEGER(10),
         ForeignKey("gene.gene_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    attrib_type_id = Column(
+    attrib_type_id: Column = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, nullable=False)
+    value: Column = Column(Text, nullable=False)
 
 
 class MarkerMapLocation(Base):
     __tablename__ = "marker_map_location"
     __table_args__ = (Index("map_idx", "map_id", "chromosome_name", "position"),)
 
-    marker_id = Column(
+    marker_id: Column = Column(
         ForeignKey("marker.marker_id"),
         primary_key=True,
         nullable=False,
     )
-    map_id = Column(
+    map_id: Column = Column(
         ForeignKey("map.map_id"),
         primary_key=True,
         nullable=False,
     )
-    chromosome_name = Column(String(15), nullable=False)
-    marker_synonym_id = Column(
+    chromosome_name: Column = Column(String(15), nullable=False)
+    marker_synonym_id: Column = Column(
         ForeignKey("marker_synonym.marker_synonym_id"),
         nullable=False,
         index=True,
     )
-    position = Column(String(15), nullable=False)
-    lod_score = Column(Float(asdecimal=True))
+    position: Column = Column(String(15), nullable=False)
+    lod_score: Column = Column(Float(asdecimal=True))
 
     map_r = relationship("Map", primaryjoin="MarkerMapLocation.map_id == Map.map_id")
     marker = relationship("Marker", primaryjoin="MarkerMapLocation.marker_id == Marker.marker_id")
@@ -703,13 +703,13 @@ class Meta(Base):
         Index("species_key_value_idx", "species_id", "meta_key", "meta_value", unique=True),
     )
 
-    meta_id = Column(INTEGER(11), primary_key=True)
-    species_id = Column(
+    meta_id: Column = Column(INTEGER(11), primary_key=True)
+    species_id: Column = Column(
         ForeignKey("coord_system.species_id"),
         server_default=text("'1'"),
     )
-    meta_key = Column(String(40), nullable=False)
-    meta_value = Column(String(255), nullable=False)
+    meta_key: Column = Column(String(40), nullable=False)
+    meta_value: Column = Column(String(255), nullable=False)
 
     coord_system = relationship("CoordSystem", back_populates="meta")
 
@@ -718,14 +718,14 @@ class MetaCoord(Base):
     __tablename__ = "meta_coord"
     __table_args__ = (Index("cs_table_name_idx", "coord_system_id", "table_name", unique=True),)
 
-    table_name = Column(String(40), primary_key=True, nullable=False)
-    coord_system_id = Column(
+    table_name: Column = Column(String(40), primary_key=True, nullable=False)
+    coord_system_id: Column = Column(
         INTEGER(10),
         ForeignKey("coord_system.coord_system_id"),
         primary_key=True,
         nullable=False,
     )
-    max_length = Column(INTEGER(11))
+    max_length: Column = Column(INTEGER(11))
 
 
 class ProteinFeature(Base):
@@ -744,29 +744,29 @@ class ProteinFeature(Base):
         ),
     )
 
-    protein_feature_id = Column(INTEGER(10), primary_key=True)
-    translation_id = Column(
+    protein_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    translation_id: Column = Column(
         ForeignKey("translation.translation_id"),
         nullable=False,
         index=True,
     )
-    seq_start = Column(INTEGER(10), nullable=False)
-    seq_end = Column(INTEGER(10), nullable=False)
-    hit_start = Column(INTEGER(10), nullable=False)
-    hit_end = Column(INTEGER(10), nullable=False)
-    hit_name = Column(VARCHAR(40), nullable=False, index=True)
-    analysis_id = Column(
+    seq_start: Column = Column(INTEGER(10), nullable=False)
+    seq_end: Column = Column(INTEGER(10), nullable=False)
+    hit_start: Column = Column(INTEGER(10), nullable=False)
+    hit_end: Column = Column(INTEGER(10), nullable=False)
+    hit_name: Column = Column(VARCHAR(40), nullable=False, index=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    score = Column(Float(asdecimal=True))
-    evalue = Column(Float(asdecimal=True))
-    perc_ident = Column(Float)
-    external_data = Column(Text)
-    hit_description = Column(Text)
-    cigar_line = Column(Text)
-    align_type = Column(Enum("ensembl", "cigar", "cigarplus", "vulgar", "mdtag"))
+    score: Column = Column(Float(asdecimal=True))
+    evalue: Column = Column(Float(asdecimal=True))
+    perc_ident: Column = Column(Float)
+    external_data: Column = Column(Text)
+    hit_description: Column = Column(Text)
+    cigar_line: Column = Column(Text)
+    align_type: Column = Column(Enum("ensembl", "cigar", "cigarplus", "vulgar", "mdtag"))
 
     analysis = relationship("Analysis", primaryjoin="ProteinFeature.analysis_id == Analysis.analysis_id")
     translation = relationship(
@@ -779,14 +779,14 @@ class SeqRegion(Base):
     __tablename__ = "seq_region"
     __table_args__ = (Index("name_cs_idx", "name", "coord_system_id", unique=True),)
 
-    seq_region_id = Column(INTEGER(10), primary_key=True)
-    name = Column(String(255), nullable=False)
-    coord_system_id = Column(
+    seq_region_id: Column = Column(INTEGER(10), primary_key=True)
+    name: Column = Column(String(255), nullable=False)
+    coord_system_id: Column = Column(
         ForeignKey("coord_system.coord_system_id"),
         nullable=False,
         index=True,
     )
-    length = Column(INTEGER(10), nullable=False)
+    length: Column = Column(INTEGER(10), nullable=False)
     # Many to one relationship
     coord_system = relationship("CoordSystem", back_populates="seq_region")
     seq_region_attrib = relationship("SeqRegionAttrib", back_populates="seq_region")
@@ -797,11 +797,11 @@ class SeqRegion(Base):
 class Dna(SeqRegion):
     __tablename__ = "dna"
 
-    seq_region_id = Column(
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         primary_key=True,
     )
-    sequence = Column(LONGTEXT, nullable=False)
+    sequence: Column = Column(LONGTEXT, nullable=False)
 
     seq_region = relationship(
         "SeqRegion",
@@ -823,24 +823,24 @@ class StableIdEvent(Base):
         ),
     )
 
-    old_stable_id = Column(String(128), primary_key=True, index=True)
-    old_version = Column(SMALLINT(6))
-    new_stable_id = Column(String(128), primary_key=True, index=True)
-    new_version = Column(SMALLINT(6))
-    mapping_session_id = Column(
+    old_stable_id: Column = Column(String(128), primary_key=True, index=True)
+    old_version: Column = Column(SMALLINT(6))
+    new_stable_id: Column = Column(String(128), primary_key=True, index=True)
+    new_version: Column = Column(SMALLINT(6))
+    mapping_session_id: Column = Column(
         INTEGER(10),
         ForeignKey("mapping_session.mapping_session_id"),
         primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    id_type = Column(
+    id_type: Column = Column(
         "type",
         Enum("gene", "transcript", "translation", "rnaproduct"),
         primary_key=True,
         nullable=False,
     )
-    score = Column(Float, nullable=False, server_default=text("'0'"))
+    score: Column = Column(Float, nullable=False, server_default=text("'0'"))
 
 
 class TranscriptAttrib(Base):
@@ -858,21 +858,21 @@ class TranscriptAttrib(Base):
         Index("transcript_attrib_value_idx", "value", mysql_length=10),
     )
 
-    transcript_attrib_id = Column(INTEGER(10), primary_key=True)
-    transcript_id = Column(
+    transcript_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    transcript_id: Column = Column(
         INTEGER(10),
         ForeignKey("transcript.transcript_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    attrib_type_id = Column(
+    attrib_type_id: Column = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, nullable=False)
+    value: Column = Column(Text, nullable=False)
 
 
 class TranscriptSupportingFeature(Base):
@@ -888,15 +888,15 @@ class TranscriptSupportingFeature(Base):
         ),
     )
 
-    transcript_id = Column(
+    transcript_id: Column = Column(
         INTEGER(10),
         ForeignKey("transcript.transcript_id"),
         primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    feature_type = Column(Enum("dna_align_feature", "protein_align_feature"), primary_key=True)
-    feature_id = Column(INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'"))
+    feature_type: Column = Column(Enum("dna_align_feature", "protein_align_feature"), primary_key=True)
+    feature_id: Column = Column(INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'"))
 
 
 class TranslationAttrib(Base):
@@ -914,19 +914,19 @@ class TranslationAttrib(Base):
         Index("translation_attrib_value_idx", "value", mysql_length=10),
     )
 
-    translation_attrib_id = Column(INTEGER(10), primary_key=True)
-    translation_id = Column(
+    translation_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    translation_id: Column = Column(
         ForeignKey("translation.translation_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    attrib_type_id = Column(
+    attrib_type_id: Column = Column(
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, nullable=False)
+    value: Column = Column(Text, nullable=False)
 
 
 class UnmappedObject(Base):
@@ -946,29 +946,29 @@ class UnmappedObject(Base):
         Index("ext_db_identifier_idx", "external_db_id", "identifier"),
     )
 
-    unmapped_object_id = Column(INTEGER(10), primary_key=True)
-    unmapped_object_type = Column("type", Enum("xref", "cDNA", "Marker"), nullable=False)
-    analysis_id = Column(
+    unmapped_object_id: Column = Column(INTEGER(10), primary_key=True)
+    unmapped_object_type: Column = Column("type", Enum("xref", "cDNA", "Marker"), nullable=False)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
     )
-    external_db_id = Column(
+    external_db_id: Column = Column(
         ForeignKey("external_db.external_db_id"),
     )
-    identifier = Column(String(255), nullable=False, index=True)
-    unmapped_reason_id = Column(
+    identifier: Column = Column(String(255), nullable=False, index=True)
+    unmapped_reason_id: Column = Column(
         ForeignKey("unmapped_reason.unmapped_reason_id"),
         nullable=False,
         index=True,
     )
-    query_score = Column(Float(asdecimal=True))
-    target_score = Column(Float(asdecimal=True))
-    ensembl_id = Column(INTEGER(10), server_default=text("'0'"))
-    ensembl_object_type = Column(
+    query_score: Column = Column(Float(asdecimal=True))
+    target_score: Column = Column(Float(asdecimal=True))
+    ensembl_id: Column = Column(INTEGER(10), server_default=text("'0'"))
+    ensembl_object_type: Column = Column(
         Enum("RawContig", "Transcript", "Gene", "Translation"),
         server_default=text("'RawContig'"),
     )
-    parent = Column(String(255))
+    parent: Column = Column(String(255))
 
     analysis = relationship("Analysis", primaryjoin="UnmappedObject.analysis_id == Analysis.analysis_id")
     external_db = relationship(
@@ -995,17 +995,17 @@ class Xref(Base):
         ),
     )
 
-    xref_id = Column(INTEGER(10), primary_key=True)
-    external_db_id = Column(
+    xref_id: Column = Column(INTEGER(10), primary_key=True)
+    external_db_id: Column = Column(
         ForeignKey("external_db.external_db_id"),
         nullable=False,
         index=True,
     )
-    dbprimary_acc = Column(String(512), nullable=False)
-    display_label = Column(String(512), nullable=False, index=True)
-    version = Column(String(10))
-    description = Column(Text)
-    info_type = Column(
+    dbprimary_acc: Column = Column(String(512), nullable=False)
+    display_label: Column = Column(String(512), nullable=False, index=True)
+    version: Column = Column(String(10))
+    description: Column = Column(Text)
+    info_type: Column = Column(
         Enum(
             "NONE",
             "PROJECTION",
@@ -1023,7 +1023,7 @@ class Xref(Base):
         index=True,
         server_default=text("'NONE'"),
     )
-    info_text = Column(String(255), nullable=False, server_default=text("''"))
+    info_text: Column = Column(String(255), nullable=False, server_default=text("''"))
 
     external_db = relationship("ExternalDb", primaryjoin="Xref.external_db_id == ExternalDb.external_db_id")
 
@@ -1074,23 +1074,23 @@ class Assembly(Base):
         ),
     )
 
-    asm_seq_region_id = Column(
+    asm_seq_region_id: Column = Column(
         INTEGER(10),
         ForeignKey("seq_region.seq_region_id"),
         primary_key=True,
         nullable=False,
     )
-    cmp_seq_region_id = Column(
+    cmp_seq_region_id: Column = Column(
         INTEGER(10),
         ForeignKey("seq_region.seq_region_id"),
         primary_key=True,
         nullable=False,
     )
-    asm_start = Column(INTEGER(10), primary_key=True, nullable=False)
-    asm_end = Column(INTEGER(10), primary_key=True, nullable=False)
-    cmp_start = Column(INTEGER(10), primary_key=True, nullable=False)
-    cmp_end = Column(INTEGER(10), primary_key=True, nullable=False)
-    ori = Column(TINYINT(4), primary_key=True, nullable=False)
+    asm_start: Column = Column(INTEGER(10), primary_key=True, nullable=False)
+    asm_end: Column = Column(INTEGER(10), primary_key=True, nullable=False)
+    cmp_start: Column = Column(INTEGER(10), primary_key=True, nullable=False)
+    cmp_end: Column = Column(INTEGER(10), primary_key=True, nullable=False)
+    ori: Column = Column(TINYINT(4), primary_key=True, nullable=False)
 
 
 class AssemblyException(Base):
@@ -1100,21 +1100,21 @@ class AssemblyException(Base):
         Index("sr_idx", "seq_region_id", "seq_region_start"),
     )
 
-    assembly_exception_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    assembly_exception_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    exc_type = Column(Enum("HAP", "PAR", "PATCH_FIX", "PATCH_NOVEL"), nullable=False)
-    exc_seq_region_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    exc_type: Column = Column(Enum("HAP", "PAR", "PATCH_FIX", "PATCH_NOVEL"), nullable=False)
+    exc_seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    exc_seq_region_start = Column(INTEGER(10), nullable=False)
-    exc_seq_region_end = Column(INTEGER(10), nullable=False)
-    ori = Column(INTEGER(11), nullable=False)
+    exc_seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    exc_seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    ori: Column = Column(INTEGER(11), nullable=False)
 
     exc_seq_region = relationship(
         "SeqRegion",
@@ -1132,19 +1132,19 @@ class DensityFeature(Base):
         Index("density_seq_region_idx", "density_type_id", "seq_region_id", "seq_region_start"),
     )
 
-    density_feature_id = Column(INTEGER(10), primary_key=True)
-    density_type_id = Column(
+    density_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    density_type_id: Column = Column(
         ForeignKey("density_type.density_type_id"),
         nullable=False,
     )
-    seq_region_id = Column(
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
         index=True,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    density_value = Column(Float, nullable=False)
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    density_value: Column = Column(Float, nullable=False)
 
     density_type = relationship(
         "DensityType",
@@ -1160,33 +1160,33 @@ class DitagFeature(Base):
     __tablename__ = "ditag_feature"
     __table_args__ = (Index("ditag_seq_region_idx", "seq_region_id", "seq_region_start", "seq_region_end"),)
 
-    ditag_feature_id = Column(INTEGER(10), primary_key=True)
-    ditag_id = Column(
+    ditag_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    ditag_id: Column = Column(
         ForeignKey("ditag.ditag_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    ditag_pair_id = Column(INTEGER(10), nullable=False, index=True, server_default=text("'0'"))
-    seq_region_id = Column(
+    ditag_pair_id: Column = Column(INTEGER(10), nullable=False, index=True, server_default=text("'0'"))
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    seq_region_start = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
-    seq_region_end = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
-    seq_region_strand = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
+    seq_region_end: Column = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
+    seq_region_strand: Column = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    hit_start = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
-    hit_end = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
-    hit_strand = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
-    cigar_line = Column(TINYTEXT, nullable=False)
-    ditag_side = Column(Enum("F", "L", "R"), nullable=False)
+    hit_start: Column = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
+    hit_end: Column = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
+    hit_strand: Column = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    cigar_line: Column = Column(TINYTEXT, nullable=False)
+    ditag_side: Column = Column(Enum("F", "L", "R"), nullable=False)
 
     analysis = relationship("Analysis", primaryjoin="DitagFeature.analysis_id == Analysis.analysis_id")
     ditag = relationship("Ditag", primaryjoin="DitagFeature.ditag_id == Ditag.ditag_id")
@@ -1208,33 +1208,33 @@ class DnaAlignFeature(Base):
         ),
     )
 
-    dna_align_feature_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    dna_align_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(1), nullable=False)
-    hit_start = Column(INTEGER(11), nullable=False)
-    hit_end = Column(INTEGER(11), nullable=False)
-    hit_strand = Column(TINYINT(1), nullable=False)
-    hit_name = Column(String(40), nullable=False, index=True)
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(1), nullable=False)
+    hit_start: Column = Column(INTEGER(11), nullable=False)
+    hit_end: Column = Column(INTEGER(11), nullable=False)
+    hit_strand: Column = Column(TINYINT(1), nullable=False)
+    hit_name: Column = Column(String(40), nullable=False, index=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    score = Column(Float(asdecimal=True))
-    evalue = Column(Float(asdecimal=True))
-    perc_ident = Column(Float)
-    cigar_line = Column(Text)
-    external_db_id = Column(
+    score: Column = Column(Float(asdecimal=True))
+    evalue: Column = Column(Float(asdecimal=True))
+    perc_ident: Column = Column(Float)
+    cigar_line: Column = Column(Text)
+    external_db_id: Column = Column(
         ForeignKey("external_db.external_db_id"),
         index=True,
     )
-    hcoverage = Column(Float(asdecimal=True))
-    align_type = Column(Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'"))
+    hcoverage: Column = Column(Float(asdecimal=True))
+    align_type: Column = Column(Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'"))
 
     analysis = relationship("Analysis", primaryjoin="DnaAlignFeature.analysis_id == Analysis.analysis_id")
     external_db = relationship(
@@ -1254,22 +1254,22 @@ class Exon(Base):
         Index("exon_stable_id_idx", "stable_id", "version"),
     )
 
-    exon_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    exon_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(2), nullable=False)
-    phase = Column(TINYINT(2), nullable=False)
-    end_phase = Column(TINYINT(2), nullable=False)
-    is_current = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
-    is_constitutive = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(2), nullable=False)
+    phase: Column = Column(TINYINT(2), nullable=False)
+    end_phase: Column = Column(TINYINT(2), nullable=False)
+    is_current: Column = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    is_constitutive: Column = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
     seq_region = relationship("SeqRegion", primaryjoin="Exon.seq_region_id == SeqRegion.seq_region_id")
 
@@ -1277,12 +1277,12 @@ class Exon(Base):
 class ExternalSynonym(Base):
     __tablename__ = "external_synonym"
 
-    xref_id = Column(
+    xref_id: Column = Column(
         ForeignKey("xref.xref_id"),
         primary_key=True,
         nullable=False,
     )
-    synonym = Column(String(100), primary_key=True, nullable=False, index=True)
+    synonym: Column = Column(String(100), primary_key=True, nullable=False, index=True)
 
     xref = relationship("Xref", primaryjoin="ExternalSynonym.xref_id == Xref.xref_id")
 
@@ -1303,22 +1303,22 @@ class IntronSupportingEvidence(Base):
         Index("intron_evidence_seq_region_idx", "seq_region_id", "seq_region_start"),
     )
 
-    intron_supporting_evidence_id = Column(INTEGER(10), primary_key=True)
-    analysis_id = Column(
+    intron_supporting_evidence_id: Column = Column(INTEGER(10), primary_key=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
     )
-    seq_region_id = Column(
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(2), nullable=False)
-    hit_name = Column(String(100), nullable=False)
-    score = Column(DECIMAL(10, 3))
-    score_type = Column(Enum("NONE", "DEPTH"), server_default=text("'NONE'"))
-    is_splice_canonical = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(2), nullable=False)
+    hit_name: Column = Column(String(100), nullable=False)
+    score: Column = Column(DECIMAL(10, 3))
+    score_type: Column = Column(Enum("NONE", "DEPTH"), server_default=text("'NONE'"))
+    is_splice_canonical: Column = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
 
     analysis = relationship(
         "Analysis",
@@ -1334,15 +1334,15 @@ class Karyotype(Base):
     __tablename__ = "karyotype"
     __table_args__ = (Index("region_band_idx", "seq_region_id", "band"),)
 
-    karyotype_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    karyotype_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    band = Column(String(40))
-    stain = Column(String(40))
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    band: Column = Column(String(40))
+    stain: Column = Column(String(40))
 
     seq_region = relationship("SeqRegion", primaryjoin="Karyotype.seq_region_id == SeqRegion.seq_region_id")
 
@@ -1351,24 +1351,24 @@ class MarkerFeature(Base):
     __tablename__ = "marker_feature"
     __table_args__ = (Index("marker_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
-    marker_feature_id = Column(INTEGER(10), primary_key=True)
-    marker_id = Column(
+    marker_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    marker_id: Column = Column(
         ForeignKey("marker.marker_id"),
         nullable=False,
         index=True,
     )
-    seq_region_id = Column(
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    map_weight = Column(INTEGER(10))
+    map_weight: Column = Column(INTEGER(10))
 
     analysis = relationship("Analysis", primaryjoin="MarkerFeature.analysis_id == Analysis.analysis_id")
     marker = relationship("Marker", primaryjoin="MarkerFeature.marker_id == Marker.marker_id")
@@ -1402,11 +1402,11 @@ t_misc_feature_misc_set = Table(
 class MiscSet(Base):
     __tablename__ = "misc_set"
 
-    misc_set_id = Column(SMALLINT(5), primary_key=True)
-    code = Column(String(25), nullable=False, unique=True, server_default=text("''"))
-    name = Column(String(255), nullable=False, server_default=text("''"))
-    description = Column(Text, nullable=False)
-    max_length = Column(INTEGER(10), nullable=False)
+    misc_set_id: Column = Column(SMALLINT(5), primary_key=True)
+    code: Column = Column(String(25), nullable=False, unique=True, server_default=text("''"))
+    name: Column = Column(String(255), nullable=False, server_default=text("''"))
+    description: Column = Column(Text, nullable=False)
+    max_length: Column = Column(INTEGER(10), nullable=False)
 
     # misc_features = relationship("MiscFeature", secondary=t_misc_feature_misc_set)
 
@@ -1415,15 +1415,15 @@ class MiscFeature(Base):
     __tablename__ = "misc_feature"
     __table_args__ = (Index("misc_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
-    misc_feature_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    misc_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    seq_region_start = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
-    seq_region_end = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
-    seq_region_strand = Column(TINYINT(4), nullable=False, server_default=text("'0'"))
+    seq_region_start: Column = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
+    seq_region_end: Column = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
+    seq_region_strand: Column = Column(TINYINT(4), nullable=False, server_default=text("'0'"))
 
     seq_region = relationship("SeqRegion", primaryjoin="MiscFeature.seq_region_id == SeqRegion.seq_region_id")
     # misc_sets = relationship("MiscSet", secondary=t_misc_feature_misc_set)
@@ -1443,9 +1443,9 @@ class ObjectXref(Base):
         ),
     )
 
-    object_xref_id = Column(INTEGER(10), primary_key=True)
-    ensembl_id = Column(INTEGER(10), nullable=False)
-    ensembl_object_type = Column(
+    object_xref_id: Column = Column(INTEGER(10), primary_key=True)
+    ensembl_id: Column = Column(INTEGER(10), nullable=False)
+    ensembl_object_type: Column = Column(
         Enum(
             "RawContig",
             "Transcript",
@@ -1458,9 +1458,9 @@ class ObjectXref(Base):
         ),
         nullable=False,
     )
-    xref_id = Column(ForeignKey("xref.xref_id"), nullable=False)
-    linkage_annotation = Column(String(255))
-    analysis_id = Column(
+    xref_id: Column = Column(ForeignKey("xref.xref_id"), nullable=False)
+    linkage_annotation: Column = Column(String(255))
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         index=True,
     )
@@ -1472,16 +1472,16 @@ class ObjectXref(Base):
 class DependentXref(ObjectXref):
     __tablename__ = "dependent_xref"
 
-    object_xref_id = Column(
+    object_xref_id: Column = Column(
         ForeignKey("object_xref.object_xref_id"),
         primary_key=True,
     )
-    master_xref_id = Column(
+    master_xref_id: Column = Column(
         ForeignKey("xref.xref_id"),
         nullable=False,
         index=True,
     )
-    dependent_xref_id = Column(
+    dependent_xref_id: Column = Column(
         ForeignKey("xref.xref_id"),
         nullable=False,
         index=True,
@@ -1491,19 +1491,19 @@ class DependentXref(ObjectXref):
 class IdentityXref(ObjectXref):
     __tablename__ = "identity_xref"
 
-    object_xref_id = Column(
+    object_xref_id: Column = Column(
         ForeignKey("object_xref.object_xref_id"),
         primary_key=True,
     )
-    xref_identity = Column(INTEGER(5))
-    ensembl_identity = Column(INTEGER(5))
-    xref_start = Column(INTEGER(11))
-    xref_end = Column(INTEGER(11))
-    ensembl_start = Column(INTEGER(11))
-    ensembl_end = Column(INTEGER(11))
-    cigar_line = Column(Text)
-    score = Column(Float(asdecimal=True))
-    evalue = Column(Float(asdecimal=True))
+    xref_identity: Column = Column(INTEGER(5))
+    ensembl_identity: Column = Column(INTEGER(5))
+    xref_start: Column = Column(INTEGER(11))
+    xref_end: Column = Column(INTEGER(11))
+    ensembl_start: Column = Column(INTEGER(11))
+    ensembl_end: Column = Column(INTEGER(11))
+    cigar_line: Column = Column(Text)
+    score: Column = Column(Float(asdecimal=True))
+    evalue: Column = Column(Float(asdecimal=True))
 
     object_xref = relationship(
         "ObjectXref",
@@ -1519,24 +1519,24 @@ class Operon(Base):
         Index("operon_stable_id_idx", "stable_id", "version"),
     )
 
-    operon_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    operon_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(2), nullable=False)
-    display_label = Column(String(255), index=True)
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(2), nullable=False)
+    display_label: Column = Column(String(255), index=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
     analysis = relationship("Analysis", primaryjoin="Operon.analysis_id == Analysis.analysis_id")
     seq_region = relationship("SeqRegion", primaryjoin="Operon.seq_region_id == SeqRegion.seq_region_id")
@@ -1546,20 +1546,20 @@ class PredictionTranscript(Base):
     __tablename__ = "prediction_transcript"
     __table_args__ = (Index("prediction_transcript_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
-    prediction_transcript_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    prediction_transcript_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(4), nullable=False)
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(4), nullable=False)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    display_label = Column(String(255))
+    display_label: Column = Column(String(255))
 
     analysis = relationship(
         "Analysis",
@@ -1584,32 +1584,32 @@ class ProteinAlignFeature(Base):
         ),
     )
 
-    protein_align_feature_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    protein_align_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
-    hit_start = Column(INTEGER(10), nullable=False)
-    hit_end = Column(INTEGER(10), nullable=False)
-    hit_name = Column(String(40), nullable=False, index=True)
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    hit_start: Column = Column(INTEGER(10), nullable=False)
+    hit_end: Column = Column(INTEGER(10), nullable=False)
+    hit_name: Column = Column(String(40), nullable=False, index=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    score = Column(Float(asdecimal=True))
-    evalue = Column(Float(asdecimal=True))
-    perc_ident = Column(Float)
-    cigar_line = Column(Text)
-    external_db_id = Column(
+    score: Column = Column(Float(asdecimal=True))
+    evalue: Column = Column(Float(asdecimal=True))
+    perc_ident: Column = Column(Float)
+    cigar_line: Column = Column(Text)
+    external_db_id: Column = Column(
         ForeignKey("external_db.external_db_id"),
         index=True,
     )
-    hcoverage = Column(Float(asdecimal=True))
-    align_type = Column(Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'"))
+    hcoverage: Column = Column(Float(asdecimal=True))
+    align_type: Column = Column(Enum("ensembl", "cigar", "vulgar", "mdtag"), server_default=text("'ensembl'"))
 
     analysis = relationship(
         "Analysis",
@@ -1629,27 +1629,27 @@ class RepeatFeature(Base):
     __tablename__ = "repeat_feature"
     __table_args__ = (Index("repeat_feature_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
-    repeat_feature_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    repeat_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
-    repeat_start = Column(INTEGER(10), nullable=False)
-    repeat_end = Column(INTEGER(10), nullable=False)
-    repeat_consensus_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    repeat_start: Column = Column(INTEGER(10), nullable=False)
+    repeat_end: Column = Column(INTEGER(10), nullable=False)
+    repeat_consensus_id: Column = Column(
         ForeignKey("repeat_consensus.repeat_consensus_id"),
         nullable=False,
         index=True,
     )
-    analysis_id = Column(
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    score = Column(Float(asdecimal=True))
+    score: Column = Column(Float(asdecimal=True))
 
     analysis = relationship("Analysis", primaryjoin="RepeatFeature.analysis_id == Analysis.analysis_id")
     repeat_consensus = relationship(
@@ -1677,19 +1677,19 @@ class SeqRegionAttrib(Base):
         Index("region_attrib_value_idx", "value", mysql_length=10),
     )
 
-    seq_region_attrib_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    seq_region_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    attrib_type_id = Column(
+    attrib_type_id: Column = Column(
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, nullable=False)
+    value: Column = Column(Text, nullable=False)
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
     attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
 
@@ -1718,14 +1718,14 @@ class SeqRegionSynonym(Base):
     __tablename__ = "seq_region_synonym"
     __table_args__ = (Index("syn_idx", "synonym", "seq_region_id", unique=True),)
 
-    seq_region_synonym_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    seq_region_synonym_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
         index=True,
     )
-    synonym = Column(String(250), nullable=False)
-    external_db_id = Column(ForeignKey("external_db.external_db_id"))
+    synonym: Column = Column(String(250), nullable=False)
+    external_db_id: Column = Column(ForeignKey("external_db.external_db_id"))
 
     seq_region = relationship("SeqRegion", back_populates="seq_region_synonym")
     external_db = relationship("ExternalDb", back_populates="seq_region_synonym")
@@ -1735,21 +1735,21 @@ class SimpleFeature(Base):
     __tablename__ = "simple_feature"
     __table_args__ = (Index("simple_feature_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
-    simple_feature_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    simple_feature_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(1), nullable=False)
-    display_label = Column(String(255), nullable=False, index=True)
-    analysis_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(1), nullable=False)
+    display_label: Column = Column(String(255), nullable=False, index=True)
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    score = Column(Float(asdecimal=True))
+    score: Column = Column(Float(asdecimal=True))
 
     analysis = relationship("Analysis", primaryjoin="SimpleFeature.analysis_id == Analysis.analysis_id")
     seq_region = relationship(
@@ -1772,26 +1772,26 @@ class AssociatedXref(Base):
         ),
     )
 
-    associated_xref_id = Column(INTEGER(10), primary_key=True)
-    object_xref_id = Column(
+    associated_xref_id: Column = Column(INTEGER(10), primary_key=True)
+    object_xref_id: Column = Column(
         ForeignKey("object_xref.object_xref_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    xref_id = Column(
+    xref_id: Column = Column(
         ForeignKey("xref.xref_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    source_xref_id = Column(INTEGER(10), index=True)
-    condition_type = Column(String(128))
-    associated_group_id = Column(
+    source_xref_id: Column = Column(INTEGER(10), index=True)
+    condition_type: Column = Column(String(128))
+    associated_group_id: Column = Column(
         ForeignKey("associated_group.associated_group_id"),
         index=True,
     )
-    rank = Column(INTEGER(10), server_default=text("'0'"))
+    rank: Column = Column(INTEGER(10), server_default=text("'0'"))
 
     associated_group = relationship(
         "AssociatedGroup",
@@ -1807,19 +1807,19 @@ class AssociatedXref(Base):
 class ExonTranscript(Base):
     __tablename__ = "exon_transcript"
 
-    exon_id = Column(
+    exon_id: Column = Column(
         ForeignKey("exon.exon_id"),
         primary_key=True,
         nullable=False,
         index=True,
     )
-    transcript_id = Column(
+    transcript_id: Column = Column(
         ForeignKey("transcript.transcript_id"),
         primary_key=True,
         nullable=False,
         index=True,
     )
-    rank = Column(INTEGER(10), primary_key=True, nullable=False)
+    rank: Column = Column(INTEGER(10), primary_key=True, nullable=False)
 
     exon = relationship("Exon", primaryjoin="ExonTranscript.exon_id == Exon.exon_id")
     transcript = relationship(
@@ -1843,21 +1843,21 @@ class MiscAttrib(Base):
         Index("misc_attrib_value_idex", "value", mysql_length=10),
     )
 
-    misc_attrib_id = Column(INTEGER(10), primary_key=10)
-    misc_feature_id = Column(
+    misc_attrib_id: Column = Column(INTEGER(10), primary_key=True)
+    misc_feature_id: Column = Column(
         INTEGER(10),
         ForeignKey("misc_feature.misc_feature_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
     )
-    attrib_type_id = Column(
+    attrib_type_id: Column = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
     )
-    value = Column(Text, nullable=False)
+    value: Column = Column(Text, nullable=False)
 
 
 class OntologyXref(Base):
@@ -1872,7 +1872,7 @@ class OntologyXref(Base):
         ),
     )
 
-    object_xref_id = Column(
+    object_xref_id: Column = Column(
         INTEGER(10),
         ForeignKey("object_xref.object_xref_id"),
         primary_key=True,
@@ -1880,13 +1880,13 @@ class OntologyXref(Base):
         index=True,
         server_default=text("'0'"),
     )
-    source_xref_id = Column(
+    source_xref_id: Column = Column(
         INTEGER(10),
         ForeignKey("xref.xref_id"),
         primary_key=True,
         index=True,
     )
-    linkage_type = Column(String(3), primary_key=True)
+    linkage_type: Column = Column(String(3), primary_key=True)
 
 
 class OperonTranscript(Base):
@@ -1896,29 +1896,29 @@ class OperonTranscript(Base):
         Index("operon_transcript_seq_region_idx", "seq_region_id", "seq_region_start"),
     )
 
-    operon_transcript_id = Column(INTEGER(10), primary_key=True)
-    seq_region_id = Column(
+    operon_transcript_id: Column = Column(INTEGER(10), primary_key=True)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(2), nullable=False)
-    operon_id = Column(
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(2), nullable=False)
+    operon_id: Column = Column(
         ForeignKey("operon.operon_id"),
         nullable=False,
         index=True,
     )
-    display_label = Column(String(255))
-    analysis_id = Column(
+    display_label: Column = Column(String(255))
+    analysis_id: Column = Column(
         ForeignKey("analysis.analysis_id"),
         nullable=False,
         index=True,
     )
-    stable_id = Column(String(128))
-    version = Column(SMALLINT(5))
-    created_date = Column(DateTime)
-    modified_date = Column(DateTime)
+    stable_id: Column = Column(String(128))
+    version: Column = Column(SMALLINT(5))
+    created_date: Column = Column(DateTime)
+    modified_date: Column = Column(DateTime)
 
     analysis = relationship("Analysis", primaryjoin="OperonTranscript.analysis_id == Analysis.analysis_id")
     operon = relationship("Operon", primaryjoin="OperonTranscript.operon_id == Operon.operon_id")
@@ -1932,23 +1932,23 @@ class PredictionExon(Base):
     __tablename__ = "prediction_exon"
     __table_args__ = (Index("prediction_exon_seq_region_idx", "seq_region_id", "seq_region_start"),)
 
-    prediction_exon_id = Column(INTEGER(10), primary_key=True)
-    prediction_transcript_id = Column(
+    prediction_exon_id: Column = Column(INTEGER(10), primary_key=True)
+    prediction_transcript_id: Column = Column(
         ForeignKey("prediction_transcript.prediction_transcript_id"),
         nullable=False,
         index=True,
     )
-    exon_rank = Column(SMALLINT(5), nullable=False)
-    seq_region_id = Column(
+    exon_rank: Column = Column(SMALLINT(5), nullable=False)
+    seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
     )
-    seq_region_start = Column(INTEGER(10), nullable=False)
-    seq_region_end = Column(INTEGER(10), nullable=False)
-    seq_region_strand = Column(TINYINT(4), nullable=False)
-    start_phase = Column(TINYINT(4), nullable=False)
-    score = Column(Float(asdecimal=True))
-    p_value = Column(Float(asdecimal=True))
+    seq_region_start: Column = Column(INTEGER(10), nullable=False)
+    seq_region_end: Column = Column(INTEGER(10), nullable=False)
+    seq_region_strand: Column = Column(TINYINT(4), nullable=False)
+    start_phase: Column = Column(TINYINT(4), nullable=False)
+    score: Column = Column(Float(asdecimal=True))
+    p_value: Column = Column(Float(asdecimal=True))
 
     prediction_transcript = relationship(
         "PredictionTranscript",
@@ -1969,15 +1969,15 @@ class SupportingFeature(Base):
         Index("supporting_feature_idx", "feature_type", "feature_id"),
     )
 
-    exon_id = Column(
+    exon_id: Column = Column(
         INTEGER(10),
         ForeignKey("exon.exon_id"),
         primary_key=True,
         nullable=False,
         server_default=text("'0'"),
     )
-    feature_type = Column(Enum("dna_align_feature", "protein_align_feature"), primary_key=True)
-    feature_id = Column(INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'"))
+    feature_type: Column = Column(Enum("dna_align_feature", "protein_align_feature"), primary_key=True)
+    feature_id: Column = Column(INTEGER(10), primary_key=True, nullable=False, server_default=text("'0'"))
 
 
 t_operon_transcript_gene = Table(

@@ -27,30 +27,30 @@ class ChecksumXref(Base):
     __tablename__ = "checksum_xref"
     __table_args__ = (Index("checksum_idx", "checksum", mysql_length=10),)
 
-    checksum_xref_id = Column(INTEGER, primary_key=True, autoincrement=True)
-    source_id = Column(INTEGER, nullable=False)
-    accession = Column(VARCHAR(14), nullable=False)
-    checksum = Column(VARCHAR(32), nullable=False)
+    checksum_xref_id: Column = Column(INTEGER, primary_key=True, autoincrement=True)
+    source_id: Column = Column(INTEGER, nullable=False)
+    accession: Column = Column(VARCHAR(14), nullable=False)
+    checksum: Column = Column(VARCHAR(32), nullable=False)
 
 
 class Source(Base):
     __tablename__ = "source"
 
-    source_id = Column(INTEGER(10), primary_key=True, autoincrement=True)
-    name = Column(VARCHAR(128), index=True, unique=True)
-    active = Column(BOOLEAN, nullable=False, server_default=text("1"))
-    parser = Column(VARCHAR(128))
+    source_id: Column = Column(INTEGER(10), primary_key=True, autoincrement=True)
+    name: Column = Column(VARCHAR(128), index=True, unique=True)
+    active: Column = Column(BOOLEAN, nullable=False, server_default=text("1"))
+    parser: Column = Column(VARCHAR(128))
 
 
 class Version(Base):
     __tablename__ = "version"
     __table_args__ = (Index("version_idx", "source_id", "revision"),)
 
-    version_id = Column(INTEGER(10), primary_key=True, autoincrement=True)
-    source_id = Column(INTEGER(10), ForeignKey("source.source_id"))
-    revision = Column(VARCHAR(255))
-    count_seen = Column(INTEGER(10), nullable=False)
-    uri = Column(VARCHAR(255))
-    index_uri = Column(VARCHAR(255))
-    clean_uri = Column(VARCHAR(255))
-    preparse = Column(BOOLEAN, nullable=False, server_default=text("0"))
+    version_id: Column = Column(INTEGER(10), primary_key=True, autoincrement=True)
+    source_id: Column = Column(INTEGER(10), ForeignKey("source.source_id"))
+    revision: Column = Column(VARCHAR(255))
+    count_seen: Column = Column(INTEGER(10), nullable=False)
+    uri: Column = Column(VARCHAR(255))
+    index_uri: Column = Column(VARCHAR(255))
+    clean_uri: Column = Column(VARCHAR(255))
+    preparse: Column = Column(BOOLEAN, nullable=False, server_default=text("0"))
