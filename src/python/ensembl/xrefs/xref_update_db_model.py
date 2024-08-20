@@ -27,7 +27,7 @@ from sqlalchemy.dialects.mysql import (
     SMALLINT,
     DOUBLE,
 )
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
@@ -53,7 +53,7 @@ class Xref(Base):
     label: Column = Column(VARCHAR(255))
     description: Column = Column(TEXT)
     source_id: Column = Column(INTEGER(10, unsigned=True), nullable=False)
-    species_id: Column = Column(INTEGER(10, unsigned=True), nullable=False, primary_key=True)
+    species_id: Column = Column(INTEGER(10, unsigned=True), nullable=False)
     info_type: Column = Column(
         Enum(
             "NONE",
@@ -309,7 +309,7 @@ class AltAllele(Base):
     __tablename__ = "alt_allele"
 
     alt_allele_id: Column = Column(INTEGER(10, unsigned=True), autoincrement=True, primary_key=True)
-    gene_id: Column = Column(INTEGER(10, unsigned=True), index=True, primary_key=True)
+    gene_id: Column = Column(INTEGER(10, unsigned=True), index=True)
     is_reference: Column = Column(INTEGER(2, unsigned=True), server_default=text("0"))
 
 
