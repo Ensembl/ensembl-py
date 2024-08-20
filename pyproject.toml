@@ -56,7 +56,7 @@ build = [
 cicd = [
     "black",
     "coverage",
-    "ensembl-utils >= 0.4.0",
+    "ensembl-utils >= 0.4.2",
     "genbadge[coverage]",
     "mypy",
     "pylint",

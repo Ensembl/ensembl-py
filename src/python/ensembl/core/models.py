@@ -1840,7 +1840,7 @@ class MiscAttrib(Base):
             unique=True,
             mysql_length={"value": 10},
         ),
-        Index("misc_attrib_value_idex", "value", mysql_length=10),
+        Index("misc_attrib_value_idx", "value", mysql_length=10),
     )
 
     misc_attrib_id: Column = Column(INTEGER(10), primary_key=True)
