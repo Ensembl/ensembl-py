@@ -43,7 +43,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "sqlalchemy >= 1.4",
+    "sqlalchemy >= 1.4.45",
 ]
 
 [project.optional-dependencies]

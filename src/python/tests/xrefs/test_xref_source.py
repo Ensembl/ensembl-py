@@ -13,16 +13,15 @@
 # limitations under the License.
 """Unit testing of `ensembl.xrefs.xref_source_db_model` module."""
 
-
 import pytest
 
-from ensembl.xrefs.xref_source_db_model import Base
 from ensembl.utils.database import UnitTestDB
+from ensembl.xrefs.xref_source_db_model import Base
 
 
 @pytest.mark.parametrize("test_dbs", [[{"src": "core_db"}]], indirect=True)
 class TestCoreModels:
-    """Tests the `~ensembl.xrefs.xref_source_db_model` ORMs"""
+    """Tests the `ensembl.xrefs.xref_source_db_model` ORMs"""
 
     dbc: UnitTestDB = None
 
