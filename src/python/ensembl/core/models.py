@@ -1997,7 +1997,7 @@ t_operon_transcript_gene = Table(
 @compiles(SET, "sqlite")
 def compile_set_sqlite(
     type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
-    compiler: sqlalchemy.engine.interfaces.Compiled,   # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
     **kw: Any,  # pylint: disable=unused-argument
 ) -> str:
     """Cast MySQL SET to SQLite TEXT."""
@@ -2007,7 +2007,7 @@ def compile_set_sqlite(
 @compiles(TINYTEXT, "sqlite")
 def compile_tinytext_sqlite(
     type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
-    compiler: sqlalchemy.engine.interfaces.Compiled,   # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
     **kw: Any,  # pylint: disable=unused-argument
 ) -> str:
     """Cast MySQL TINYTEXT to SQLite TEXT."""
@@ -2017,7 +2017,7 @@ def compile_tinytext_sqlite(
 @compiles(MEDIUMTEXT, "sqlite")
 def compile_mediumtext_sqlite(
     type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
-    compiler: sqlalchemy.engine.interfaces.Compiled,   # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
     **kw: Any,  # pylint: disable=unused-argument
 ) -> str:
     """Cast MySQL MEDIUMTEXT to SQLite TEXT."""
@@ -2027,7 +2027,7 @@ def compile_mediumtext_sqlite(
 @compiles(LONGTEXT, "sqlite")
 def compile_longtext_sqlite(
     type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
-    compiler: sqlalchemy.engine.interfaces.Compiled,   # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
     **kw: Any,  # pylint: disable=unused-argument
 ) -> str:
     """Cast MySQL LONGTEXT to SQLite TEXT."""
@@ -2037,7 +2037,7 @@ def compile_longtext_sqlite(
 @compiles(TINYINT, "sqlite")
 def compile_tinyint_sqlite(
     type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
-    compiler: sqlalchemy.engine.interfaces.Compiled,   # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
     **kw: Any,  # pylint: disable=unused-argument
 ) -> str:
     """Cast MySQL TINYINT to SQLite INT."""
