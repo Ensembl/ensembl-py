@@ -47,6 +47,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.mysql import (
     BIGINT,
+    DOUBLE,
     INTEGER,
     LONGTEXT,
     MEDIUMTEXT,
@@ -2020,3 +2021,9 @@ def compile_longtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-ar
 def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
     """Cast MySQL TINYINT to SQLite INT."""
     return "INT"
+
+
+@compiles(DOUBLE, "sqlite")
+def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+    """Cast MySQL DOUBLE to SQLite NUMBER."""
+    return "NUMBER"
