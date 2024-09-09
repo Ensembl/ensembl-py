@@ -2024,6 +2024,6 @@ def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-arg
 
 
 @compiles(DOUBLE, "sqlite")
-def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_double_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
     """Cast MySQL DOUBLE to SQLite NUMBER."""
     return "NUMBER"
