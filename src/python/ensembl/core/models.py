@@ -31,7 +31,9 @@
 #     are actually reserved (e.g. type, map, id) please help changing them into
 #     meaningful ones
 
+from typing import Any
 
+import sqlalchemy
 from sqlalchemy import (
     Column,
     DECIMAL,
@@ -1993,30 +1995,50 @@ t_operon_transcript_gene = Table(
 
 
 @compiles(SET, "sqlite")
-def compile_set_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_set_sqlite(
+    type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
+    **kw: Any,  # pylint: disable=unused-argument
+) -> str:
     """Cast MySQL SET to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(TINYTEXT, "sqlite")
-def compile_tinytext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_tinytext_sqlite(
+    type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
+    **kw: Any,  # pylint: disable=unused-argument
+) -> str:
     """Cast MySQL TINYTEXT to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(MEDIUMTEXT, "sqlite")
-def compile_mediumtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_mediumtext_sqlite(
+    type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
+    **kw: Any,  # pylint: disable=unused-argument
+) -> str:
     """Cast MySQL MEDIUMTEXT to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(LONGTEXT, "sqlite")
-def compile_longtext_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_longtext_sqlite(
+    type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
+    **kw: Any,  # pylint: disable=unused-argument
+) -> str:
     """Cast MySQL LONGTEXT to SQLite TEXT."""
     return "TEXT"
 
 
 @compiles(TINYINT, "sqlite")
-def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_tinyint_sqlite(
+    type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
+    **kw: Any,  # pylint: disable=unused-argument
+) -> str:
     """Cast MySQL TINYINT to SQLite INT."""
     return "INT"
