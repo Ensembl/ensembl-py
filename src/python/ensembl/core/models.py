@@ -2024,6 +2024,10 @@ def compile_tinyint_sqlite(type_, compiler, **kw):  # pylint: disable=unused-arg
 
 
 @compiles(DOUBLE, "sqlite")
-def compile_double_sqlite(type_, compiler, **kw):  # pylint: disable=unused-argument
+def compile_double_sqlite(
+    type_: sqlalchemy.sql.expression.ColumnClause,  # pylint: disable=unused-argument
+    compiler: sqlalchemy.engine.interfaces.Compiled,  # pylint: disable=unused-argument
+    **kw: Any,  # pylint: disable=unused-argument
+) -> str:
     """Cast MySQL DOUBLE to SQLite NUMBER."""
     return "NUMBER"
