@@ -43,6 +43,7 @@ from sqlalchemy import (
     String,
     Table,
     Text,
+    UniqueConstraint,
     text,
 )
 from sqlalchemy.dialects.mysql import (
@@ -1677,19 +1678,22 @@ class SeqRegionAttrib(Base):
         Index("region_attrib_value_idx", "value", mysql_length=10),
     )
 
-    seq_region_attrib_id: Column = Column(INTEGER(10), primary_key=True)
     seq_region_id: Column = Column(
         ForeignKey("seq_region.seq_region_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
+        primary_key=True,
     )
     attrib_type_id: Column = Column(
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
+        primary_key=True,
     )
-    value: Column = Column(Text, nullable=False)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
+
+    UniqueConstraint("seq_region_id", "attrib_type_id", "value", name="region_attribx")
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
     attrib_type = relationship("AttribType", back_populates="seq_region_attrib")
 
