@@ -16,7 +16,7 @@
 name = "ensembl-py"
 description = "Ensembl Python Base Library"
 requires-python = ">= 3.10"
-version = "2.1.1"
+version = "2.1.2"
 readme = "README.md"
 authors = [
     {name = "Ensembl", email = "dev@ensembl.org"},
@@ -56,7 +56,7 @@ build = [
 cicd = [
     "black",
     "coverage",
-    "ensembl-utils >= 0.4.2",
+    "ensembl-utils >= 0.4.4",
     "genbadge[coverage]",
     "mypy",
     "pylint",
