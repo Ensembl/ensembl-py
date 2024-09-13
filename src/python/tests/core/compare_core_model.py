@@ -24,15 +24,19 @@ from ensembl.utils.database import DBConnection
 from ensembl.utils.argparse import ArgumentParser
 from ensembl.utils.logging import init_logging_with_args
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound, MultipleResultsFound, OperationalError
+from sqlalchemy.exc import NoResultFound, MultipleResultsFound, OperationalError, ProgrammingError
 from sqlalchemy.orm import Session
 
 from ensembl.core.models import Base
 
-def check_tables(session: Session) -> None:
+def check_tables(session: Session, only_table: str = "") -> None:
     success = []
     errors = []
     for table_name, table in Base.metadata.tables.items():
+        if isinstance(table_name, tuple):
+            table_name = table_name[0]
+        if only_table and table_name != only_table:
+            continue
         logging.debug(f"Check table {table_name}")
         stmt = select(table)
         try:
@@ -41,7 +45,7 @@ def check_tables(session: Session) -> None:
         except (NoResultFound, MultipleResultsFound):
             success.append(table_name)
             pass
-        except OperationalError as err:
+        except (OperationalError, ProgrammingError) as err:
             # Show the problematic query and continue
             logging.warning(f"{table_name}: {err}")
             errors.append(table_name)
@@ -58,13 +62,14 @@ def main() -> None:
         description=__doc__
     )
     parser.add_argument("--url", required=True, type=str, help="MySQL URL to a core database to get tables data from")
+    parser.add_argument("--table", type=str, help="Test this one table only")
     parser.add_log_arguments(add_log_file=True)
     args = parser.parse_args()
     init_logging_with_args(args)
 
     dbc = DBConnection(args.url, reflect=False)
     with dbc.session_scope() as session:
-        check_tables(session)
+        check_tables(session, only_table=args.table)
 
 if __name__ == "__main__":
     main()
