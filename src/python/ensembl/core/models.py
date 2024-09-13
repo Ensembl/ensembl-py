@@ -197,7 +197,11 @@ class DNAAlignFeatureAttrib(Base):
     )
 
     dna_align_feature_id: Column = Column(
-        INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True, primary_key=True
+        INTEGER(10),
+        ForeignKey("dna_align_feature.dna_align_feature_id"),
+        nullable=False,
+        index=True,
+        primary_key=True,
     )
     attrib_type_id: Column = Column(SMALLINT(5), nullable=False, primary_key=True)
     value: Column = Column(String(500), nullable=False, primary_key=True)
@@ -414,7 +418,9 @@ class RNAproductAttrib(Base):
         Index("rnaproduct_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("rnaproduct_value_idx", "value", mysql_length=10),
     )
-    rnaproduct_id: Column = Column(ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True, primary_key=True)
+    rnaproduct_id: Column = Column(
+        ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True, primary_key=True
+    )
     attrib_type_id: Column = Column(SMALLINT(5), nullable=False, primary_key=True)
     value: Column = Column(String(500), nullable=False, primary_key=True)
 
@@ -666,6 +672,7 @@ class GeneAttrib(Base):
         primary_key=True,
     )
     value: Column = Column(String(500), nullable=False, primary_key=True)
+
 
 class MarkerMapLocation(Base):
     __tablename__ = "marker_map_location"
