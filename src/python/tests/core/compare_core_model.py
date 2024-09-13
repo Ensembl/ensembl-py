@@ -29,6 +29,7 @@ from sqlalchemy.orm import Session
 
 from ensembl.core.models import Base
 
+
 def check_tables(session: Session, only_table: str = "") -> None:
     success = []
     errors = []
@@ -49,19 +50,20 @@ def check_tables(session: Session, only_table: str = "") -> None:
             # Show the problematic query and continue
             logging.warning(f"{table_name}: {err}")
             errors.append(table_name)
-    
+
     logging.info(f"{len(success)} tables successfully queried with the ORM")
     if errors:
         logging.warning(f"{len(errors)} tables failed to be queried with the ORM: {", ".join(errors)}")
     else:
         logging.info("No errors found")
 
+
 def main() -> None:
     """Main script entry-point."""
-    parser = ArgumentParser(
-        description=__doc__
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--url", required=True, type=str, help="MySQL URL to a core database to get tables data from"
     )
-    parser.add_argument("--url", required=True, type=str, help="MySQL URL to a core database to get tables data from")
     parser.add_argument("--table", type=str, help="Test this one table only")
     parser.add_log_arguments(add_log_file=True)
     args = parser.parse_args()
@@ -70,6 +72,7 @@ def main() -> None:
     dbc = DBConnection(args.url, reflect=False)
     with dbc.session_scope() as session:
         check_tables(session, only_table=args.table)
+
 
 if __name__ == "__main__":
     main()
