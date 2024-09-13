@@ -11,10 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Helper script to check the current ensembl-py core model against a core created from Ensembl SQL."""
+"""Check the current ensembl-py core model against a core created from Ensembl SQL.
+This script gets one row for each table in the ORM to check that SQLalchemy can correctly query the table.
+If not, it will show the OperationalError exception to explain what is wrong in the ORM.
+
+Use this script this check the ORM and fix it.
+"""
+
+import logging
 
 from ensembl.utils.database import DBConnection
 from ensembl.utils.argparse import ArgumentParser
+from ensembl.utils.logging import init_logging_with_args
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound, OperationalError
 from sqlalchemy.orm import Session
@@ -25,27 +33,34 @@ def check_tables(session: Session) -> None:
     success = []
     errors = []
     for table_name, table in Base.metadata.tables.items():
+        logging.debug(f"Check table {table_name}")
         stmt = select(table)
         try:
             session.execute(stmt).one()
             success.append(table_name)
         except (NoResultFound, MultipleResultsFound):
+            success.append(table_name)
             pass
         except OperationalError as err:
             # Show the problematic query and continue
-            print(f"{table_name}: {err}")
+            logging.warning(f"{table_name}: {err}")
             errors.append(table_name)
     
-    print(f"{len(success)} tables successfully queried with the ORM")
-    print(f"{len(errors)} tables failed to be queried with the ORM: {errors}")
+    logging.info(f"{len(success)} tables successfully queried with the ORM")
+    if errors:
+        logging.warning(f"{len(errors)} tables failed to be queried with the ORM: {", ".join(errors)}")
+    else:
+        logging.info("No errors found")
 
 def main() -> None:
     """Main script entry-point."""
     parser = ArgumentParser(
-        description="Fetch the genome metadata from a core database and print it in JSON format."
+        description=__doc__
     )
     parser.add_argument("--url", required=True, type=str, help="MySQL URL to a core database to get tables data from")
+    parser.add_log_arguments(add_log_file=True)
     args = parser.parse_args()
+    init_logging_with_args(args)
 
     dbc = DBConnection(args.url, reflect=False)
     with dbc.session_scope() as session:
