@@ -200,7 +200,7 @@ class DNAAlignFeatureAttrib(Base):
         INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True, primary_key=True
     )
     attrib_type_id: Column = Column(SMALLINT(5), nullable=False, primary_key=True)
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class ExternalDb(Base):
@@ -416,7 +416,7 @@ class RNAproductAttrib(Base):
     )
     rnaproduct_id: Column = Column(ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True, primary_key=True)
     attrib_type_id: Column = Column(SMALLINT(5), nullable=False, primary_key=True)
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class RnaproductType(Base):
@@ -665,7 +665,7 @@ class GeneAttrib(Base):
         server_default=text("'0'"),
         primary_key=True,
     )
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 class MarkerMapLocation(Base):
     __tablename__ = "marker_map_location"
@@ -875,7 +875,7 @@ class TranscriptAttrib(Base):
         server_default=text("'0'"),
         primary_key=True,
     )
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class TranscriptSupportingFeature(Base):
@@ -930,7 +930,7 @@ class TranslationAttrib(Base):
         server_default=text("'0'"),
         primary_key=True,
     )
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class UnmappedObject(Base):
@@ -1694,7 +1694,7 @@ class SeqRegionAttrib(Base):
         server_default=text("'0'"),
         primary_key=True,
     )
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
     UniqueConstraint("seq_region_id", "attrib_type_id", "value", name="region_attribx")
     seq_region = relationship("SeqRegion", back_populates="seq_region_attrib")
@@ -1865,7 +1865,7 @@ class MiscAttrib(Base):
         server_default=text("'0'"),
         primary_key=True,
     )
-    value: Column = Column(Text, nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class OntologyXref(Base):
