@@ -57,7 +57,7 @@ def check_tables(session: Session, only_table: str = "") -> None:
 
     logging.info(f"{len(success)} tables successfully queried with the ORM")
     if errors:
-        logging.warning(f"{len(errors)} tables failed to be queried with the ORM: {", ".join(errors)}")
+        logging.warning(f"{len(errors)} tables failed to be queried with the ORM: {', '.join(errors)}")
     else:
         logging.info("No errors found")
 
