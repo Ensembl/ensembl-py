@@ -20,6 +20,7 @@ Use this script this check the ORM and fix it.
 
 import logging
 
+from ensembl.core.models import Base
 from ensembl.utils.database import DBConnection
 from ensembl.utils.argparse import ArgumentParser
 from ensembl.utils.logging import init_logging_with_args
@@ -27,10 +28,14 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound, OperationalError, ProgrammingError
 from sqlalchemy.orm import Session
 
-from ensembl.core.models import Base
-
 
 def check_tables(session: Session, only_table: str = "") -> None:
+    """Load data from a core using the ORM to check for any discrepancies in the definitions.
+
+    Args:
+        session: SQLAlchemy session.
+        only_table: Only check this one table instead of all of the tables defined in the ORM.
+    """
     success = []
     errors = []
     for table_name, table in Base.metadata.tables.items():
@@ -45,7 +50,6 @@ def check_tables(session: Session, only_table: str = "") -> None:
             success.append(table_name)
         except (NoResultFound, MultipleResultsFound):
             success.append(table_name)
-            pass
         except (OperationalError, ProgrammingError) as err:
             # Show the problematic query and continue
             logging.warning(f"{table_name}: {err}")
