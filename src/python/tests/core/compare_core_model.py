@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Check the current ensembl-py core model against a core created from Ensembl SQL.
-This script gets one row for each table in the ORM to check that SQLalchemy can correctly query the table.
-If not, it will show the OperationalError exception to explain what is wrong in the ORM.
+This script gets one row for each table in the ORM to check that SQLAlchemy can correctly query the table.
+If not, it will show the `OperationalError` exception to explain what is wrong in the ORM.
 
-Use this script this check the ORM and fix it.
+Use this script to check the ORM (and fix it if needed).
 """
 
 import logging
