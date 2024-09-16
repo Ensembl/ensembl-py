@@ -65,12 +65,11 @@ def check_tables(session: Session, only_table: str = "") -> None:
 def main() -> None:
     """Main script entry-point."""
     parser = ArgumentParser(description=__doc__)
-    parser.add_server_arguments(database=True, help="Ensembl MySQL core database")
+    parser.add_server_arguments(include_database=True, help="Ensembl MySQL core database")
     parser.add_argument("--table", type=str, help="Test this one table only")
     parser.add_log_arguments(add_log_file=True)
     args = parser.parse_args()
     init_logging_with_args(args)
-
     dbc = DBConnection(args.url, reflect=False)
     with dbc.session_scope() as session:
         check_tables(session, only_table=args.table)
