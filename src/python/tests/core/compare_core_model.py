@@ -65,9 +65,7 @@ def check_tables(session: Session, only_table: str = "") -> None:
 def main() -> None:
     """Main script entry-point."""
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--url", required=True, type=str, help="MySQL URL to a core database to get tables data from"
-    )
+    parser.add_server_arguments(database=True, help="Ensembl MySQL core database")
     parser.add_argument("--table", type=str, help="Test this one table only")
     parser.add_log_arguments(add_log_file=True)
     args = parser.parse_args()
