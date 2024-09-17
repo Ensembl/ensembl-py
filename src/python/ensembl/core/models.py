@@ -196,12 +196,15 @@ class DNAAlignFeatureAttrib(Base):
         Index("ditag_value_idx", "value", mysql_length=10),
     )
 
-    dna_align_feature_attrib_id: Column = Column(INTEGER(10), primary_key=True)
     dna_align_feature_id: Column = Column(
-        INTEGER(10), ForeignKey("dna_align_feature.dna_align_feature_id"), nullable=False, index=True
+        INTEGER(10),
+        ForeignKey("dna_align_feature.dna_align_feature_id"),
+        nullable=False,
+        index=True,
+        primary_key=True,
     )
-    attrib_type_id: Column = Column(SMALLINT(5), nullable=False)
-    value: Column = Column(Text, nullable=False)
+    attrib_type_id: Column = Column(SMALLINT(5), nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class ExternalDb(Base):
@@ -415,10 +418,11 @@ class RNAproductAttrib(Base):
         Index("rnaproduct_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index("rnaproduct_value_idx", "value", mysql_length=10),
     )
-    rnaproduct_attrib_id: Column = Column(INTEGER(10), primary_key=True)
-    rnaproduct_id: Column = Column(ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True)
-    attrib_type_id: Column = Column(SMALLINT(5), nullable=False)
-    value: Column = Column(Text, nullable=False)
+    rnaproduct_id: Column = Column(
+        ForeignKey("rnaproduct.rnaproduct_id"), nullable=False, index=True, primary_key=True
+    )
+    attrib_type_id: Column = Column(SMALLINT(5), nullable=False, primary_key=True)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class RnaproductType(Base):
@@ -652,21 +656,22 @@ class GeneAttrib(Base):
         Index("gene_attrib_value_idx", "value", mysql_length=10),
     )
 
-    gene_attrib_id: Column = Column(INTEGER(10), primary_key=True)
     gene_id: Column = Column(
         INTEGER(10),
         ForeignKey("gene.gene_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
+        primary_key=True,
     )
     attrib_type_id: Column = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
+        primary_key=True,
     )
-    value: Column = Column(Text, nullable=False)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class MarkerMapLocation(Base):
@@ -862,21 +867,22 @@ class TranscriptAttrib(Base):
         Index("transcript_attrib_value_idx", "value", mysql_length=10),
     )
 
-    transcript_attrib_id: Column = Column(INTEGER(10), primary_key=True)
     transcript_id: Column = Column(
         INTEGER(10),
         ForeignKey("transcript.transcript_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
+        primary_key=True,
     )
     attrib_type_id: Column = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
+        primary_key=True,
     )
-    value: Column = Column(Text, nullable=False)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class TranscriptSupportingFeature(Base):
@@ -904,7 +910,7 @@ class TranscriptSupportingFeature(Base):
 
 
 class TranslationAttrib(Base):
-    __tablename__ = ("translation_attrib",)
+    __tablename__ = "translation_attrib"
     __table_args__ = (
         Index("translation_attrib_type_val_idx", "attrib_type_id", "value", mysql_length={"value": 10}),
         Index(
@@ -918,19 +924,20 @@ class TranslationAttrib(Base):
         Index("translation_attrib_value_idx", "value", mysql_length=10),
     )
 
-    translation_attrib_id: Column = Column(INTEGER(10), primary_key=True)
     translation_id: Column = Column(
         ForeignKey("translation.translation_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
+        primary_key=True,
     )
     attrib_type_id: Column = Column(
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
+        primary_key=True,
     )
-    value: Column = Column(Text, nullable=False)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class UnmappedObject(Base):
@@ -1850,21 +1857,22 @@ class MiscAttrib(Base):
         Index("misc_attrib_value_idx", "value", mysql_length=10),
     )
 
-    misc_attrib_id: Column = Column(INTEGER(10), primary_key=True)
     misc_feature_id: Column = Column(
         INTEGER(10),
         ForeignKey("misc_feature.misc_feature_id"),
         nullable=False,
         index=True,
         server_default=text("'0'"),
+        primary_key=True,
     )
     attrib_type_id: Column = Column(
         SMALLINT(5),
         ForeignKey("attrib_type.attrib_type_id"),
         nullable=False,
         server_default=text("'0'"),
+        primary_key=True,
     )
-    value: Column = Column(Text, nullable=False)
+    value: Column = Column(String(500), nullable=False, primary_key=True)
 
 
 class OntologyXref(Base):
