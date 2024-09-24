@@ -20,7 +20,7 @@ from ensembl.core.models import Base
 from ensembl.utils.database import UnitTestDB
 
 
-@pytest.mark.parametrize("test_dbs", [[{"src": "core_db"}]], indirect=True)
+@pytest.mark.parametrize("test_dbs", [[{"src": "core_db", "metadata": Base.metadata}]], indirect=True)
 class TestCoreModels:
     """Tests the `~ensembl.core.models` ORMs"""
 
@@ -37,5 +37,4 @@ class TestCoreModels:
 
     def test_create_db(self) -> None:
         """Test the creation of a database with the core models schema."""
-        self.dbc.create_all_tables(Base.metadata)
         assert set(self.dbc.tables.keys()) == set(Base.metadata.tables.keys())
