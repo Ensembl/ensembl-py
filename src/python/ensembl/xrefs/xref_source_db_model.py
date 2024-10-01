@@ -25,7 +25,7 @@ Base = declarative_base()
 
 class ChecksumXref(Base):
     __tablename__ = "checksum_xref"
-    __table_args__ = (Index("checksum_idx", "checksum", mysql_length=10),)
+    __table_args__ = (Index("checksum_idx", "checksum", mysql_length=10), {"mysql_engine": "MyISAM"})
 
     checksum_xref_id: Column = Column(INTEGER, primary_key=True, autoincrement=True)
     source_id: Column = Column(INTEGER, nullable=False)
