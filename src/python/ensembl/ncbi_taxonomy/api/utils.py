@@ -251,4 +251,4 @@ class Taxonomy:
             ``taxon_id_2`` do not exist or have no common ancestors
         """
         common_ancestors = cls.all_common_ancestors(session, taxon_id_1, taxon_id_2)
-        return common_ancestors[0]
+        return common_ancestors[-1]
