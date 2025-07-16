@@ -16,8 +16,8 @@
 # pylint: disable=missing-class-docstring,too-many-lines
 # mypy: disable-error-code="misc, valid-type"
 
-from sqlalchemy import Column, Index, ForeignKey, text
-from sqlalchemy.dialects.mysql import INTEGER, VARCHAR, BOOLEAN
+from sqlalchemy import Column, Index, ForeignKey
+from sqlalchemy.dialects.mysql import INTEGER, VARCHAR
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
