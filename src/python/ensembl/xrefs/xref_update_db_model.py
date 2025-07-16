@@ -20,6 +20,7 @@ from sqlalchemy import Column, Index, Enum, DateTime, text
 from sqlalchemy.dialects.mysql import (
     INTEGER,
     VARCHAR,
+    BOOLEAN,
     TEXT,
     MEDIUMTEXT,
     TINYINT,
@@ -97,7 +98,7 @@ class PrimaryXref(Base):
 class DependentXref(Base):
     __tablename__ = "dependent_xref"
 
-    object_xref_id: Column = Column(INTEGER(10, unsigned=True), nullable=False, index=True)
+    object_xref_id: Column = Column(INTEGER(10, unsigned=True), index=True)
     master_xref_id: Column = Column(INTEGER(10, unsigned=True), index=True, primary_key=True)
     dependent_xref_id: Column = Column(INTEGER(10, unsigned=True), index=True, primary_key=True)
     linkage_annotation: Column = Column(VARCHAR(255))
@@ -134,13 +135,6 @@ class SourceURL(Base):
     source_id: Column = Column(INTEGER(10, unsigned=True), nullable=False, index=True)
     species_id: Column = Column(INTEGER(10, unsigned=True), nullable=False)
     parser: Column = Column(VARCHAR(255))
-
-
-class SourceMappingMethod(Base):
-    __tablename__ = "source_mapping_method"
-
-    source_id: Column = Column(INTEGER(10, unsigned=True), primary_key=True)
-    method: Column = Column(VARCHAR(255), primary_key=True)
 
 
 class GeneDirectXref(Base):
@@ -309,7 +303,7 @@ class AltAllele(Base):
     __tablename__ = "alt_allele"
 
     alt_allele_id: Column = Column(INTEGER(10, unsigned=True), autoincrement=True, primary_key=True)
-    gene_id: Column = Column(INTEGER(10, unsigned=True), index=True)
+    gene_id: Column = Column(INTEGER(10, unsigned=True), index=True, primary_key=True)
     is_reference: Column = Column(INTEGER(2, unsigned=True), server_default=text("0"))
 
 

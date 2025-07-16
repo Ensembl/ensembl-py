@@ -38,7 +38,6 @@ class Source(Base):
 
     source_id: Column = Column(INTEGER(10), primary_key=True, autoincrement=True)
     name: Column = Column(VARCHAR(128), index=True, unique=True)
-    active: Column = Column(BOOLEAN, nullable=False, server_default=text("1"))
     parser: Column = Column(VARCHAR(128))
 
 
@@ -49,8 +48,7 @@ class Version(Base):
     version_id: Column = Column(INTEGER(10), primary_key=True, autoincrement=True)
     source_id: Column = Column(INTEGER(10), ForeignKey("source.source_id"))
     revision: Column = Column(VARCHAR(255))
-    count_seen: Column = Column(INTEGER(10), nullable=False)
-    uri: Column = Column(VARCHAR(255))
-    index_uri: Column = Column(VARCHAR(255))
-    clean_uri: Column = Column(VARCHAR(255))
-    preparse: Column = Column(BOOLEAN, nullable=False, server_default=text("0"))
+    priority: Column = Column(INTEGER(10), nullable=False)
+    file_path: Column = Column(VARCHAR(255))
+    db: Column = Column(VARCHAR(255))
+    clean_path: Column = Column(VARCHAR(255))
