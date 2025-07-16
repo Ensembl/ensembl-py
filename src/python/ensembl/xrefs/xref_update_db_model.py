@@ -20,7 +20,6 @@ from sqlalchemy import Column, Index, Enum, DateTime, text
 from sqlalchemy.dialects.mysql import (
     INTEGER,
     VARCHAR,
-    BOOLEAN,
     TEXT,
     MEDIUMTEXT,
     TINYINT,
