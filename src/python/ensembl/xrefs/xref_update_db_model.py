@@ -302,7 +302,7 @@ class GeneDescPriority(Base):
 class AltAllele(Base):
     __tablename__ = "alt_allele"
 
-    alt_allele_id: Column = Column(INTEGER(10, unsigned=True), autoincrement=True, primary_key=True)
+    alt_allele_id: Column = Column(INTEGER(10, unsigned=True), primary_key=True)
     gene_id: Column = Column(INTEGER(10, unsigned=True), index=True, primary_key=True)
     is_reference: Column = Column(INTEGER(2, unsigned=True), server_default=text("0"))
 
