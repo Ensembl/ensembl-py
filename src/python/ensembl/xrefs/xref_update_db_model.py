@@ -262,7 +262,7 @@ class ProcessStatus(Base):
             "mapping_finished",
             "mapping_processed",
             "direct_xrefs_parsed",
-            "prioritys_flagged",
+            "priorities_flagged",
             "processed_pairs",
             "biomart_test_finished",
             "source_level_move_finished",
@@ -276,8 +276,11 @@ class ProcessStatus(Base):
             "tests_failed",
             "tests_finished",
             "core_loaded",
-            "display_xref_done",
-            "gene_description_done",
+            "display_xrefs_done",
+            "gene_descriptions_done",
+            "direct_stable_id_check_done",
+            "xrefs_counts_check_done",
+            "name_change_check_done",
         )
     )
     date: Column = Column(DateTime, nullable=False)
