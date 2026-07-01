@@ -1,7 +1,7 @@
 # Ensembl Python Base Library
 
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](https://github.com/Ensembl/ensembl-py/blob/main/LICENSE)
-[![Coverage](https://ensembl.github.io/ensembl-py/coverage/coverage-badge.svg)](https://ensembl.github.io/ensembl-py/coverage)
+[![Coverage](https://ensembl.github.io/ensembl-py/latest/coverage-badge.svg)](https://ensembl.github.io/ensembl-py/latest/coverage_report.html)
 [![CI](https://github.com/Ensembl/ensembl-py/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Ensembl/ensembl-py/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/pypi/v/ensembl-py)](https://pypi.org/project/ensembl-py)
 
