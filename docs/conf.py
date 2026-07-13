@@ -12,37 +12,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Sphinx configuration for the ensembl-py documentation.
 
-name: "CI"
+All shared defaults live in :mod:`ensembl.utils.docs`; this file only sets project-specific values and any
+local overrides.
+"""
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+from pathlib import Path
 
-permissions:
-  contents: read
+from ensembl.utils.docs import configure
 
-jobs:
-  license_check:
-    name: Check missing license headers
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v7.0.0
-
-      - name: Check license header
-        uses: apache/skywalking-eyes/header@61275cc80d0798a405cb070f7d3a8aaf7cf2c2c1 # v0.8.0
-        with:
-          config: .licenserc.yml
-
-  python_ci:
-    name: Python CI
-    uses: ./.github/workflows/python_ci.yml
-    permissions:
-      contents: read
-      pull-requests: write
-    with:
-      python-version: "3.10"
-      sqlalchemy-version: "2.*"
+coverage_root = Path(__file__).parent / "reports"
+configure(
+    globals(),
+    project="ensembl-py",
+    repo_url="https://github.com/Ensembl/ensembl-py",
+    release="3.0.2",
+    docs_base_url="https://ensembl.github.io/ensembl-py",
+    coverage_root=coverage_root if coverage_root.exists() else None,
+    add_pypi_icon=True,
+)

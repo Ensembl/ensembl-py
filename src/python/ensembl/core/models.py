@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Ensembl Core database ORM."""
+
 # Ignore some pylint and mypy checks due to the nature of SQLAlchemy ORMs
 # pylint: disable=missing-class-docstring,too-many-lines,fixme
 # mypy: disable-error-code="misc, valid-type"

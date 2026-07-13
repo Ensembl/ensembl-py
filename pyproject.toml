@@ -16,7 +16,7 @@
 name = "ensembl-py"
 description = "Ensembl Python Base Library"
 requires-python = ">= 3.10"
-version = "3.0.1"
+version = "3.1.0"
 readme = "README.md"
 authors = [
     {name = "Ensembl", email = "dev@ensembl.org"},
@@ -30,7 +30,7 @@ keywords = [
     "setup",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
@@ -39,6 +39,9 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -49,14 +52,14 @@ dependencies = [
 [project.optional-dependencies]
 build = [
     "build",
-    "setuptools",
+    "setuptools >= 64",
     "setuptools-scm",
     "wheel",
 ]
 cicd = [
-    "black",
+    "black >= 23.0.0",
     "coverage",
-    "ensembl-utils >= 0.5.0",
+    "ensembl-utils >= 1.0.0",
     "genbadge[coverage]",
     "mypy",
     "pylint",
@@ -71,16 +74,7 @@ dev = [
     "ipython",
 ]
 docs = [
-    "mkdocs >= 1.5.3",
-    "mkdocs-autorefs",
-    "mkdocs-coverage",
-    "mkdocs-gen-files",
-    "mkdocs-literate-nav",
-    "mkdocs-material",
-    "mkdocs-material-extensions",
-    "mkdocs-section-index",
-    "mkdocstrings",
-    "mkdocstrings-python",
+    "ensembl-utils[docs] >= 1.0.0",
 ]
 mysql = [
     "mysqlclient >= 1.4.6, < 2.3.0",
@@ -116,6 +110,7 @@ requires = [
 
 [tool.black]
 line-length = 110
+target-version = ["py310"]
 
 [tool.pylint.main]
 max-line-length = 110
@@ -157,7 +152,6 @@ addopts = [
 ]
 norecursedirs = [
     "data",
-    "docs",
     "*.egg_info",
 ]
 testpaths = ["src/python/tests"]

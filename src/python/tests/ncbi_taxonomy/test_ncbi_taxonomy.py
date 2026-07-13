@@ -18,6 +18,7 @@ Typical usage example::
     $ pytest test_ncbi_taxonomy.py
 
 """
+
 # pylint: disable=too-many-public-methods
 
 from typing import ContextManager
