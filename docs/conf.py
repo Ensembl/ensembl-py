@@ -27,7 +27,7 @@ configure(
     globals(),
     project="ensembl-py",
     repo_url="https://github.com/Ensembl/ensembl-py",
-    release="3.0.2",
+    release="3.1.0",
     docs_base_url="https://ensembl.github.io/ensembl-py",
     coverage_root=coverage_root if coverage_root.exists() else None,
     add_pypi_icon=True,
