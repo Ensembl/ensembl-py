@@ -13,7 +13,6 @@
 # limitations under the License.
 """Unit testing of `ensembl.core.models` module."""
 
-
 import pytest
 
 from ensembl.core.models import Base
