@@ -77,7 +77,7 @@ docs = [
     "ensembl-utils[docs] >= 1.0.0",
 ]
 mysql = [
-    "mysqlclient >= 1.4.6, < 2.3.0",
+    "mysqlclient >= 1.4.6, < 2.4.0",
 ]
 
 [project.urls]
