@@ -15,8 +15,8 @@
 [project]
 name = "ensembl-py"
 description = "Ensembl Python Base Library"
-requires-python = ">= 3.10"
-version = "3.1.0"
+requires-python = ">= 3.12"
+version = "3.2.0"
 readme = "README.md"
 authors = [
     {name = "Ensembl", email = "dev@ensembl.org"},
@@ -37,8 +37,6 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -46,27 +44,27 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "sqlalchemy >= 1.4.45",
+    "sqlalchemy >= 2.0.46",
 ]
 
 [project.optional-dependencies]
 build = [
     "build",
-    "setuptools >= 64",
+    "setuptools >= 80.10.2",
     "setuptools-scm",
     "wheel",
 ]
 cicd = [
-    "black >= 23.0.0",
+    "black >= 26.1.0",
     "coverage",
-    "ensembl-utils >= 1.0.0",
+    "ensembl-utils >= 1.1.0",
     "genbadge[coverage]",
     "mypy",
     "pylint",
     "pytest",
     "pytest-dependency",
     "pytest-mock",
-    "requests-mock >= 1.8.0",
+    "requests-mock >= 1.12.0",
     "types-PyYAML",
     "types-requests",
 ]
@@ -74,10 +72,10 @@ dev = [
     "ipython",
 ]
 docs = [
-    "ensembl-utils[docs] >= 1.0.0",
+    "ensembl-utils[docs] >= 1.1.0",
 ]
 mysql = [
-    "mysqlclient >= 1.4.6, < 2.4.0",
+    "mysqlclient >= 2.3.0",
 ]
 
 [project.urls]
@@ -110,7 +108,7 @@ requires = [
 
 [tool.black]
 line-length = 110
-target-version = ["py310"]
+target-version = ["py312"]
 
 [tool.pylint.main]
 max-line-length = 110
